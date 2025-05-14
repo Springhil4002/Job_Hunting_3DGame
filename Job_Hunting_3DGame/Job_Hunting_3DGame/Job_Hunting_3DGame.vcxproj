@@ -132,13 +132,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
+    <ClCompile Include="ConstantBuffer.cpp" />
     <ClCompile Include="DrawBase.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="VertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
+    <ClInclude Include="CommonTypes.h" />
     <ClInclude Include="ComPtr.h" />
+    <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="DrawBase.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="SharedStruct.h" />
+    <ClInclude Include="VertexBuffer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

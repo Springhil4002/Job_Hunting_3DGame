@@ -13,27 +13,81 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="ソース ファイル\App">
+      <UniqueIdentifier>{7b0275cf-c3e7-4e9c-9fc9-b9cebf1f668c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Main">
+      <UniqueIdentifier>{f0f23d54-d903-43c9-8699-822fc9b8b042}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Obj">
+      <UniqueIdentifier>{d177372a-c054-43a1-9312-3507c96c3d1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Draw">
+      <UniqueIdentifier>{6627155c-4955-455e-9daa-d2a4d27ba5ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\App">
+      <UniqueIdentifier>{33a3838e-16fd-4a21-97cb-329d7d1579ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Draw">
+      <UniqueIdentifier>{3b3cd57d-dbc3-41c7-a59e-22584f10af39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Common">
+      <UniqueIdentifier>{fcab8cda-8c2e-4177-bfa8-d1761a98134e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Buffer">
+      <UniqueIdentifier>{4140a4bd-30b0-4b6b-abaf-719b7c09d686}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Obj">
+      <UniqueIdentifier>{41705671-cc40-48ff-aa73-e324d73e29ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Buffer">
+      <UniqueIdentifier>{5f2c1b05-39c6-4e24-bcbd-a252e2404203}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="App.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\App</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>ソース ファイル\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>ソース ファイル\Obj</Filter>
     </ClCompile>
     <ClCompile Include="DrawBase.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Draw</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexBuffer.cpp">
+      <Filter>ソース ファイル\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="ConstantBuffer.cpp">
+      <Filter>ソース ファイル\Buffer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="ComPtr.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\App</Filter>
     </ClInclude>
     <ClInclude Include="DrawBase.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\Draw</Filter>
+    </ClInclude>
+    <ClInclude Include="ComPtr.h">
+      <Filter>ヘッダー ファイル\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="SharedStruct.h">
+      <Filter>ヘッダー ファイル\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonTypes.h">
+      <Filter>ヘッダー ファイル\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>ヘッダー ファイル\Obj</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBuffer.h">
+      <Filter>ヘッダー ファイル\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstantBuffer.h">
+      <Filter>ヘッダー ファイル\Buffer</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

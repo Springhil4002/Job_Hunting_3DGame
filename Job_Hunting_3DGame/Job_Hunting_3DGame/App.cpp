@@ -1,5 +1,6 @@
 #include "App.h"
 #include "DrawBase.h"
+#include "Scene.h"
 
 HINSTANCE g_hInst;
 HWND g_hWnd = NULL;
@@ -92,12 +93,16 @@ void MainLoop()
 		}
 		else
 		{
-			// 後で更新処理を実行するところ
+			// 更新処理
+			g_Scene->Update();
 			
+			// 描画開始処理
 			g_DrawBase->BeginRender();
-
-			// 3Dオブジェクトの描画処理を行う
 			
+			// 描画処理
+			g_Scene->Draw();
+			
+			// 描画終了処理
 			g_DrawBase->EndRender();
 		}
 	}
@@ -110,13 +115,17 @@ void Application::Run(const TCHAR* _appName)
 
 	// 描画基盤の初期化を行う
 	g_DrawBase = new DrawBase();
-
 	if (!g_DrawBase->Init(g_hWnd, WINDOW_WIDTH, WINDOW_HEIGHT))
 	{
 		return;
 	}
 
-	// 後で3Dモデルの初期化を行う
+	// シーン初期化
+	g_Scene = new Scene;
+	if (!g_Scene->Init())
+	{
+		return;
+	}
 
 	// ゲームループ実行
 	MainLoop();
