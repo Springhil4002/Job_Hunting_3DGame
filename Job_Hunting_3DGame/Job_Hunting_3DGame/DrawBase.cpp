@@ -2,6 +2,12 @@
 #include <d3D12.h>
 #include <stdio.h>
 #include <Windows.h>
+#include <DirectXTex.h>
+#include <d3dx12.h>
+
+//-------------------------------------------------------------------
+// 自分が忘れないようすぐ見れるようにコメントを細かく書いてます
+//-------------------------------------------------------------------
 
 DrawBase* g_DrawBase;
 
@@ -47,6 +53,12 @@ bool DrawBase::Init(HWND _hwnd, UINT _windowWidth, UINT _windowHeight)
 	if (CreateRenderTarget() == false)
 	{
 		printf("レンダーターゲットの生成に失敗\n");
+		return false;
+	}
+
+	if (CreateDepthStencil() == false)
+	{
+		printf("深度ステンシルバッファの生成に失敗\n");
 		return false;
 	}
 
@@ -296,4 +308,197 @@ bool DrawBase::CreateRenderTarget()
 	}
 
 	return true;
+}
+
+// 深度ステンシルバッファ:カメラから見たZ値(奥行き、深度を表す値)を持っておくためのバッファ
+bool DrawBase::CreateDepthStencil()
+{
+	// DSV用のディスクリプタヒープを作成する
+	// DSV:デプスステンシルビュー
+	D3D12_DESCRIPTOR_HEAP_DESC heapDesc = {};
+	// ディスクリプタの数の設定、今回は1つのDSVを格納する
+	heapDesc.NumDescriptors = 1;
+	// DSV用のディスクリプタヒープを作成するように指定
+	heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
+	// シェーダーから直接アクセスしないため「NONE」に設定
+	heapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+	// DirectX12デバイスを使用してディスクリプタヒープの作成
+	auto hr = m_pDevice->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&m_pDsvHeap));
+	if (FAILED(hr))
+	{
+		return false;
+	}
+
+	// ディスクリプタヒープ内では各ディスクリプタの間隔が固定されている、なのでそのサイズを取得
+	m_DsvDescriptorSize = m_pDevice->
+		GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
+
+	// 深度ステンシル用のクリア値を設定
+	D3D12_CLEAR_VALUE dsvClearValue;
+	dsvClearValue.Format = DXGI_FORMAT_D32_FLOAT;
+	dsvClearValue.DepthStencil.Depth = 1.0f;
+	dsvClearValue.DepthStencil.Stencil = 0;
+
+	// 深度ステンシルバッファの作成
+	// デフォルトヒーププロパティの設定
+	auto heapProp = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT);
+	CD3DX12_RESOURCE_DESC resourceDesc(
+		// 深度ステンシルバッファをテクスチャ2Dに設定
+		D3D12_RESOURCE_DIMENSION_TEXTURE2D,
+		0,
+		// 縦横のフレームバッファサイズを設定
+		m_FrameBufferWidth,
+		m_FrameBufferHeight,
+		1,
+		1,
+		// 32-bit深度バッファを定義
+		DXGI_FORMAT_D32_FLOAT,
+		1,
+		0,
+		D3D12_TEXTURE_LAYOUT_UNKNOWN,
+		// 深度ステンシルの使用を許可、シェーダーリソースとしての使用を禁止
+		D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL | 
+		D3D12_RESOURCE_FLAG_DENY_SHADER_RESOURCE);
+
+	hr = m_pDevice->CreateCommittedResource(
+		&heapProp,
+		D3D12_HEAP_FLAG_NONE,
+		&resourceDesc,
+		D3D12_RESOURCE_STATE_DEPTH_WRITE,
+		&dsvClearValue,
+		IID_PPV_ARGS(m_pDepthStencilBuffer.ReleaseAndGetAddressOf())
+	);
+
+	if (FAILED(hr))
+	{
+		return false;
+	}
+
+	// DSVディスクリプタを作成
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle = m_pDsvHeap->
+		// DSVのディスクリプタハンドルを取得
+		GetCPUDescriptorHandleForHeapStart();
+	// 深度ステンシルビューを作成
+	m_pDevice->CreateDepthStencilView(
+			m_pDepthStencilBuffer.Get(), nullptr, dsvHandle);
+
+	return true;
+}
+
+// 描画開始処理の関数
+void DrawBase::BeginRender()
+{
+	// 現在のレンダーターゲットを更新
+	m_currentRenderTarget = m_pRenderTargets[m_CurrentBackBufferIndex].Get();
+
+	// コマンドを初期化して描画命令を溜める準備をする
+	m_pAllocator[m_CurrentBackBufferIndex]->Reset();
+	m_pCommandList->Reset(m_pAllocator[m_CurrentBackBufferIndex].Get(), nullptr);
+
+	// ビューポートとシザー矩形を設定
+	m_pCommandList->RSSetViewports(1, &m_Viewport);
+	m_pCommandList->RSSetScissorRects(1, &m_Scissor);
+
+	// 現在のフレームのレンダーターゲットビューのディスクリプタヒープの開始アドレスを取得
+	auto currentRtvHandle = m_pRtvHeap->GetCPUDescriptorHandleForHeapStart();
+	currentRtvHandle.ptr += m_CurrentBackBufferIndex * m_RtvDescriptorSize;
+
+	// 深度ステンシルのディスクリプタヒープの開始アドレス取得
+	auto currentDsvHandle = m_pDsvHeap->GetCPUDescriptorHandleForHeapStart();
+
+	// レンダーターゲットが使用可能になるまで待つ
+	auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(m_currentRenderTarget, D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+	m_pCommandList->ResourceBarrier(1, &barrier);
+
+	// レンダーターゲットを設定
+	m_pCommandList->OMSetRenderTargets(1, &currentRtvHandle, FALSE, &currentDsvHandle);
+
+	// レンダーターゲットをクリア
+	const float clearColor[] = { 0.25f, 0.25f, 0.25f, 1.0f };
+	m_pCommandList->ClearRenderTargetView(currentRtvHandle, clearColor, 0, nullptr);
+
+	// 深度ステンシルビューをクリア
+	m_pCommandList->ClearDepthStencilView(currentDsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+}
+
+// 描画完了を待つ関数
+void DrawBase::WaitRender()
+{
+	// 現在のバックバッファに対応するフェンスの値を取得
+	const UINT64 fenceValue = m_fenceValue[m_CurrentBackBufferIndex];
+	// 現時点のフェンスの値をfenceValueに設定することをGPUに命令する
+	m_pQueue->Signal(m_pFence.Get(), fenceValue);
+	// 次回以降のフレームに備えて、フェンスの値を増やす
+	m_fenceValue[m_CurrentBackBufferIndex]++;
+
+	// 次のフレームの描画準備がまだであれば待機する
+	if (m_pFence->GetCompletedValue() < fenceValue)
+	{
+		// 完了時にイベントを設定
+		auto hr = m_pFence->SetEventOnCompletion(fenceValue, m_fenceEvent);
+		if (FAILED(hr))
+		{
+			return;
+		}
+
+		// 待機処理
+		if (WAIT_OBJECT_0 != WaitForSingleObjectEx(m_fenceEvent, INFINITE, FALSE))
+		{
+			return;
+		}
+	}
+}
+
+// 描画終了処理の関数
+void DrawBase::EndRender()
+{
+	// リソースの状態を描画用から表示用に遷移させる処理
+	auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+		m_currentRenderTarget, 
+		D3D12_RESOURCE_STATE_RENDER_TARGET, 
+		D3D12_RESOURCE_STATE_PRESENT
+	);
+
+	// ResourceBarrier:リソースの使用目的変更時に必要
+	m_pCommandList->ResourceBarrier(1, &barrier);
+
+	// コマンドの記録を終了
+	m_pCommandList->Close();
+
+	// コマンドを実行
+	ID3D12CommandList* ppCmdLists[] = { m_pCommandList.Get() };
+	m_pQueue->ExecuteCommandLists(1, ppCmdLists);
+
+	// スワップチェーンを切り替え
+	m_pSwapChain->Present(1, 0);
+
+	// 描画完了を待つ
+	WaitRender();
+
+	// バックバッファ番号更新
+	m_CurrentBackBufferIndex = m_pSwapChain->GetCurrentBackBufferIndex();
+}
+
+//-------------------------------------------------------------------
+// ゲッター
+//-------------------------------------------------------------------
+
+/// @brief デバイスのゲッター関数
+/// @return デバイスを返します
+ID3D12Device6* DrawBase::Device()
+{
+	return m_pDevice.Get();
+}
+/// @brief コマンドリストのゲッター関数
+/// @return コマンドリストを返します
+ID3D12GraphicsCommandList* DrawBase::CommandList()
+{
+	return m_pCommandList.Get();
+}
+
+/// @brief 現在のフレーム番号のゲッター関数
+/// @return 現在のフレーム番号を返します
+UINT DrawBase::CurrentBackBufferIndex()
+{
+	return m_CurrentBackBufferIndex;
 }

@@ -92,12 +92,18 @@ void MainLoop()
 		}
 		else
 		{
-			// 後で描画処理を実行するところ
+			// 後で更新処理を実行するところ
+			
+			g_DrawBase->BeginRender();
+
+			// 3Dオブジェクトの描画処理を行う
+			
+			g_DrawBase->EndRender();
 		}
 	}
 }
 
-void Run(const TCHAR* _appName)
+void Application::Run(const TCHAR* _appName)
 {
 	// ウィンドウ生成
 	InitWindow(_appName);
