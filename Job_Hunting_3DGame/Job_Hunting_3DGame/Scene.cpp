@@ -5,10 +5,14 @@
 #include "SharedStruct.h"
 #include "VertexBuffer.h"
 #include "ConstantBuffer.h"
+#include "RootSignature.h"
+#include "PipelineState.h"
 
 Scene* g_Scene;
 VertexBuffer* vertexBuffer;
 ConstantBuffer* constantBuffer[DrawBase::FRAME_BUFFER_COUNT];
+RootSignature* rootSignature;
+PipelineState* pipelineState;
 
 bool Scene::Init()
 {
@@ -30,6 +34,12 @@ bool Scene::Init()
 	// 頂点バッファのインスタンス生成
 	vertexBuffer = new VertexBuffer(vertexSize, vertexStride, vertices);
 	
+	if (!vertexBuffer->IsValid())
+	{
+		printf("頂点バッファの生成に失敗\n");
+		return false;
+	}
+
 	// 視点の位置
 	auto eyePos= DirectX::XMVectorSet(0.0f, 0.0f, 5.0f, 0.0f); 
 	// 注視点の座標
@@ -58,9 +68,38 @@ bool Scene::Init()
 		ptr->proj = DirectX::XMMatrixPerspectiveFovRH(fov, aspect, 0.3f, 1000.0f);
 	}
 
-	if (!vertexBuffer->IsValid())
+	rootSignature = new RootSignature();
+	if (!rootSignature->IsValid())
 	{
-		printf("頂点バッファの生成に失敗\n");
+		printf("ルートシグネチャの生成に失敗\n");
+		return false;
+	}
+
+	// パイプラインステートのインスタンス生成
+	pipelineState = new PipelineState();
+	// 頂点レイアウトの設定
+	pipelineState->SetInputLayout(Vertex::InputLayout);
+	// ルートシグネチャの設定
+	pipelineState->SetRootSignature(rootSignature->Get());
+
+#ifdef _DEBUG	// DEBUG
+	// VSを設定
+	pipelineState->SetVS(L"../x64/Debug/VS_Simple.cso");
+	// PSを設定
+	pipelineState->SetPS(L"../x64/Debug/PS_Simple.cso");
+#else			// Release
+	// VSを設定
+	pipelineState->SetVS(L"../x64/Release/VS_Simple.cso");
+	// PSを設定
+	pipelineState->SetPS(L"../x64/Release/PS_Simple.cso");
+#endif 
+
+	// パイプラインステート作成
+	pipelineState->Create();
+
+	if (!pipelineState->IsValid())
+	{
+		printf("パイプラインステートの生成に失敗\n");
 		return false;
 	}
 
@@ -70,10 +109,37 @@ bool Scene::Init()
 
 void Scene::Update()
 {
+	//// 毎フレーム回転させる
+	//rotateY += 0.02f;
+	//// 現在のフレーム番号を取得
+	//auto cuurentIndex = g_DrawBase->CurrentBackBufferIndex();
+	//// 現在のフレーム番号に対応する定数バッファを取得
+	//auto cuurentTransform = constantBuffer[cuurentIndex]->GetPtr<Matrix>();
 
+	//cuurentTransform->world = DirectX::XMMatrixRotationY(rotateY);
 }
 
 void Scene::Draw()
 {
+	// 現在のフレーム番号を取得
+	auto currentIndex = g_DrawBase->CurrentBackBufferIndex();
+	// コマンドリスト
+	auto commandList = g_DrawBase->CommandList();
+	// 頂点バッファビュー
+	auto vbView = vertexBuffer->View();
 
+	// ルートシグネチャをセット
+	commandList->SetGraphicsRootSignature(rootSignature->Get());
+	// パイプラインステートをセット
+	commandList->SetPipelineState(pipelineState->Get());
+	// 定数バッファをセット
+	commandList->SetGraphicsRootConstantBufferView(0, constantBuffer[currentIndex]->GetAddress());
+	
+	// 三角形を描画する設定
+	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);	
+	// 頂点バッファをスロット0番を使って一個だけ設定する
+	commandList->IASetVertexBuffers(0, 1, &vbView);
+	
+	// 3個の頂点を描画する
+	commandList->DrawInstanced(3, 1, 0, 0);	
 }

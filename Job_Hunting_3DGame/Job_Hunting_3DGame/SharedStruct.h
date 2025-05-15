@@ -11,6 +11,11 @@ struct Vertex
 	XMFLOAT2 uv;		// UV座標
 	XMFLOAT3 targent;	// 接空間
 	XMFLOAT4 color;		// 頂点カラー
+
+	static const D3D12_INPUT_LAYOUT_DESC InputLayout;
+private:
+	static const int InputElementCount = 5;
+	static const D3D12_INPUT_ELEMENT_DESC InputElements[InputElementCount];
 };
 
 // 変換行列の定義

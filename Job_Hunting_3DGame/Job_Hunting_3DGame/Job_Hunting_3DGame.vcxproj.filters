@@ -43,6 +43,15 @@
     <Filter Include="ソース ファイル\Buffer">
       <UniqueIdentifier>{5f2c1b05-39c6-4e24-bcbd-a252e2404203}</UniqueIdentifier>
     </Filter>
+    <Filter Include="リソース ファイル\PixelShader">
+      <UniqueIdentifier>{53921699-4dcf-4e71-8b0f-1e7d78e95c26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="リソース ファイル\VertexShader">
+      <UniqueIdentifier>{73db5d85-ec3d-49e8-b9bf-c1142eb78802}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Common">
+      <UniqueIdentifier>{5224e41e-e6a3-461f-a15d-28b0c22f7b4b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp">
@@ -62,6 +71,15 @@
     </ClCompile>
     <ClCompile Include="ConstantBuffer.cpp">
       <Filter>ソース ファイル\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="RootSignature.cpp">
+      <Filter>ソース ファイル\Draw</Filter>
+    </ClCompile>
+    <ClCompile Include="SharedStruct.cpp">
+      <Filter>ソース ファイル\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="PipelineState.cpp">
+      <Filter>ソース ファイル\Draw</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -89,5 +107,19 @@
     <ClInclude Include="ConstantBuffer.h">
       <Filter>ヘッダー ファイル\Buffer</Filter>
     </ClInclude>
+    <ClInclude Include="RootSignature.h">
+      <Filter>ヘッダー ファイル\Draw</Filter>
+    </ClInclude>
+    <ClInclude Include="PipelineState.h">
+      <Filter>ヘッダー ファイル\Draw</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="PS_Simple.hlsl">
+      <Filter>リソース ファイル\PixelShader</Filter>
+    </FxCompile>
+    <FxCompile Include="VS_Simple.hlsl">
+      <Filter>リソース ファイル\VertexShader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
