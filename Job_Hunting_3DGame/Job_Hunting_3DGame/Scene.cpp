@@ -7,25 +7,30 @@
 #include "ConstantBuffer.h"
 #include "RootSignature.h"
 #include "PipelineState.h"
+#include "IndexBuffer.h"
 
 Scene* g_Scene;
 VertexBuffer* vertexBuffer;
 ConstantBuffer* constantBuffer[DrawBase::FRAME_BUFFER_COUNT];
 RootSignature* rootSignature;
 PipelineState* pipelineState;
+IndexBuffer* indexBuffer;
 
 bool Scene::Init()
 {
 	// 頂点データ
-	Vertex vertices[3] = {};
-	vertices[0].position=XMFLOAT3(-1.0f, -1.0f, 0.0f);
-	vertices[0].color = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
+	Vertex vertices[4] = {};
+	vertices[0].position = XMFLOAT3(-1.0f, 1.0f, 0.0f);
+	vertices[0].color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
 
-	vertices[1].position = XMFLOAT3(1.0f, -1.0f, 0.0f);
+	vertices[1].position = XMFLOAT3(1.0f, 1.0f, 0.0f);
 	vertices[1].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
 
-	vertices[2].position = XMFLOAT3(0.0f, 1.0f, 0.0f);
-	vertices[2].color = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+	vertices[2].position = XMFLOAT3(1.0f, -1.0f, 0.0f);
+	vertices[2].color = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
+
+	vertices[3].position = XMFLOAT3(-1.0f, -1.0f, 0.0f);
+	vertices[3].color = XMFLOAT4(1.0f, 0.0f, 1.0f, 1.0f);
 
 	// 頂点バッファ全体のサイズを計算
 	auto vertexSize = sizeof(Vertex) * std::size(vertices);
@@ -37,6 +42,18 @@ bool Scene::Init()
 	if (!vertexBuffer->IsValid())
 	{
 		printf("頂点バッファの生成に失敗\n");
+		return false;
+	}
+
+	// これに書かれてる順番で描画する
+	uint32_t indices[] = { 0,1,2,0,2,3 };
+
+	// インデックスバッファの生成
+	auto size = sizeof(uint32_t) * std::size(indices);
+	indexBuffer = new IndexBuffer(size, indices);
+	if (!indexBuffer->IsValid())
+	{
+		printf("インデックスバッファの生成に失敗\n");
 		return false;
 	}
 
@@ -127,6 +144,8 @@ void Scene::Draw()
 	auto commandList = g_DrawBase->CommandList();
 	// 頂点バッファビュー
 	auto vbView = vertexBuffer->View();
+	// インデックスバッファビュー
+	auto ibView = indexBuffer->View();
 
 	// ルートシグネチャをセット
 	commandList->SetGraphicsRootSignature(rootSignature->Get());
@@ -139,7 +158,9 @@ void Scene::Draw()
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);	
 	// 頂点バッファをスロット0番を使って一個だけ設定する
 	commandList->IASetVertexBuffers(0, 1, &vbView);
+	// インデックスバッファをセットする
+	commandList->IASetIndexBuffer(&ibView);
 	
-	// 3個の頂点を描画する
-	commandList->DrawInstanced(3, 1, 0, 0);	
+	// 三角形ポリゴン二枚で四角形を描画
+	commandList->DrawIndexedInstanced(6, 1, 0, 0, 0);
 }

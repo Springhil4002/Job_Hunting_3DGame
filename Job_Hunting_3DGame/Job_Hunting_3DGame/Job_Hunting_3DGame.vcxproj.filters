@@ -81,6 +81,9 @@
     <ClCompile Include="PipelineState.cpp">
       <Filter>ソース ファイル\Draw</Filter>
     </ClCompile>
+    <ClCompile Include="IndexBuffer.cpp">
+      <Filter>ソース ファイル\Buffer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h">
@@ -112,6 +115,9 @@
     </ClInclude>
     <ClInclude Include="PipelineState.h">
       <Filter>ヘッダー ファイル\Draw</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexBuffer.h">
+      <Filter>ヘッダー ファイル\Buffer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

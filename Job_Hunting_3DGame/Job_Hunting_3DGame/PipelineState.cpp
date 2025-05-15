@@ -11,7 +11,7 @@ PipelineState::PipelineState()
 	// ラスタライザーステート:デフォルト設定
 	desc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT); 
 	// カリングなし:両面描画
-	desc.RasterizerState.CullMode = D3D12_CULL_MODE_FRONT; 
+	desc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE; 
 	// ブレンドステート:デフォルト設定(不透明描画)
 	desc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT); 
 	// 深度ステンシルステート:デフォルト設定(深度テストON,書きこみOK)

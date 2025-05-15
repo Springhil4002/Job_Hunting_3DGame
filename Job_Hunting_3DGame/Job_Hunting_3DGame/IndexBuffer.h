@@ -19,7 +19,7 @@ public:
 	/// @brief コンストラクタ
 	/// @param size データサイズ
 	/// @param pInitData 初期データ
-	IndexBuffer(size_t size, const uint32_t* pInitData = nullptr);
+	IndexBuffer(size_t _size, const uint32_t* _pInitData = nullptr);
 	/// @brief 生成の成否を返す処理
 	/// @return 生成の成否結果を返します
 	bool IsValid();
