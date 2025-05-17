@@ -9,7 +9,7 @@ struct Vertex
 	XMFLOAT3 position;	// 位置
 	XMFLOAT3 normal;	// 法線
 	XMFLOAT2 uv;		// UV座標
-	XMFLOAT3 targent;	// 接空間
+	XMFLOAT3 tangent;	// 接空間
 	XMFLOAT4 color;		// 頂点カラー
 
 	static const D3D12_INPUT_LAYOUT_DESC InputLayout;
@@ -24,4 +24,11 @@ struct alignas(256) Matrix
 	Matrix4x4 world;	// ワールド行列
 	Matrix4x4 view;		// ビュー行列
 	Matrix4x4 proj;		// 投影行列
+};
+
+struct Mesh
+{
+	std::vector<Vertex> Vertices;	// 頂点データの配列
+	std::vector<uint32_t> Indices;	// インデックスの配列
+	std::wstring DiffuseMap;		// テクスチャのファイルパス
 };

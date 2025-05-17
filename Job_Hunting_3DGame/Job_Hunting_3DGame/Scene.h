@@ -3,7 +3,6 @@
 class Scene 
 {
 private:
-	float rotateY = 0.0f;
 public:
 	bool Init();	// ‰Šú‰»ˆ—
 	
