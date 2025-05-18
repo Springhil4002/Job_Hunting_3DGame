@@ -9,6 +9,26 @@
 #include "PipelineState.h"
 #include "IndexBuffer.h"
 #include "AssimpLoader.h"
+#include "DescriptorHeap.h"
+#include "Texture2D.h"
+
+#include <filesystem>
+/// @brief 拡張子を置き換える関数
+/// @param _origin ファイルパス
+/// @param _ext 拡張子
+/// @return 拡張子を置き換えたファイルパス
+std::wstring ReplaceExtension(const std::wstring& _origin, const char* _ext)
+{
+	if (_origin.empty()) return L"";
+	std::filesystem::path path = _origin.c_str();
+	return path.replace_extension(_ext).wstring();
+}
+
+DescriptorHeap* descriptorHeap;
+
+// テクスチャ用のハンドル
+std::vector<DescriptorHandle*> materialHandles;	
+
 
 Scene* g_Scene;
 VertexBuffer* vertexBuffer;
@@ -98,6 +118,31 @@ bool Scene::Init()
 		ptr->proj = DirectX::XMMatrixPerspectiveFovRH(fov, aspect, 0.3f, 1000.0f);
 	}
 
+	// ディスクリプタヒープの生成
+	descriptorHeap = new DescriptorHeap();
+
+	// マテリアルの読み込み
+	materialHandles.clear();
+	for (size_t i = 0; i < meshes.size(); i++)
+	{
+		if (meshes[i].DiffuseMap.empty()) continue;
+
+		auto texPath = ReplaceExtension(meshes[i].DiffuseMap, "tga");
+		auto mainTex = Texture2D::Get(texPath);
+		if (!mainTex)
+		{
+			OutputDebugStringW((L"テクスチャが読み込めませんでした: " + texPath + L"\n").c_str());
+			continue;
+		}
+		if (!descriptorHeap)
+		{
+			OutputDebugStringA("descriptorHeap が初期化されていません。\n");
+			continue;
+		}
+		auto handle = descriptorHeap->Register(mainTex);
+		materialHandles.push_back(handle);
+	}
+
 	rootSignature = new RootSignature();
 	if (!rootSignature->IsValid())
 	{
@@ -148,6 +193,8 @@ void Scene::Draw()
 	auto currentIndex = g_DrawBase->CurrentBackBufferIndex();
 	// コマンドリスト
 	auto commandList = g_DrawBase->CommandList();
+	// ディスクリプタヒープ
+	auto materialHeap = descriptorHeap->GetHeap();
 
 	//　メッシュの数だけインデックス分の描画を行う
 	for (size_t i = 0; i < meshes.size(); i++)
@@ -165,6 +212,11 @@ void Scene::Draw()
 		commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		commandList->IASetVertexBuffers(0, 1, &vbView);
 		commandList->IASetIndexBuffer(&ibView);
+
+		// 使用するディスクリプタヒープをセット
+		commandList->SetDescriptorHeaps(1, &materialHeap);
+		// メッシュに対応するディスクリプタテーブルをセット
+		commandList->SetGraphicsRootDescriptorTable(1, materialHandles[i]->handleGPU);
 		
 		// インデックスの数分描画
 		commandList->DrawIndexedInstanced(meshes[i].Indices.size(), 1, 0, 0, 0);

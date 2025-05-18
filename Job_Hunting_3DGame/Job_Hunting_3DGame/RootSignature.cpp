@@ -15,9 +15,17 @@ RootSignature::RootSignature()
 	flag |= D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS; 
 
 	// ルートパラメータを設定
-	CD3DX12_ROOT_PARAMETER rootParam[1] = {};
+	// 定数バッファとテクスチャの二つ
+	CD3DX12_ROOT_PARAMETER rootParam[2] = {};
 	// b0の定数バッファを設定、全てのシェーダーから見えるようにする
 	rootParam[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL); 
+
+	// ディスクリプタテーブル
+	CD3DX12_DESCRIPTOR_RANGE tableRange[1] = {};
+	// 初期化処理:シェーダーリソースビューを設定、一個渡す、t0にバインド
+	tableRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+	// t1にシェーダーリソースを設定、全てのシェーダーから見えるようにする
+	rootParam[1].InitAsDescriptorTable(std::size(tableRange), tableRange, D3D12_SHADER_VISIBILITY_ALL);
 
 	// スタティックサンプラーの設定
 	auto sampler = CD3DX12_STATIC_SAMPLER_DESC(0, D3D12_FILTER_MIN_MAG_MIP_LINEAR);

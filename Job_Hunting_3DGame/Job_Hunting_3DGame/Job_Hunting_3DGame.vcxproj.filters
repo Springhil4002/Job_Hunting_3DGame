@@ -52,6 +52,12 @@
     <Filter Include="ソース ファイル\Common">
       <UniqueIdentifier>{5224e41e-e6a3-461f-a15d-28b0c22f7b4b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Resource">
+      <UniqueIdentifier>{a79104d4-b1b1-447e-939d-a46ada9bded5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Resource">
+      <UniqueIdentifier>{6641108b-5e57-4afa-a036-23806319b184}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp">
@@ -86,6 +92,12 @@
     </ClCompile>
     <ClCompile Include="AssimpLoader.cpp">
       <Filter>ソース ファイル\Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="DescriptorHeap.cpp">
+      <Filter>ソース ファイル\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture2D.cpp">
+      <Filter>ソース ファイル\Resource</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -124,6 +136,12 @@
     </ClInclude>
     <ClInclude Include="AssimpLoader.h">
       <Filter>ヘッダー ファイル\Obj</Filter>
+    </ClInclude>
+    <ClInclude Include="DescriptorHeap.h">
+      <Filter>ヘッダー ファイル\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture2D.h">
+      <Filter>ヘッダー ファイル\Resource</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
