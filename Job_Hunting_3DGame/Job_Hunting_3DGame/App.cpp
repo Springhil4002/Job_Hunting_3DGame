@@ -1,6 +1,5 @@
 #include "App.h"
 #include "DrawBase.h"
-//#include "Model3D.h"
 #include "SceneManager.h"
 
 HINSTANCE g_hInst;
@@ -93,15 +92,9 @@ void MainLoop(const TCHAR* _appName)
 		return;
 	}
 
+	// シーン管理クラスの生成
 	auto sm = new SceneManager;
-
-	//// シーン初期化
-	//g_Model3D = new Model3D;
-	//if (!g_Model3D->Init())
-	//{
-	//	return;
-	//}
-
+	
 	// メッセージを受け取るまでループ
 	while (WM_QUIT != msg.message)
 	{
@@ -113,16 +106,14 @@ void MainLoop(const TCHAR* _appName)
 		}
 		else
 		{
+			// 現在のシーンの更新処理
 			sm->Update();
-			// 更新処理
-			//g_Model3D->Update();
 			
 			// 描画開始処理
 			g_DrawBase->BeginRender();
 			
+			// 現在のシーンの描画処理
 			sm->Draw();
-			// 描画処理
-			//g_Model3D->Draw();
 			
 			// 描画終了処理
 			g_DrawBase->EndRender();
