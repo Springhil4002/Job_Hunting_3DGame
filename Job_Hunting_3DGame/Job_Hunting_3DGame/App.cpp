@@ -1,6 +1,6 @@
 #include "App.h"
 #include "DrawBase.h"
-#include "Scene.h"
+#include "Model3D.h"
 
 HINSTANCE g_hInst;
 HWND g_hWnd = NULL;
@@ -94,13 +94,13 @@ void MainLoop()
 		else
 		{
 			// XVˆ—
-			g_Scene->Update();
+			g_Model3D->Update();
 			
 			// •`‰æŠJnˆ—
 			g_DrawBase->BeginRender();
 			
 			// •`‰æˆ—
-			g_Scene->Draw();
+			g_Model3D->Draw();
 			
 			// •`‰æI—¹ˆ—
 			g_DrawBase->EndRender();
@@ -121,8 +121,8 @@ void Application::Run(const TCHAR* _appName)
 	}
 
 	// ƒV[ƒ“‰Šú‰»
-	g_Scene = new Scene;
-	if (!g_Scene->Init())
+	g_Model3D = new Model3D;
+	if (!g_Model3D->Init())
 	{
 		return;
 	}

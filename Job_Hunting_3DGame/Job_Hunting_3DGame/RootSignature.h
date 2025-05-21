@@ -1,5 +1,5 @@
 #pragma once
-#include "ComPtr.h"
+#include "System/ComPtr.h"
 
 struct ID3D12RootSignature;
 

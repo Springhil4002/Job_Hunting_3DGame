@@ -1,7 +1,7 @@
 #pragma once
 #include <d3d12.h>
 #include <vector>
-#include "ComPtr.h"
+#include "System/ComPtr.h"
 
 class ConstantBuffer;
 class Texture2D;

@@ -1,5 +1,5 @@
 #pragma once
-#include "ComPtr.h"
+#include "System/ComPtr.h"
 #include <string>
 #include <d3dx12.h>
 

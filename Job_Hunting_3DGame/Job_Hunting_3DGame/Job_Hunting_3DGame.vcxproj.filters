@@ -31,9 +31,6 @@
     <Filter Include="ヘッダー ファイル\Draw">
       <UniqueIdentifier>{3b3cd57d-dbc3-41c7-a59e-22584f10af39}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\Common">
-      <UniqueIdentifier>{fcab8cda-8c2e-4177-bfa8-d1761a98134e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ヘッダー ファイル\Buffer">
       <UniqueIdentifier>{4140a4bd-30b0-4b6b-abaf-719b7c09d686}</UniqueIdentifier>
     </Filter>
@@ -58,6 +55,15 @@
     <Filter Include="ソース ファイル\Resource">
       <UniqueIdentifier>{6641108b-5e57-4afa-a036-23806319b184}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Scene">
+      <UniqueIdentifier>{c0baabb3-7809-48f8-8053-95082b396822}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Scene">
+      <UniqueIdentifier>{920d3e11-33e8-4c7a-b72a-57d432d22b3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="System">
+      <UniqueIdentifier>{72439b4e-6de2-4afe-a2be-a99afc5096a9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp">
@@ -81,9 +87,6 @@
     <ClCompile Include="RootSignature.cpp">
       <Filter>ソース ファイル\Draw</Filter>
     </ClCompile>
-    <ClCompile Include="SharedStruct.cpp">
-      <Filter>ソース ファイル\Common</Filter>
-    </ClCompile>
     <ClCompile Include="PipelineState.cpp">
       <Filter>ソース ファイル\Draw</Filter>
     </ClCompile>
@@ -99,6 +102,18 @@
     <ClCompile Include="Texture2D.cpp">
       <Filter>ソース ファイル\Resource</Filter>
     </ClCompile>
+    <ClCompile Include="BaseScene.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="System\SharedStruct.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>ソース ファイル\Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="Model3D.cpp">
+      <Filter>ソース ファイル\Obj</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h">
@@ -106,15 +121,6 @@
     </ClInclude>
     <ClInclude Include="DrawBase.h">
       <Filter>ヘッダー ファイル\Draw</Filter>
-    </ClInclude>
-    <ClInclude Include="ComPtr.h">
-      <Filter>ヘッダー ファイル\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="SharedStruct.h">
-      <Filter>ヘッダー ファイル\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="CommonTypes.h">
-      <Filter>ヘッダー ファイル\Common</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">
       <Filter>ヘッダー ファイル\Obj</Filter>
@@ -142,6 +148,30 @@
     </ClInclude>
     <ClInclude Include="Texture2D.h">
       <Filter>ヘッダー ファイル\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseScene.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Noncopyable.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\CommonTypes.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\ComPtr.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\SharedStruct.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="PrototypeManager.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>ヘッダー ファイル\Obj</Filter>
+    </ClInclude>
+    <ClInclude Include="Model3D.h">
+      <Filter>ヘッダー ファイル\Obj</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

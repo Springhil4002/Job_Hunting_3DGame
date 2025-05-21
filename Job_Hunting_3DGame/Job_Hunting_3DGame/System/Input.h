@@ -1,8 +1,9 @@
 #pragma once
-#include <d3d12.h>
-#include <DirectXMath.h>
-#include <Xinput.h> 
-#pragma comment (lib, "xinput.lib") 
+#include <d3d12.h>  // DirectX11を使うためのヘッダーファイル
+#include <DirectXMath.h> // DirextXの数学関連のヘッダーファイル
+
+#include <Xinput.h> //XInputを使うためのヘッダーファイル
+#pragma comment (lib, "xinput.lib") //XInputを使うために必要
 
 #define XINPUT_A              0x1000
 #define XINPUT_B              0x2000
@@ -93,7 +94,7 @@ public:
 	bool GetButtonPress(WORD btn);   //プレス(押している間ずっと)
 	bool GetButtonTrigger(WORD btn); //トリガー(押し始めた時)
 	bool GetButtonRelease(WORD btn); //リリース(押し終わった時)
-
+	
 	//振動(コントローラー)
 	//flame：振動を継続する時間(単位：フレーム)
 	//powoe：振動の強さ(0～1)

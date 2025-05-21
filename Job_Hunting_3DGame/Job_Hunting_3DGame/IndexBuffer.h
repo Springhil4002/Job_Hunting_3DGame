@@ -1,7 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <d3d12.h>
-#include "ComPtr.h"
+#include "System/ComPtr.h"
 
 class IndexBuffer
 {

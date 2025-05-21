@@ -1,4 +1,4 @@
-#include "Sample.h"
+#include "Model3D.h"
 #include "DrawBase.h"
 #include "App.h"
 #include <d3dx12.h>
@@ -27,10 +27,9 @@ std::wstring ReplaceExtension(const std::wstring& _origin, const char* _ext)
 DescriptorHeap* descriptorHeap;
 
 // テクスチャ用のハンドル
-std::vector<DescriptorHandle*> materialHandles;	
+std::vector<DescriptorHandle*> materialHandles;
 
-
-Sample* g_Sample;
+Model3D* g_Model3D;
 VertexBuffer* vertexBuffer;
 ConstantBuffer* constantBuffer[DrawBase::FRAME_BUFFER_COUNT];
 RootSignature* rootSignature;
@@ -41,10 +40,15 @@ std::vector<Mesh> meshes;
 std::vector<VertexBuffer*> vertexBuffers;	// メッシュの数分の頂点バッファ
 std::vector<IndexBuffer*> indexBuffers;		// メッシュの数分のインデックスバッファ
 
-bool Sample::Init()
+Object* Model3D::clone() const
+{
+	return new Model3D(*this);
+}
+
+bool Model3D::Init()
 {
 	// インポートに必要なパラメータ構造体
-	ImportSettings importSetting = 
+	ImportSettings importSetting =
 	{
 		modelFile,
 		meshes,
@@ -57,7 +61,7 @@ bool Sample::Init()
 	{
 		return false;
 	}
-	
+
 	// メッシュの数だけ頂点バッファを用意する
 	vertexBuffers.reserve(meshes.size());
 	for (size_t i = 0; i < meshes.size(); i++)
@@ -81,7 +85,7 @@ bool Sample::Init()
 		auto size = sizeof(uint32_t) * meshes[i].Indices.size();
 		auto indices = meshes[i].Indices.data();
 		auto pIB = new IndexBuffer(size, indices);
-		
+
 		if (!pIB->IsValid())
 		{
 			printf("インデックスバッファの生成に失敗\n");
@@ -91,15 +95,15 @@ bool Sample::Init()
 	}
 
 	// 視点の位置
-	auto eyePos = DirectX::XMVectorSet(0.0f, 120.0f, 75.0f, 0.0f); 
+	auto eyePos = DirectX::XMVectorSet(0.0f, 120.0f, 75.0f, 0.0f);
 	// 注視点の座標
 	auto targetPos = DirectX::XMVectorSet(0.0f, 120.0f, 0.0f, 0.0f);
 	// 上方向を表すベクトル
-	auto upward = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f); 
+	auto upward = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	// 視野角
-	constexpr auto fov = DirectX::XMConvertToRadians(60.0); 
+	constexpr auto fov = DirectX::XMConvertToRadians(60.0);
 	// アスペクト比
-	auto aspect = static_cast<float>(WINDOW_WIDTH) / static_cast<float>(WINDOW_HEIGHT); 
+	auto aspect = static_cast<float>(WINDOW_WIDTH) / static_cast<float>(WINDOW_HEIGHT);
 	// 定数バッファの生成と変換行列の登録
 	for (size_t i = 0; i < DrawBase::FRAME_BUFFER_COUNT; i++)
 	{
@@ -182,12 +186,12 @@ bool Sample::Init()
 	return true;
 }
 
-void Sample::Update()
+void Model3D::Update()
 {
 	
 }
 
-void Sample::Draw()
+void Model3D::Draw()
 {
 	// 現在のフレーム番号を取得
 	auto currentIndex = g_DrawBase->CurrentBackBufferIndex();
@@ -200,7 +204,7 @@ void Sample::Draw()
 	for (size_t i = 0; i < meshes.size(); i++)
 	{
 		// メッシュに対応する頂点バッファ
-		auto vbView = vertexBuffers[i]->View();	
+		auto vbView = vertexBuffers[i]->View();
 		// メッシュに対応する頂点の順番バッファ
 		auto ibView = indexBuffers[i]->View();
 
@@ -217,8 +221,13 @@ void Sample::Draw()
 		commandList->SetDescriptorHeaps(1, &materialHeap);
 		// メッシュに対応するディスクリプタテーブルをセット
 		commandList->SetGraphicsRootDescriptorTable(1, materialHandles[i]->handleGPU);
-		
+
 		// インデックスの数分描画
 		commandList->DrawIndexedInstanced(meshes[i].Indices.size(), 1, 0, 0, 0);
 	}
+}
+
+void Model3D::Uninit()
+{
+
 }

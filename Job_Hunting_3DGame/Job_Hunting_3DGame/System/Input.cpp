@@ -121,3 +121,4 @@ void Input::SetVibration(int frame, float powor)
 	//U“®Œp‘±ŠÔ‚ğ‘ã“ü
 	VibrationTime = frame;
 }
+

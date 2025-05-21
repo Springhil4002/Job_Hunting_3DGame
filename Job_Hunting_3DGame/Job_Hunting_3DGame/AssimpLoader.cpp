@@ -1,5 +1,5 @@
 #include "AssimpLoader.h"
-#include "SharedStruct.h"
+#include "System/SharedStruct.h"
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
