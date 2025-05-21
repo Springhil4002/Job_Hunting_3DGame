@@ -35,9 +35,9 @@ public:
 	/// @brief XVˆ—
 	virtual void Update() = 0;
 	/// @brief •`‰æˆ—
-	void Draw();	
+	virtual void Draw() = 0;
 	/// @brief I—¹ˆ—
-	void Uninit();
+	virtual void Uninit() = 0;
 
 	/// @brief “ü—Íæ“¾ˆ—ŠÖ”
 	static void Input();
