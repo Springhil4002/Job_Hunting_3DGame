@@ -17,6 +17,11 @@ void GameScene::Update()
 	{
 		obj->Update();
 	}
+
+	if (input.GetKeyTrigger(VK_RETURN))
+	{
+		SceneManager::ChangeScene(SCENE_ID_RESULT);
+	}
 }
 
 void GameScene::Draw()

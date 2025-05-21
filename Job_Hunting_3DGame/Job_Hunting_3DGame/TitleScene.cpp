@@ -17,6 +17,11 @@ void TitleScene::Update()
 	{
 		obj->Update();
 	}
+
+	if (input.GetKeyTrigger(VK_RETURN))
+	{
+		SceneManager::ChangeScene(SCENE_ID_GAME);
+	}
 }
 
 void TitleScene::Draw()

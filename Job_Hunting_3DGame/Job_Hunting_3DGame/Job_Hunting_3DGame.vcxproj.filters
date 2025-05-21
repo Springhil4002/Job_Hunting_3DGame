@@ -46,9 +46,6 @@
     <Filter Include="リソース ファイル\VertexShader">
       <UniqueIdentifier>{73db5d85-ec3d-49e8-b9bf-c1142eb78802}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Common">
-      <UniqueIdentifier>{5224e41e-e6a3-461f-a15d-28b0c22f7b4b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ヘッダー ファイル\Resource">
       <UniqueIdentifier>{a79104d4-b1b1-447e-939d-a46ada9bded5}</UniqueIdentifier>
     </Filter>
@@ -114,6 +111,21 @@
     <ClCompile Include="Model3D.cpp">
       <Filter>ソース ファイル\Obj</Filter>
     </ClCompile>
+    <ClCompile Include="System\Input.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleScene.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScene.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="ResultScene.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h">
@@ -122,7 +134,7 @@
     <ClInclude Include="DrawBase.h">
       <Filter>ヘッダー ファイル\Draw</Filter>
     </ClInclude>
-    <ClInclude Include="Scene.h">
+    <ClInclude Include="Sample.h">
       <Filter>ヘッダー ファイル\Obj</Filter>
     </ClInclude>
     <ClInclude Include="VertexBuffer.h">
@@ -172,6 +184,27 @@
     </ClInclude>
     <ClInclude Include="Model3D.h">
       <Filter>ヘッダー ファイル\Obj</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Input.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleScene.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScene.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="ResultScene.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>ヘッダー ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneFactory.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Enum_Scene.h">
+      <Filter>System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

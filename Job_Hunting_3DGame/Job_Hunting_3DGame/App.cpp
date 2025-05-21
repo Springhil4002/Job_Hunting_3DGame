@@ -1,6 +1,7 @@
 #include "App.h"
 #include "DrawBase.h"
-#include "Model3D.h"
+//#include "Model3D.h"
+#include "SceneManager.h"
 
 HINSTANCE g_hInst;
 HWND g_hWnd = NULL;
@@ -77,11 +78,30 @@ void InitWindow(const TCHAR* _appName)
 }
 
 /// @brief アプリケーションのメインループ関数
-void MainLoop()
+void MainLoop(const TCHAR* _appName)
 {
 	// メッセージ保持用変数
 	MSG msg = {};
 	
+	// ウィンドウ生成
+	InitWindow(_appName);
+
+	// 描画基盤の初期化を行う
+	g_DrawBase = new DrawBase();
+	if (!g_DrawBase->Init(g_hWnd, WINDOW_WIDTH, WINDOW_HEIGHT))
+	{
+		return;
+	}
+
+	auto sm = new SceneManager;
+
+	//// シーン初期化
+	//g_Model3D = new Model3D;
+	//if (!g_Model3D->Init())
+	//{
+	//	return;
+	//}
+
 	// メッセージを受け取るまでループ
 	while (WM_QUIT != msg.message)
 	{
@@ -93,14 +113,16 @@ void MainLoop()
 		}
 		else
 		{
+			sm->Update();
 			// 更新処理
-			g_Model3D->Update();
+			//g_Model3D->Update();
 			
 			// 描画開始処理
 			g_DrawBase->BeginRender();
 			
+			sm->Draw();
 			// 描画処理
-			g_Model3D->Draw();
+			//g_Model3D->Draw();
 			
 			// 描画終了処理
 			g_DrawBase->EndRender();
@@ -110,23 +132,6 @@ void MainLoop()
 
 void Application::Run(const TCHAR* _appName)
 {
-	// ウィンドウ生成
-	InitWindow(_appName);
-
-	// 描画基盤の初期化を行う
-	g_DrawBase = new DrawBase();
-	if (!g_DrawBase->Init(g_hWnd, WINDOW_WIDTH, WINDOW_HEIGHT))
-	{
-		return;
-	}
-
-	// シーン初期化
-	g_Model3D = new Model3D;
-	if (!g_Model3D->Init())
-	{
-		return;
-	}
-
 	// ゲームループ実行
-	MainLoop();
+	MainLoop(_appName);
 }

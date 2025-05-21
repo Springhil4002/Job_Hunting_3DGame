@@ -14,15 +14,15 @@ private:
 	static std::set<Object*> createObjects;
 	/// @brief 生成したオブジェクトを格納する配列
 	static std::set<Object*> deleteObjects;
-	
-	/// @brief コンストラクタ、外部からのインスタンス生成を禁止
+public:
+	/// @brief コンストラクタ
 	SceneManager()
 	{
 		currentScene = sceneFactory.CreateScene(SCENE_ID_TITLE);
 	}
-	/// @brief デストラクタ、外部からの削除を禁止
-	~SceneManager() = default;	
-public:
+	/// @brief デストラクタ
+	~SceneManager() = default;
+
 	/// @brief 初期化処理
 	void Init();
 	/// @brief 更新処理

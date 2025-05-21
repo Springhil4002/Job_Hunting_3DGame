@@ -17,6 +17,11 @@ void ResultScene::Update()
 	{
 		obj->Update();
 	}
+
+	if (input.GetKeyTrigger(VK_RETURN))
+	{
+		SceneManager::ChangeScene(SCENE_ID_TITLE);
+	}
 }
 
 void ResultScene::Draw()

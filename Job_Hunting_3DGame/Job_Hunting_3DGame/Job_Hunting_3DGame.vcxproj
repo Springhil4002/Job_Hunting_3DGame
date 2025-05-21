@@ -149,19 +149,24 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="DrawBase.cpp" />
+    <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Model3D.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="PipelineState.cpp" />
+    <ClCompile Include="ResultScene.cpp" />
     <ClCompile Include="RootSignature.cpp" />
     <ClCompile Include="Scene.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="System\Input.cpp" />
     <ClCompile Include="System\SharedStruct.cpp" />
     <ClCompile Include="Texture2D.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -173,23 +178,30 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="DrawBase.h" />
+    <ClInclude Include="Enum_Scene.h" />
+    <ClInclude Include="GameScene.h" />
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="Model3D.h" />
     <ClInclude Include="Noncopyable.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="PipelineState.h" />
     <ClInclude Include="PrototypeManager.h" />
+    <ClInclude Include="ResultScene.h" />
     <ClInclude Include="RootSignature.h" />
-    <ClInclude Include="Scene.h">
+    <ClInclude Include="Sample.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="SceneManager.h" />
     <ClInclude Include="System\CommonTypes.h" />
     <ClInclude Include="System\ComPtr.h" />
+    <ClInclude Include="System\Input.h" />
     <ClInclude Include="System\SharedStruct.h" />
     <ClInclude Include="Texture2D.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="TitleScene.h" />
     <ClInclude Include="VertexBuffer.h" />
+    <ClInclude Include="SceneFactory.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PS_Simple.hlsl">
