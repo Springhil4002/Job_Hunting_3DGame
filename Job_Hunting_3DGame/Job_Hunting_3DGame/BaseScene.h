@@ -4,6 +4,8 @@
 #include "System/Input.h"
 #include "PrototypeManager.h"
 
+#define MAX_OBJECT (1)
+
 class BaseScene
 {
 protected:

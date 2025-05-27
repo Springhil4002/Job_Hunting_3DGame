@@ -81,7 +81,7 @@ bool AssimpLoader::Load(ImportSettings _settings)
 
 	// Assimpの読み込み設定
 	Assimp::Importer importer;
-	int flag = 0;
+	unsigned int flag = 0;
 	// 三角形に変換
 	flag |= aiProcess_Triangulate;
 	// すべてのノード変換を適用

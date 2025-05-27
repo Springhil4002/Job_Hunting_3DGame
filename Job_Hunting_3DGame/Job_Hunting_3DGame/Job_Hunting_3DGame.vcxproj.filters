@@ -69,7 +69,7 @@
     <ClCompile Include="main.cpp">
       <Filter>ソース ファイル\Main</Filter>
     </ClCompile>
-    <ClCompile Include="Scene.cpp">
+    <ClCompile Include="Sample.cpp">
       <Filter>ソース ファイル\Obj</Filter>
     </ClCompile>
     <ClCompile Include="DrawBase.cpp">
@@ -126,6 +126,12 @@
     <ClCompile Include="SceneManager.cpp">
       <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Tags.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>ソース ファイル\Draw</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h">
@@ -163,9 +169,6 @@
     </ClInclude>
     <ClInclude Include="BaseScene.h">
       <Filter>ヘッダー ファイル\Scene</Filter>
-    </ClInclude>
-    <ClInclude Include="Noncopyable.h">
-      <Filter>System</Filter>
     </ClInclude>
     <ClInclude Include="System\CommonTypes.h">
       <Filter>System</Filter>
@@ -205,6 +208,15 @@
     </ClInclude>
     <ClInclude Include="Enum_Scene.h">
       <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Noncopyable.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Tags.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>ヘッダー ファイル\Draw</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -85,6 +85,12 @@ void MainLoop(const TCHAR* _appName)
 	// ウィンドウ生成
 	InitWindow(_appName);
 
+	Camera* camera = new Camera();
+	camera->SetPos(DirectX::XMVectorSet(0.0f, 120.0f, 75.0f, 0.0f));
+	camera->SetTarget(DirectX::XMVectorSet(0.0f, 120.0f, 0.0f, 0.0f));
+	camera->SetPerspective(DirectX::XMConvertToRadians(60.0f),
+		static_cast<float>(WINDOW_WIDTH) / WINDOW_HEIGHT, 0.3f, 1000.0f);
+
 	// 描画基盤の初期化を行う
 	g_DrawBase = new DrawBase();
 	if (!g_DrawBase->Init(g_hWnd, WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -93,7 +99,7 @@ void MainLoop(const TCHAR* _appName)
 	}
 
 	// シーン管理クラスの生成
-	auto sm = new SceneManager;
+	auto sm = new SceneManager(camera);
 	
 	// メッセージを受け取るまでループ
 	while (WM_QUIT != msg.message)

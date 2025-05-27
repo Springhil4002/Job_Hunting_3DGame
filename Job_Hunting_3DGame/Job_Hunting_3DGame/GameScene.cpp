@@ -6,8 +6,9 @@ Object* GameScene::CreateObj(const std::string& _objectID)
 	return prototypeManager->Create(_objectID);
 }
 
-void GameScene::Init()
+void GameScene::Init(Camera* _camera)
 {
+	camera = _camera;
 	printf("ÉVÅ[ÉìñºÅFGameScene\n");
 }
 
@@ -20,7 +21,7 @@ void GameScene::Update()
 
 	if (input.GetKeyTrigger(VK_RETURN))
 	{
-		SceneManager::ChangeScene(SCENE_ID_RESULT);
+		SceneManager::ChangeScene(SCENE_ID_RESULT, camera);
 	}
 }
 

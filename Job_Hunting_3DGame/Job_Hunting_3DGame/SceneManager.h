@@ -15,10 +15,11 @@ private:
 	/// @brief 生成したオブジェクトを格納する配列
 	static std::set<Object*> deleteObjects;
 public:
+	SceneManager() = default;
 	/// @brief コンストラクタ
-	SceneManager()
+	SceneManager(Camera* _camera)
 	{
-		currentScene = sceneFactory.CreateScene(SCENE_ID_TITLE);
+		currentScene = sceneFactory.CreateScene(SCENE_ID_TITLE,_camera);
 	}
 	/// @brief デストラクタ
 	~SceneManager() = default;
@@ -34,7 +35,7 @@ public:
 
 	/// @brief シーン遷移関数
 	/// @param _scene_ID 遷移したいシーンのID
-	static void ChangeScene(SCENE_ID _scene_ID);
+	static void ChangeScene(SCENE_ID _scene_ID,Camera* _camera);
 
 	/// @brief 追加されたオブジェクトの生成
 	void Create();

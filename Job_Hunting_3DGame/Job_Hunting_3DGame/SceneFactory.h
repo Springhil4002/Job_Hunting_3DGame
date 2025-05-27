@@ -8,19 +8,19 @@
 class SceneFactory
 {
 public:
-	BaseScene* CreateScene(const SCENE_ID& _sceneName)
+	BaseScene* CreateScene(const SCENE_ID& _sceneName,Camera* _camera)
 	{
 		switch (_sceneName)
 		{
 			// タイトルシーン
 		case SCENE_ID::SCENE_ID_TITLE:
-			return new TitleScene();
+			return new TitleScene(_camera);
 			// ゲームシーン
 		case SCENE_ID::SCENE_ID_GAME:
-			return new GameScene();
+			return new GameScene(_camera);
 			// リザルトシーン
 		case SCENE_ID::SCENE_ID_RESULT:
-			return new ResultScene();
+			return new ResultScene(_camera);
 			// 該当しない
 		default:
 			return nullptr;
