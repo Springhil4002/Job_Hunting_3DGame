@@ -19,6 +19,7 @@ Object* Model3D::clone() const
 
 bool Model3D::Init(Camera* _camera)
 {
+	m_camera = _camera;
 	// インポートに必要なパラメータ設定
 	ImportSettings importSetting = {
 		m_pModelFile,
@@ -77,8 +78,8 @@ bool Model3D::Init(Camera* _camera)
 		}
 		auto ptr = m_pConstantBuffer[i]->GetPtr<Matrix>();
 		ptr->world = DirectX::XMMatrixIdentity();
-		ptr->view = _camera->GetViewMatrix();
-		ptr->proj = _camera->GetProjMatrix();
+		ptr->view = m_camera->GetViewMatrix();
+		ptr->proj = m_camera->GetProjMatrix();
 	}
 
 	// ディスクリプタヒープの生成
@@ -159,6 +160,9 @@ void Model3D::Update()
 	auto currentIndex = g_DrawBase->CurrentBackBufferIndex();
 	auto ptr = m_pConstantBuffer[currentIndex]->GetPtr<Matrix>();
 	ptr->world = world;
+
+	ptr->view = m_camera->GetViewMatrix();
+	ptr->proj = m_camera->GetProjMatrix();
 }
 
 void Model3D::Draw()

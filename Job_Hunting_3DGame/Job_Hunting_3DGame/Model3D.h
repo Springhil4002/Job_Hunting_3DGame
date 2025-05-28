@@ -32,6 +32,8 @@ private:
 	// パイプラインステート
 	PipelineState* m_pPipelineState;
 
+	Camera* m_camera;
+
 	// 3Dモデルファイルパス
 	const wchar_t* m_pModelFile = L"Assets/Alicia/FBX/Alicia_solid_Unity.FBX";
 	// メッシュ配列

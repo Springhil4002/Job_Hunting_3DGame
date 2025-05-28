@@ -33,36 +33,21 @@ void TitleScene::Init(Camera* _camera)
 
 void TitleScene::Update()
 {
-	auto allModel = GetInstance()->GetObjects<Model3D>();
-	for (auto* model : allModel)
+	if (input.GetKeyPress(VK_D))
 	{
-		if (model->m_tags.SearchTag("Alicia"))
-		{
-			if (input.GetKeyPress(VK_D))
-			{
-				XMVECTOR pos = model->GetPos();
-				pos = XMVectorSetX(pos, XMVectorGetX(pos) + 1.0f);
-				model->SetPos(pos);
-			}
-			if (input.GetKeyPress(VK_A))
-			{
-				XMVECTOR pos = model->GetPos();
-				pos = XMVectorSetX(pos, XMVectorGetX(pos) - 1.0f);
-				model->SetPos(pos);
-			}
-			if (input.GetKeyPress(VK_W))
-			{
-				XMVECTOR pos = model->GetPos();
-				pos = XMVectorSetZ(pos, XMVectorGetZ(pos) + 1.0f);
-				model->SetPos(pos);
-			}
-			if (input.GetKeyPress(VK_S))
-			{
-				XMVECTOR pos = model->GetPos();
-				pos = XMVectorSetZ(pos, XMVectorGetZ(pos) - 1.0f);
-				model->SetPos(pos);
-			}
-		}
+		camera->MoveRight(1.0f);
+	}
+	if (input.GetKeyPress(VK_A))
+	{
+		camera->MoveLeft(1.0f);
+	}
+	if (input.GetKeyPress(VK_W))
+	{
+		camera->MoveForward(1.0f);
+	}
+	if (input.GetKeyPress(VK_S))
+	{
+		camera->MoveBack(1.0f);
 	}
 
 
