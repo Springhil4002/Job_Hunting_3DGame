@@ -1,7 +1,7 @@
 #pragma once
 #include "BaseScene.h"
 
-class GameScene :public BaseScene
+class GameScene : public BaseScene
 {
 private:
 	Camera* camera;

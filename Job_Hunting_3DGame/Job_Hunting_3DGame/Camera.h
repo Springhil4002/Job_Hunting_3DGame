@@ -19,7 +19,16 @@ public:
 	void SetUp(const DirectX::XMVECTOR& _up);
 	void SetPerspective(float _fovY, float _aspect, float _nearZ, float _farZ);
 
+	const DirectX::XMVECTOR& GetPos() const;
+	const DirectX::XMVECTOR& GetTarget() const;
+	const DirectX::XMVECTOR& GetUp() const;
 	const DirectX::XMMATRIX& GetViewMatrix() const;
 	const DirectX::XMMATRIX& GetProjMatrix() const;
+
+	void Translate(const DirectX::XMVECTOR& _offset);
+	void MoveForward(float _distance);
+	void MoveBack(float _distance);
+	void MoveRight(float _distance);
+	void MoveLeft(float _distance);
 };
 
