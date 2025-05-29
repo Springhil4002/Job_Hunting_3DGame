@@ -22,6 +22,9 @@ private:
 	IndexBuffer* m_pIndexBuffer;
 	// コンスタントバッファ
 	ConstantBuffer* m_pConstantBuffer[DrawBase::FRAME_BUFFER_COUNT];
+	// 波用定数バッファとパラメータ
+	ConstantBuffer* m_pWaveBuffer;
+	GerstnerParams m_waveParams{};
 	// ディスクリプタヒープ
 	DescriptorHeap* m_pDescriptorHeap;
 	// ルートシグネチャ
@@ -30,6 +33,8 @@ private:
 	PipelineState* m_pPipelineState;
 	// カメラ
 	Camera* m_camera;
+	// 波のための時間
+	float g_time = 0.0f;
 public:
 	/// @brief コンストラクタ
 	WaterMesh() = default;

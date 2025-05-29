@@ -5,6 +5,8 @@ class TitleScene : public BaseScene
 {
 private:
 	Camera* camera;
+	const int GRID_SIZE = 8;
+	const float SPACE = 2.0f;
 public:
 	/// @brief コンストラクタ
 	TitleScene() = default;

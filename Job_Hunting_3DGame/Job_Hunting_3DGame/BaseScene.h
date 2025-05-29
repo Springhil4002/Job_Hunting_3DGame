@@ -4,7 +4,7 @@
 #include "System/Input.h"
 #include "PrototypeManager.h"
 
-#define MAX_OBJECT (1)
+#define MAX_OBJECT (64)
 
 class BaseScene
 {

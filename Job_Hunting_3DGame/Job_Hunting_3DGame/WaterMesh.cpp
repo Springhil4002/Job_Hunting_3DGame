@@ -16,10 +16,10 @@ Mesh WaterMesh::CreateQuad()
 	Mesh mesh;
 	mesh.Vertices.resize(4);
 
-	mesh.Vertices[0] = { XMFLOAT3(-10.0f, 0.0f, 10.0f), normal, XMFLOAT2(0.0f, 0.0f), tangent, color };
-	mesh.Vertices[1] = { XMFLOAT3(10.0f, 0.0f, 10.0f), normal, XMFLOAT2(1.0f, 0.0f), tangent, color };
-	mesh.Vertices[2] = { XMFLOAT3(10.0f, 0.0f, -10.0f), normal, XMFLOAT2(1.0f, 1.0f), tangent, color };
-	mesh.Vertices[3] = { XMFLOAT3(-10.0f, 0.0f, -10.0f), normal, XMFLOAT2(0.0f, 1.0f), tangent, color };
+	mesh.Vertices[0] = { XMFLOAT3(-1.0f, 0.0f, 1.0f), normal, XMFLOAT2(0.0f, 0.0f), tangent, color };
+	mesh.Vertices[1] = { XMFLOAT3(1.0f, 0.0f, 1.0f), normal, XMFLOAT2(1.0f, 0.0f), tangent, color };
+	mesh.Vertices[2] = { XMFLOAT3(1.0f, 0.0f, -1.0f), normal, XMFLOAT2(1.0f, 1.0f), tangent, color };
+	mesh.Vertices[3] = { XMFLOAT3(-1.0f, 0.0f, -1.0f), normal, XMFLOAT2(0.0f, 1.0f), tangent, color };
 
 	mesh.Indices = {
 		0,1,2,
@@ -67,6 +67,37 @@ bool WaterMesh::Init(Camera* _camera)
 		ptr->proj = m_camera->GetProjMatrix();
 	}
 
+	m_pWaveBuffer = new ConstantBuffer(sizeof(GerstnerParams));
+	if (!m_pWaveBuffer->IsValid())
+	{
+		printf("水面メッシュ:波用コンスタントバッファ生成失敗\n");
+		return false;
+	}
+
+	// 4つの波のパラメータ設定
+	m_waveParams.amplitude[0] = { 0.3f, 0,0,0 };
+	m_waveParams.direction[0] = { 1.0f,  0.2f, 0,0 };
+	m_waveParams.waveLength[0] = { 6.0f, 0,0,0 };
+	m_waveParams.speed[0] = { 1.0f, 0,0,0 };
+
+	m_waveParams.amplitude[1] = { 0.2f, 0,0,0 };
+	m_waveParams.direction[1] = { -0.7f,  1.0f, 0,0 };
+	m_waveParams.waveLength[1] = { 5.0f, 0,0,0 };
+	m_waveParams.speed[1] = { 0.8f, 0,0,0 };
+
+	m_waveParams.amplitude[2] = { 0.15f, 0,0,0 };
+	m_waveParams.direction[2] = { 0.5f, -1.0f, 0,0 };
+	m_waveParams.waveLength[2] = { 4.5f, 0,0,0 };
+	m_waveParams.speed[2] = { 1.2f, 0,0,0 };
+
+	m_waveParams.amplitude[3] = { 0.1f, 0,0,0 };
+	m_waveParams.direction[3] = { -1.0f, -0.3f, 0,0 };
+	m_waveParams.waveLength[3] = { 3.0f, 0,0,0 };
+	m_waveParams.speed[3] = { 0.6f, 0,0,0 };
+
+	// バッファにコピー
+	std::memcpy(m_pWaveBuffer->GetPtr(), &m_waveParams, sizeof(GerstnerParams));
+
 	m_pRootSignature = new RootSignature_WaterMesh();
 	if (!m_pRootSignature->IsValid())
 	{
@@ -97,6 +128,9 @@ bool WaterMesh::Init(Camera* _camera)
 
 void WaterMesh::Update()
 {
+	// 毎フレーム(60FPS)
+	g_time += 0.016f;	
+
 	// カメラの更新処理
 	auto pos = GetPos();
 	auto rota = GetRota();
@@ -112,6 +146,7 @@ void WaterMesh::Update()
 	ptr->world = world;
 	ptr->view = m_camera->GetViewMatrix();
 	ptr->proj = m_camera->GetProjMatrix();
+	ptr->time = g_time;
 }
 
 void WaterMesh::Draw()
@@ -131,7 +166,8 @@ void WaterMesh::Draw()
 	cmdList->SetPipelineState(m_pPipelineState->Get());
 	// 定数バッファをセット
 	cmdList->SetGraphicsRootConstantBufferView(0, m_pConstantBuffer[currentIndex]->GetAddress());
-	
+	cmdList->SetGraphicsRootConstantBufferView(1, m_pWaveBuffer->GetAddress());
+
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	cmdList->IASetVertexBuffers(0, 1, &vbView);
 	cmdList->IASetIndexBuffer(&ibView);

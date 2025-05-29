@@ -16,7 +16,33 @@ void TitleScene::Init(Camera* _camera)
 	prototypeManager->AddPrototype("WaterMesh", new WaterMesh);
 
 	WaterMesh* waterMesh[MAX_OBJECT];
+	for (int i = 0; i < GRID_SIZE; ++i)
+	{
+		for (int j = 0; j < GRID_SIZE; ++j)
+		{
+			int index = i * GRID_SIZE + j;
+			waterMesh[index] = static_cast<WaterMesh*>(CreateObj("WaterMesh"));
+			waterMesh[index]->Init(camera);
+
+			// 配置座標を計算
+			float x = j * SPACE;
+			float z = i * SPACE;
+
+			waterMesh[index]->SetPos(XMVectorSet(x, 0.0f, z, 0.0f));
+			waterMesh[index]->SetRota(XMVectorZero());
+			waterMesh[index]->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+			waterMesh[index]->m_tags.AddTag("Water_MS");
+		}
+	}
 	for (int i = 0; i < MAX_OBJECT; ++i)
+	{
+		objectInstance.insert(waterMesh[i]);
+	}
+
+	
+	/*int test = 1;
+	WaterMesh* waterMesh[1];
+	for (int i = 0; i < test; ++i)
 	{
 		waterMesh[i] = static_cast<WaterMesh*>(CreateObj("WaterMesh"));
 		waterMesh[i]->Init(camera);
@@ -26,10 +52,10 @@ void TitleScene::Init(Camera* _camera)
 	}
 	waterMesh[0]->m_tags.AddTag("Water_MS");
 
-	for (int i = 0; i < MAX_OBJECT; ++i)
+	for (int i = 0; i < test; ++i)
 	{
 		objectInstance.insert(waterMesh[i]);
-	}
+	}*/
 }
 
 void TitleScene::Update()

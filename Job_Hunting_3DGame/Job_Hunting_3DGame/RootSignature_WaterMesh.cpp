@@ -14,16 +14,20 @@ RootSignature_WaterMesh::RootSignature_WaterMesh()
 	// ジオメトリシェーダーのルートシグネチャへのアクセスを拒否する
 	flag |= D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
 	
-	CD3DX12_ROOT_PARAMETER rootParam[1] = {};
-	// b0の定数バッファを設定、全てのシェーダーから見えるようにする
+	CD3DX12_ROOT_PARAMETER rootParam[2] = {};
+	// b:のMatrix定数バッファを設定、全てのシェーダーから見えるようにする
 	rootParam[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL); 
+	// b1:Gerstner波定数バッファを設定、全てのシェーダーから見えるようにする
+	rootParam[1].InitAsConstantBufferView(1, 0, D3D12_SHADER_VISIBILITY_ALL); 
+	
+	
 	// スタティックサンプラーの設定
 	auto sampler = CD3DX12_STATIC_SAMPLER_DESC(0, D3D12_FILTER_MIN_MAG_MIP_LINEAR);
 
 	// ルートシグニチャの設定（設定したいルートパラメーターとスタティックサンプラーを入れる）
 	D3D12_ROOT_SIGNATURE_DESC desc = {};
 	// ルートパラメーターの個数をいれる
-	desc.NumParameters = std::size(rootParam);
+	desc.NumParameters = _countof(rootParam);
 	// サンプラーの個数をいれる
 	desc.NumStaticSamplers = 1;
 	// ルートパラメーターのポインタをいれる
