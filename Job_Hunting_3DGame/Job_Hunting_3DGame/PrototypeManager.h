@@ -1,6 +1,7 @@
 #pragma once
 #include "Object.h"
 #include "Model3D.h"
+#include "WaterMesh.h"
 
 class PrototypeManager
 {

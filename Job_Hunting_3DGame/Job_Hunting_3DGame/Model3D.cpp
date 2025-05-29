@@ -1,10 +1,5 @@
 #include "Model3D.h"
 
-Model3D::Model3D()
-{
-
-}
-
 std::wstring Model3D::ReplaceExtension(const std::wstring& _origin, const char* _ext)
 {
 	if (_origin.empty()) return L"";

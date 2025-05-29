@@ -61,6 +61,12 @@
     <Filter Include="System">
       <UniqueIdentifier>{72439b4e-6de2-4afe-a2be-a99afc5096a9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Draw\RootSignature">
+      <UniqueIdentifier>{553fccb9-05be-43bc-859d-a3c61b67953c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Draw\RootSignature">
+      <UniqueIdentifier>{432efb36-410e-45b9-909f-5fbb2b866623}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp">
@@ -80,9 +86,6 @@
     </ClCompile>
     <ClCompile Include="ConstantBuffer.cpp">
       <Filter>ソース ファイル\Buffer</Filter>
-    </ClCompile>
-    <ClCompile Include="RootSignature.cpp">
-      <Filter>ソース ファイル\Draw</Filter>
     </ClCompile>
     <ClCompile Include="PipelineState.cpp">
       <Filter>ソース ファイル\Draw</Filter>
@@ -132,6 +135,15 @@
     <ClCompile Include="Camera.cpp">
       <Filter>ソース ファイル\Draw</Filter>
     </ClCompile>
+    <ClCompile Include="WaterMesh.cpp">
+      <Filter>ソース ファイル\Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="RootSignature.cpp">
+      <Filter>ソース ファイル\Draw\RootSignature</Filter>
+    </ClCompile>
+    <ClCompile Include="RootSignature_WaterMesh.cpp">
+      <Filter>ソース ファイル\Draw\RootSignature</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h">
@@ -148,9 +160,6 @@
     </ClInclude>
     <ClInclude Include="ConstantBuffer.h">
       <Filter>ヘッダー ファイル\Buffer</Filter>
-    </ClInclude>
-    <ClInclude Include="RootSignature.h">
-      <Filter>ヘッダー ファイル\Draw</Filter>
     </ClInclude>
     <ClInclude Include="PipelineState.h">
       <Filter>ヘッダー ファイル\Draw</Filter>
@@ -218,6 +227,15 @@
     <ClInclude Include="Camera.h">
       <Filter>ヘッダー ファイル\Draw</Filter>
     </ClInclude>
+    <ClInclude Include="WaterMesh.h">
+      <Filter>ヘッダー ファイル\Obj</Filter>
+    </ClInclude>
+    <ClInclude Include="RootSignature.h">
+      <Filter>ヘッダー ファイル\Draw\RootSignature</Filter>
+    </ClInclude>
+    <ClInclude Include="RootSignature_WaterMesh.h">
+      <Filter>ヘッダー ファイル\Draw\RootSignature</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PS_Simple.hlsl">
@@ -225,6 +243,12 @@
     </FxCompile>
     <FxCompile Include="VS_Simple.hlsl">
       <Filter>リソース ファイル\VertexShader</Filter>
+    </FxCompile>
+    <FxCompile Include="VS_WaterMesh.hlsl">
+      <Filter>リソース ファイル\VertexShader</Filter>
+    </FxCompile>
+    <FxCompile Include="PS_WaterMesh.hlsl">
+      <Filter>リソース ファイル\PixelShader</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

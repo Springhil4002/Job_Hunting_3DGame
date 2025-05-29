@@ -30,5 +30,7 @@ public:
 	void MoveBack(float _distance);
 	void MoveRight(float _distance);
 	void MoveLeft(float _distance);
+	void MoveUp(float _distance);
+	void MoveDown(float _distance);
 };
 

@@ -12,22 +12,23 @@ void TitleScene::Init(Camera* _camera)
 {
 	camera = _camera;
 	printf("ƒV[ƒ“–¼FTitleScene\n");
-	prototypeManager->AddPrototype("3DModel", new Model3D);
+	
+	prototypeManager->AddPrototype("WaterMesh", new WaterMesh);
 
-	Model3D* model[MAX_OBJECT];
+	WaterMesh* waterMesh[MAX_OBJECT];
 	for (int i = 0; i < MAX_OBJECT; ++i)
 	{
-		model[i] = static_cast<Model3D*>(CreateObj("3DModel"));
-		model[i]->Init(camera);
-		model[i]->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
-		model[i]->SetRota(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
-		model[i]->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+		waterMesh[i] = static_cast<WaterMesh*>(CreateObj("WaterMesh"));
+		waterMesh[i]->Init(camera);
+		waterMesh[i]->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
+		waterMesh[i]->SetRota(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
+		waterMesh[i]->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
 	}
-	model[0]->m_tags.AddTag("Alicia");
+	waterMesh[0]->m_tags.AddTag("Water_MS");
 
 	for (int i = 0; i < MAX_OBJECT; ++i)
 	{
-		objectInstance.insert(model[i]);
+		objectInstance.insert(waterMesh[i]);
 	}
 }
 
@@ -48,6 +49,15 @@ void TitleScene::Update()
 	if (input.GetKeyPress(VK_S))
 	{
 		camera->MoveBack(1.0f);
+	}
+
+	if (input.GetKeyPress(VK_E))
+	{
+		camera->MoveUp(1.0f);
+	}
+	if (input.GetKeyPress(VK_Q))
+	{
+		camera->MoveDown(1.0f);
 	}
 
 

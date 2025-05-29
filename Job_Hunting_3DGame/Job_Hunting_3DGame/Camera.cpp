@@ -1,7 +1,7 @@
 #include "Camera.h"
 
 Camera::Camera()
-	: m_eye(DirectX::XMVectorSet(0.0f,0.0f,-5.0f,1.0f)),
+	: m_eye(DirectX::XMVectorSet(0.0f,5.0f,-5.0f,1.0f)),
 	  m_target(DirectX::XMVectorZero()),
 	  m_up(DirectX::XMVectorSet(0.0f,1.0f,0.0f,0.0f))
 {
@@ -29,7 +29,7 @@ void Camera::SetUp(const DirectX::XMVECTOR& _up)
 
 void Camera::SetPerspective(float _fovY, float _aspect, float _nearZ, float _farZ)
 {
-	m_proj = DirectX::XMMatrixPerspectiveFovRH(_fovY, _aspect, _nearZ, _farZ);
+	m_proj = DirectX::XMMatrixPerspectiveFovLH(_fovY, _aspect, _nearZ, _farZ);
 }
 
 const DirectX::XMVECTOR& Camera::GetPos() const 
@@ -59,7 +59,7 @@ const DirectX::XMMATRIX& Camera::GetProjMatrix() const
 
 void Camera::UpdateViewMatrix()
 {
-	m_view = DirectX::XMMatrixLookAtRH(m_eye, m_target, m_up);
+	m_view = DirectX::XMMatrixLookAtLH(m_eye, m_target, m_up);
 }
 
 void Camera::Translate(const DirectX::XMVECTOR& _offset)
@@ -83,11 +83,22 @@ void Camera::MoveBack(float _distance)
 void Camera::MoveRight(float _distance)
 {
 	DirectX::XMVECTOR forward = DirectX::XMVector3Normalize(DirectX::XMVectorSubtract(m_target, m_eye));
-	DirectX::XMVECTOR right = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(forward, m_up));
+	DirectX::XMVECTOR right = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(m_up, forward));
 	Translate(DirectX::XMVectorScale(right, _distance));
 }
 
 void Camera::MoveLeft(float _distance)
 {
 	MoveRight(-_distance);
+}
+
+void Camera::MoveUp(float _distance)
+{
+	DirectX::XMVECTOR worldUp = DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+	Translate(DirectX::XMVectorScale(worldUp, _distance));
+}
+
+void Camera::MoveDown(float _distance)
+{
+	MoveUp(-_distance);
 }
