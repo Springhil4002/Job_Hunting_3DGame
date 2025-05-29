@@ -1,7 +1,7 @@
 #include "Camera.h"
 
 Camera::Camera()
-	: m_eye(DirectX::XMVectorSet(0.0f,5.0f,-5.0f,1.0f)),
+	: m_eye(DirectX::XMVectorSet(0.0f,30.0f,-50.0f,1.0f)),
 	  m_target(DirectX::XMVectorZero()),
 	  m_up(DirectX::XMVectorSet(0.0f,1.0f,0.0f,0.0f))
 {

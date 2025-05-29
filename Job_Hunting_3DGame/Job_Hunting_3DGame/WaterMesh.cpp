@@ -16,10 +16,10 @@ Mesh WaterMesh::CreateQuad()
 	Mesh mesh;
 	mesh.Vertices.resize(4);
 
-	mesh.Vertices[0] = { XMFLOAT3(-10.0f, 10.0f, 0.0f), normal, XMFLOAT2(0.0f, 0.0f), tangent, color };
-	mesh.Vertices[1] = { XMFLOAT3(10.0f, 10.0f, 0.0f), normal, XMFLOAT2(1.0f, 0.0f), tangent, color };
-	mesh.Vertices[2] = { XMFLOAT3(10.0f, -10.0f, 0.0f), normal, XMFLOAT2(1.0f, 1.0f), tangent, color };
-	mesh.Vertices[3] = { XMFLOAT3(-10.0f, -10.0f, 0.0f), normal, XMFLOAT2(0.0f, 1.0f), tangent, color };
+	mesh.Vertices[0] = { XMFLOAT3(-10.0f, 0.0f, 10.0f), normal, XMFLOAT2(0.0f, 0.0f), tangent, color };
+	mesh.Vertices[1] = { XMFLOAT3(10.0f, 0.0f, 10.0f), normal, XMFLOAT2(1.0f, 0.0f), tangent, color };
+	mesh.Vertices[2] = { XMFLOAT3(10.0f, 0.0f, -10.0f), normal, XMFLOAT2(1.0f, 1.0f), tangent, color };
+	mesh.Vertices[3] = { XMFLOAT3(-10.0f, 0.0f, -10.0f), normal, XMFLOAT2(0.0f, 1.0f), tangent, color };
 
 	mesh.Indices = {
 		0,1,2,
