@@ -83,7 +83,7 @@ void Camera::MoveBack(float _distance)
 void Camera::MoveRight(float _distance)
 {
 	DirectX::XMVECTOR forward = DirectX::XMVector3Normalize(DirectX::XMVectorSubtract(m_target, m_eye));
-	DirectX::XMVECTOR right = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(m_up, forward));
+	DirectX::XMVECTOR right = DirectX::XMVector3Normalize(DirectX::XMVector3Cross(forward, m_up));
 	Translate(DirectX::XMVectorScale(right, _distance));
 }
 

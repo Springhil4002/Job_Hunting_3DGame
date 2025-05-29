@@ -74,8 +74,11 @@ bool Model3D::Init(Camera* _camera)
 		m_pConstantBuffer[i] = new ConstantBuffer(sizeof(Matrix));
 		if (!m_pConstantBuffer[i]->IsValid()) 
 		{
+			printf("コンスタントバッファ生成失敗\n");
 			return false;
 		}
+
+		// カメラの初期化
 		auto ptr = m_pConstantBuffer[i]->GetPtr<Matrix>();
 		ptr->world = DirectX::XMMatrixIdentity();
 		ptr->view = m_camera->GetViewMatrix();
@@ -148,6 +151,7 @@ bool Model3D::Init(Camera* _camera)
 
 void Model3D::Update()
 {
+	// カメラの更新処理
 	auto pos = GetPos();
 	auto rota = GetRota();
 	auto scale = GetScale();
@@ -160,7 +164,6 @@ void Model3D::Update()
 	auto currentIndex = g_DrawBase->CurrentBackBufferIndex();
 	auto ptr = m_pConstantBuffer[currentIndex]->GetPtr<Matrix>();
 	ptr->world = world;
-
 	ptr->view = m_camera->GetViewMatrix();
 	ptr->proj = m_camera->GetProjMatrix();
 }
