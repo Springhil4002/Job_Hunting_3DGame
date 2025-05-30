@@ -7,6 +7,7 @@ private:
 	Camera* camera;
 	const int GRID_SIZE = 8;
 	const float SPACE = 2.0f;
+	const float OFFSET = (GRID_SIZE - 1) * SPACE * 0.5f;
 public:
 	/// @brief コンストラクタ
 	TitleScene() = default;

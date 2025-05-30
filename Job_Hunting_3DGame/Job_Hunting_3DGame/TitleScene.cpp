@@ -24,21 +24,17 @@ void TitleScene::Init(Camera* _camera)
 			waterMesh[index] = static_cast<WaterMesh*>(CreateObj("WaterMesh"));
 			waterMesh[index]->Init(camera);
 
-			// 配置座標を計算
-			float x = j * SPACE;
-			float z = i * SPACE;
+			// 原点を中心とした配置座標を計算
+			float x = j * SPACE - OFFSET;
+			float z = i * SPACE - OFFSET;
 
 			waterMesh[index]->SetPos(XMVectorSet(x, 0.0f, z, 0.0f));
 			waterMesh[index]->SetRota(XMVectorZero());
 			waterMesh[index]->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
 			waterMesh[index]->m_tags.AddTag("Water_MS");
+			objectInstance.insert(waterMesh[index]);
 		}
 	}
-	for (int i = 0; i < MAX_OBJECT; ++i)
-	{
-		objectInstance.insert(waterMesh[i]);
-	}
-
 	
 	/*int test = 1;
 	WaterMesh* waterMesh[1];

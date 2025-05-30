@@ -34,39 +34,78 @@ struct VSOutput
 
 VSOutput VS_Main(VSInput vin)
 {
-    float3 position = vin.pos;
-    float3 displaced = position;
+    //float3 position = vin.pos;
+    //float3 displaced = position;
     
+    //for (int i = 0; i < WAVE_COUNT; ++i)
+    //{
+    //    float amp = amplitude[i].x;
+    //    float2 dir = normalize(direction[i].xy);
+    //    float len = waveLength[i].x;
+    //    float spd = speed[i].x;
+        
+    //    // 波数
+    //    float freq = 2.0f * 3.14159f / len;
+    //    // 角速度
+    //    float angular = freq * spd;
+    //    float d = dot(dir, position.xz);
+    //    float phase = (freq * d) + (time * angular);
+        
+    //    displaced.x += dir.x * (amp * cos(phase));
+    //    displaced.z += dir.y * (amp * cos(phase));
+    //    displaced.y += amp * sin(phase);
+    //}
+    
+    //// ワールド座標に変換
+    //float4 worldPos = mul(world, float4(displaced, 1.0f));
+    //// ビュー座標に変換
+    //float4 viewPos = mul(view, worldPos);
+    //// 投影変換
+    //float4 projPos = mul(proj, viewPos);
+
+    //VSOutput vout;
+    
+    //vout.svpos = projPos; // 投影変換された座標をピクセルシェーダーに渡す
+    //vout.color = vin.color; // 頂点色をそのままピクセルシェーダーに渡す
+    
+    float3 localPos = vin.pos;
+    
+    // ローカル座標をワールド座標に変換
+    float4 worldPos4 = mul(world, float4(localPos, 1.0f));
+    float3 worldPos = worldPos4.xyz;
+    
+    // 波による変位ベクトル(初期値ゼロ)
+    float3 waveOffset = float3(0.0f, 0.0f, 0.0f);
+    
+    // Gerstner波の計算(ワールド座標ベース)
     for (int i = 0; i < WAVE_COUNT;++i)
     {
         float amp = amplitude[i].x;
         float2 dir = normalize(direction[i].xy);
         float len = waveLength[i].x;
-        float s = speed[i].x;
+        float spd = speed[i].x;
+
+        float freq = 2.0f * 3.14159f / len;
+        float angular = freq * spd;
         
-        // 波数
-        float freq = 2.0f * 3.14159f /len;  
-        // 角速度
-        float angular = freq * s;
-        float d = dot(dir, position.xz);
+        float d = dot(dir, worldPos.xz);
         float phase = (freq * d) + (time * angular);
         
-        displaced.x += dir.x * (amp * cos(phase));
-        displaced.z += dir.y * (amp * cos(phase));
-        displaced.y += amp * sin(phase);
+        // Gerstner波の変位を加算
+        waveOffset.x += dir.x * (amp * cos(phase));
+        waveOffset.z += dir.y * (amp * cos(phase));
+        waveOffset.y += amp * sin(phase);
     }
     
-    // ワールド座標に変換
-    float4 worldPos = mul(world, float4(displaced,1.0f)); 
-    // ビュー座標に変換
-    float4 viewPos = mul(view, worldPos); 
-    // 投影変換
-    float4 projPos = mul(proj, viewPos);        
-
+    // ワールド座標に波の変位を加算
+    worldPos += waveOffset;
+    // ビュー変換
+    float4 viewPos = mul(view, float4(worldPos, 1.0f));
+    // プロジェクション変換
+    float4 projPos = mul(proj, viewPos);
+    
     VSOutput vout;
-    
-    vout.svpos = projPos;       // 投影変換された座標をピクセルシェーダーに渡す
-    vout.color = vin.color;     // 頂点色をそのままピクセルシェーダーに渡す
-    
+    vout.svpos = projPos;
+    vout.color = vin.color;
     return vout;
 }
