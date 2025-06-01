@@ -1,5 +1,4 @@
-#include "PipelinState_WaterMesh.h"
-#include "PipelineState.h"
+#include "PipelineState_WaterMesh.h"
 #include "DrawBase.h"
 #include <d3dx12.h>
 #include <d3dcompiler.h>
@@ -7,7 +6,7 @@
 #pragma comment(lib,"d3dcompiler.lib")
 
 // パイプラインステートの設定
-PipelineState::PipelineState()
+PipelineState_WaterMesh::PipelineState_WaterMesh()
 {
 	// ラスタライザーステート:デフォルト設定
 	desc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
@@ -34,22 +33,22 @@ PipelineState::PipelineState()
 	desc.SampleDesc.Quality = 0;
 }
 
-bool PipelineState::IsValid()
+bool PipelineState_WaterMesh::IsValid()
 {
 	return m_IsValid;
 }
 
-void PipelineState::SetInputLayout(D3D12_INPUT_LAYOUT_DESC layout)
+void PipelineState_WaterMesh::SetInputLayout(D3D12_INPUT_LAYOUT_DESC layout)
 {
 	desc.InputLayout = layout;
 }
 
-void PipelineState::SetRootSignature(ID3D12RootSignature* rootSignature)
+void PipelineState_WaterMesh::SetRootSignature(ID3D12RootSignature* rootSignature)
 {
 	desc.pRootSignature = rootSignature;
 }
 
-void PipelineState::SetVS(std::wstring filePath)
+void PipelineState_WaterMesh::SetVS(std::wstring filePath)
 {
 	// 頂点シェーダー読み込み
 	auto hr = D3DReadFileToBlob(filePath.c_str(), m_pVsBlob.GetAddressOf());
@@ -62,7 +61,7 @@ void PipelineState::SetVS(std::wstring filePath)
 	desc.VS = CD3DX12_SHADER_BYTECODE(m_pVsBlob.Get());
 }
 
-void PipelineState::SetPS(std::wstring filePath)
+void PipelineState_WaterMesh::SetPS(std::wstring filePath)
 {
 	// ピクセルシェーダー読み込み
 	auto hr = D3DReadFileToBlob(filePath.c_str(), m_pPSBlob.GetAddressOf());
@@ -75,7 +74,7 @@ void PipelineState::SetPS(std::wstring filePath)
 	desc.PS = CD3DX12_SHADER_BYTECODE(m_pPSBlob.Get());
 }
 
-void PipelineState::Create()
+void PipelineState_WaterMesh::Create()
 {
 	// パイプラインステートを生成
 	auto hr = g_DrawBase->Device()->CreateGraphicsPipelineState(&desc, IID_PPV_ARGS(m_pPipelineState.ReleaseAndGetAddressOf()));
@@ -88,7 +87,7 @@ void PipelineState::Create()
 	m_IsValid = true;
 }
 
-ID3D12PipelineState* PipelineState::Get()
+ID3D12PipelineState* PipelineState_WaterMesh::Get()
 {
 	return m_pPipelineState.Get();
 }

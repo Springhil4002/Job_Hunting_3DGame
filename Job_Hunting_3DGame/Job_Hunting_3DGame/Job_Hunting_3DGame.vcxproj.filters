@@ -67,6 +67,12 @@
     <Filter Include="ヘッダー ファイル\Draw\RootSignature">
       <UniqueIdentifier>{432efb36-410e-45b9-909f-5fbb2b866623}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Draw\PipelineState">
+      <UniqueIdentifier>{26c9f362-51df-4517-ad6a-ba3556c32df7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Draw\pipelineState">
+      <UniqueIdentifier>{d33fd7f1-cbf2-454f-8be6-8a230821efdc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp">
@@ -86,9 +92,6 @@
     </ClCompile>
     <ClCompile Include="ConstantBuffer.cpp">
       <Filter>ソース ファイル\Buffer</Filter>
-    </ClCompile>
-    <ClCompile Include="PipelineState.cpp">
-      <Filter>ソース ファイル\Draw</Filter>
     </ClCompile>
     <ClCompile Include="IndexBuffer.cpp">
       <Filter>ソース ファイル\Buffer</Filter>
@@ -144,6 +147,15 @@
     <ClCompile Include="RootSignature_WaterMesh.cpp">
       <Filter>ソース ファイル\Draw\RootSignature</Filter>
     </ClCompile>
+    <ClCompile Include="PipelineState.cpp">
+      <Filter>ソース ファイル\Draw\PipelineState</Filter>
+    </ClCompile>
+    <ClCompile Include="PipelineState_WaterMesh.cpp">
+      <Filter>ソース ファイル\Draw\PipelineState</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureManager.cpp">
+      <Filter>ソース ファイル\Resource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h">
@@ -160,9 +172,6 @@
     </ClInclude>
     <ClInclude Include="ConstantBuffer.h">
       <Filter>ヘッダー ファイル\Buffer</Filter>
-    </ClInclude>
-    <ClInclude Include="PipelineState.h">
-      <Filter>ヘッダー ファイル\Draw</Filter>
     </ClInclude>
     <ClInclude Include="IndexBuffer.h">
       <Filter>ヘッダー ファイル\Buffer</Filter>
@@ -235,6 +244,15 @@
     </ClInclude>
     <ClInclude Include="RootSignature_WaterMesh.h">
       <Filter>ヘッダー ファイル\Draw\RootSignature</Filter>
+    </ClInclude>
+    <ClInclude Include="PipelineState.h">
+      <Filter>ヘッダー ファイル\Draw\pipelineState</Filter>
+    </ClInclude>
+    <ClInclude Include="PipelineState_WaterMesh.h">
+      <Filter>ヘッダー ファイル\Draw\pipelineState</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureManager.h">
+      <Filter>ヘッダー ファイル\Resource</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

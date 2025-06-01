@@ -13,16 +13,35 @@ RootSignature_WaterMesh::RootSignature_WaterMesh()
 	flag |= D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS;
 	// ジオメトリシェーダーのルートシグネチャへのアクセスを拒否する
 	flag |= D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
-	
-	CD3DX12_ROOT_PARAMETER rootParam[2] = {};
-	// b:のMatrix定数バッファを設定、全てのシェーダーから見えるようにする
+
+	// ディスクリプタレンジ
+	CD3DX12_DESCRIPTOR_RANGE texRange;
+	// t0に1個SRV
+	texRange.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+
+	CD3DX12_ROOT_PARAMETER rootParam[3] = {};
+	// b0:のMatrix定数バッファを設定、全てのシェーダーから見えるようにする
 	rootParam[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL); 
 	// b1:Gerstner波定数バッファを設定、全てのシェーダーから見えるようにする
 	rootParam[1].InitAsConstantBufferView(1, 0, D3D12_SHADER_VISIBILITY_ALL); 
-	
-	
+	// t0:WaterMesh用のテクスチャ設定、ピクセルシェーダーから見えるようにする。
+	rootParam[2].InitAsDescriptorTable(1, &texRange, D3D12_SHADER_VISIBILITY_PIXEL);
+		
 	// スタティックサンプラーの設定
-	auto sampler = CD3DX12_STATIC_SAMPLER_DESC(0, D3D12_FILTER_MIN_MAG_MIP_LINEAR);
+	auto sampler = CD3DX12_STATIC_SAMPLER_DESC(
+		0,									// レジスター
+		D3D12_FILTER_MIN_MAG_MIP_LINEAR,	// フィルター
+		D3D12_TEXTURE_ADDRESS_MODE_WRAP,	// アドレスモード U
+		D3D12_TEXTURE_ADDRESS_MODE_WRAP,	// アドレスモード V
+		D3D12_TEXTURE_ADDRESS_MODE_WRAP,	// アドレスモード W
+		0.0f,								// MipLODBias
+		1,									// MaxAnisotropy
+		D3D12_COMPARISON_FUNC_ALWAYS,		// 比較関数（使ってないなら ALWAYS でOK）
+		D3D12_STATIC_BORDER_COLOR_OPAQUE_WHITE,
+		0.0f,								// MinLOD
+		D3D12_FLOAT32_MAX,					// MaxLOD
+		D3D12_SHADER_VISIBILITY_PIXEL		// PSから見えるように明示
+	);
 
 	// ルートシグニチャの設定（設定したいルートパラメーターとスタティックサンプラーを入れる）
 	D3D12_ROOT_SIGNATURE_DESC desc = {};

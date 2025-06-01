@@ -22,7 +22,7 @@ void TitleScene::Init(Camera* _camera)
 		{
 			int index = i * GRID_SIZE + j;
 			waterMesh[index] = static_cast<WaterMesh*>(CreateObj("WaterMesh"));
-			waterMesh[index]->Init(camera);
+			waterMesh[index]->Init(camera, j, i, GRID_SIZE);
 
 			// 原点を中心とした配置座標を計算
 			float x = j * SPACE - OFFSET;

@@ -13,16 +13,6 @@ private:
 	bool m_IsValid;
 	// テクスチャ情報を保持するリソース
 	ComPtr<ID3D12Resource> m_pResource;
-	/// @brief コンストラクタ
-	/// @param _path ファイルパス
-	Texture2D(std::string _path);
-	/// @brief コンストラクタ
-	/// @param _path ファイルパス
-	Texture2D(std::wstring _path);
-	/// @brief コンストラクタ
-	/// @param _buffer リソース
-	Texture2D(ID3D12Resource* _buffer);
-	
 	/// @brief ファイルパスを読み込んでテクスチャリソースを作成
 	/// @param _path ファイルパス
 	/// @return 作成の成否を返します
@@ -41,6 +31,15 @@ private:
 	Texture2D(const Texture2D&) = delete;
 	void operator = (const Texture2D&) = delete;
 public:
+	/// @brief コンストラクタ
+	/// @param _path ファイルパス
+	Texture2D(std::string _path);
+	/// @brief コンストラクタ
+	/// @param _path ファイルパス
+	Texture2D(std::wstring _path);
+	/// @brief コンストラクタ
+	/// @param _buffer リソース
+	Texture2D(ID3D12Resource* _buffer);
 	/// @brief ファイルパスを渡してテクスチャを取得する関数
 	/// @param _path ファイルパス
 	/// @return テクスチャを返します

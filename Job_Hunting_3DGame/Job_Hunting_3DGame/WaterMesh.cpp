@@ -1,25 +1,32 @@
 #include "WaterMesh.h"
 
 using namespace DirectX;
+// 共通テクスチャハンドル
+DescriptorHandle* WaterMesh::s_pSharedTexHandle = nullptr;
 
 Object* WaterMesh::clone() const
 {
 	return new WaterMesh(*this);
 }
 
-Mesh WaterMesh::CreateQuad()
+Mesh WaterMesh::CreateQuad(int _gridX,int _gridY,int _gridSize)
 {
+	float uvStep = 1.0f / _gridSize;
+	float u0 = uvStep * _gridX;
+	float v0 = uvStep * _gridY;
+	float u1 = u0 + uvStep;
+	float v1 = v0 + uvStep;
+
+	Mesh mesh;
+	mesh.Vertices.resize(4);
 	XMFLOAT3 normal		= XMFLOAT3(0.0f, 1.0f, 0.0f);
 	XMFLOAT3 tangent	= XMFLOAT3(1.0f, 0.0f, 0.0f);
 	XMFLOAT4 color		= XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	
-	Mesh mesh;
-	mesh.Vertices.resize(4);
-
-	mesh.Vertices[0] = { XMFLOAT3(-1.0f, 0.0f, 1.0f), normal, XMFLOAT2(0.0f, 0.0f), tangent, color };
-	mesh.Vertices[1] = { XMFLOAT3(1.0f, 0.0f, 1.0f), normal, XMFLOAT2(1.0f, 0.0f), tangent, color };
-	mesh.Vertices[2] = { XMFLOAT3(1.0f, 0.0f, -1.0f), normal, XMFLOAT2(1.0f, 1.0f), tangent, color };
-	mesh.Vertices[3] = { XMFLOAT3(-1.0f, 0.0f, -1.0f), normal, XMFLOAT2(0.0f, 1.0f), tangent, color };
+	mesh.Vertices[0] = { XMFLOAT3(-1.0f, 0.0f, 1.0f), normal, XMFLOAT2(u0, v0), tangent, color };
+	mesh.Vertices[1] = { XMFLOAT3(1.0f, 0.0f, 1.0f), normal, XMFLOAT2(u1, v0), tangent, color };
+	mesh.Vertices[2] = { XMFLOAT3(1.0f, 0.0f, -1.0f), normal, XMFLOAT2(u1, v1), tangent, color };
+	mesh.Vertices[3] = { XMFLOAT3(-1.0f, 0.0f, -1.0f), normal, XMFLOAT2(u0, v1), tangent, color };
 
 	mesh.Indices = {
 		0,1,2,
@@ -29,11 +36,11 @@ Mesh WaterMesh::CreateQuad()
 	return mesh;
 }
 
-bool WaterMesh::Init(Camera* _camera)
+bool WaterMesh::Init(Camera* _camera,int _gridX,int _gridY,int _gridSize)
 {
 	m_camera = _camera;
 	
-	auto mesh = CreateQuad();
+	auto mesh = CreateQuad(_gridX, _gridY, _gridSize);
 	auto vertexSize = sizeof(Vertex) * std::size(mesh.Vertices);
 	auto vertexStride = sizeof(Vertex);
 	m_pVertexBuffer = new VertexBuffer(vertexSize, vertexStride, mesh.Vertices.data());
@@ -98,6 +105,16 @@ bool WaterMesh::Init(Camera* _camera)
 	// バッファにコピー
 	std::memcpy(m_pWaveBuffer->GetPtr(), &m_waveParams, sizeof(GerstnerParams));
 
+	// ディスクリプタヒープ
+	m_pDescriptorHeap = new DescriptorHeap();
+	
+	if (s_pSharedTexHandle == nullptr)
+	{
+		auto tex = TextureManager::Instance().LoadTexture(L"Assets/Texture/WaterMesh.png");
+		s_pSharedTexHandle = m_pDescriptorHeap->Register(tex.get());
+	}
+	m_pTexHandle = s_pSharedTexHandle;
+
 	m_pRootSignature = new RootSignature_WaterMesh();
 	if (!m_pRootSignature->IsValid())
 	{
@@ -105,7 +122,7 @@ bool WaterMesh::Init(Camera* _camera)
 		return false;
 	}
 	
-	m_pPipelineState = new PipelineState();
+	m_pPipelineState = new PipelineState_WaterMesh();
 	m_pPipelineState->SetInputLayout(Vertex::InputLayout);
 	m_pPipelineState->SetRootSignature(m_pRootSignature->Get());
 #ifdef _DEBUG
@@ -159,6 +176,8 @@ void WaterMesh::Draw()
 	auto vbView = m_pVertexBuffer->View();
 	// インデックスバッファビュー
 	auto ibView = m_pIndexBuffer->View(); 
+	// ディスクリプタヒープ
+	auto Heap = m_pDescriptorHeap->GetHeap();
 
 	// ルートシグネチャをセット
 	cmdList->SetGraphicsRootSignature(m_pRootSignature->Get());
@@ -167,6 +186,11 @@ void WaterMesh::Draw()
 	// 定数バッファをセット
 	cmdList->SetGraphicsRootConstantBufferView(0, m_pConstantBuffer[currentIndex]->GetAddress());
 	cmdList->SetGraphicsRootConstantBufferView(1, m_pWaveBuffer->GetAddress());
+	
+	// ディスクリプタヒープをセット
+	cmdList->SetDescriptorHeaps(1, &Heap);
+	// テクスチャをセット
+	cmdList->SetGraphicsRootDescriptorTable(2, m_pTexHandle->handleGPU);
 
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	cmdList->IASetVertexBuffers(0, 1, &vbView);

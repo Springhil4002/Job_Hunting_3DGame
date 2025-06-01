@@ -30,44 +30,11 @@ struct VSOutput
 {
     float4 svpos : SV_POSITION; // 変換された座標
     float4 color : COLOR;       // 変換された色
+    float2 uv    : TEXCOORD;    // 変換されたUV
 };
 
 VSOutput VS_Main(VSInput vin)
 {
-    //float3 position = vin.pos;
-    //float3 displaced = position;
-    
-    //for (int i = 0; i < WAVE_COUNT; ++i)
-    //{
-    //    float amp = amplitude[i].x;
-    //    float2 dir = normalize(direction[i].xy);
-    //    float len = waveLength[i].x;
-    //    float spd = speed[i].x;
-        
-    //    // 波数
-    //    float freq = 2.0f * 3.14159f / len;
-    //    // 角速度
-    //    float angular = freq * spd;
-    //    float d = dot(dir, position.xz);
-    //    float phase = (freq * d) + (time * angular);
-        
-    //    displaced.x += dir.x * (amp * cos(phase));
-    //    displaced.z += dir.y * (amp * cos(phase));
-    //    displaced.y += amp * sin(phase);
-    //}
-    
-    //// ワールド座標に変換
-    //float4 worldPos = mul(world, float4(displaced, 1.0f));
-    //// ビュー座標に変換
-    //float4 viewPos = mul(view, worldPos);
-    //// 投影変換
-    //float4 projPos = mul(proj, viewPos);
-
-    //VSOutput vout;
-    
-    //vout.svpos = projPos; // 投影変換された座標をピクセルシェーダーに渡す
-    //vout.color = vin.color; // 頂点色をそのままピクセルシェーダーに渡す
-    
     float3 localPos = vin.pos;
     
     // ローカル座標をワールド座標に変換
@@ -107,5 +74,6 @@ VSOutput VS_Main(VSInput vin)
     VSOutput vout;
     vout.svpos = projPos;
     vout.color = vin.color;
+    vout.uv = vin.uv;
     return vout;
 }
