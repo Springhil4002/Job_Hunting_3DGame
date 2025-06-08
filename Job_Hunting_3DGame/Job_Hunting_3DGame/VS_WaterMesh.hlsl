@@ -28,14 +28,16 @@ struct VSInput
 
 struct VSOutput
 {
-    float4 svpos : SV_POSITION; // 変換された座標
-    float4 color : COLOR;       // 変換された色
-    float2 uv    : TEXCOORD;    // 変換されたUV
+    float4 svpos    : SV_POSITION;  // 変換された座標
+    float4 color    : COLOR;        // 変換された色
+    float2 uv       : TEXCOORD;     // 変換されたUV
+    float3 normal   : NORMAL;       // 変換された法線
 };
 
 VSOutput VS_Main(VSInput vin)
 {
     float3 localPos = vin.pos;
+    float3 normal_WS = normalize(mul((float3x3) world, vin.normal));
     
     // ローカル座標をワールド座標に変換
     float4 worldPos4 = mul(world, float4(localPos, 1.0f));
@@ -75,5 +77,6 @@ VSOutput VS_Main(VSInput vin)
     vout.svpos = projPos;
     vout.color = vin.color;
     vout.uv = vin.uv;
+    vout.normal = normal_WS;
     return vout;
 }

@@ -19,13 +19,15 @@ RootSignature_WaterMesh::RootSignature_WaterMesh()
 	// t0に1個SRV
 	texRange.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
 
-	CD3DX12_ROOT_PARAMETER rootParam[3] = {};
+	CD3DX12_ROOT_PARAMETER rootParam[4] = {};
 	// b0:のMatrix定数バッファを設定、全てのシェーダーから見えるようにする
 	rootParam[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL); 
 	// b1:Gerstner波定数バッファを設定、全てのシェーダーから見えるようにする
 	rootParam[1].InitAsConstantBufferView(1, 0, D3D12_SHADER_VISIBILITY_ALL); 
+	// b2:ライト用定数バッファを設定、全てのシェーダーから見えるようにする
+	rootParam[2].InitAsConstantBufferView(2, 0, D3D12_SHADER_VISIBILITY_ALL);
 	// t0:WaterMesh用のテクスチャ設定、ピクセルシェーダーから見えるようにする。
-	rootParam[2].InitAsDescriptorTable(1, &texRange, D3D12_SHADER_VISIBILITY_PIXEL);
+	rootParam[3].InitAsDescriptorTable(1, &texRange, D3D12_SHADER_VISIBILITY_PIXEL);
 		
 	// スタティックサンプラーの設定
 	auto sampler = CD3DX12_STATIC_SAMPLER_DESC(

@@ -43,3 +43,10 @@ struct Mesh
 	std::vector<uint32_t> Indices;	// インデックスの配列
 	std::wstring DiffuseMap;		// テクスチャのファイルパス
 };
+
+struct LightPalams
+{
+	XMFLOAT3 lightDir;		// ライトの方向
+	float pad1;				// パディング
+	XMFLOAT4 lightColor;	// ライトの色
+};

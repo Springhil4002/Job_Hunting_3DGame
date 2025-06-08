@@ -82,28 +82,44 @@ bool WaterMesh::Init(Camera* _camera,int _gridX,int _gridY,int _gridSize)
 	}
 
 	// 4つの波のパラメータ設定
-	m_waveParams.amplitude[0] = { 0.3f, 0,0,0 };
-	m_waveParams.direction[0] = { 1.0f,  0.2f, 0,0 };
-	m_waveParams.waveLength[0] = { 6.0f, 0,0,0 };
-	m_waveParams.speed[0] = { 1.0f, 0,0,0 };
+	m_waveParams.amplitude[0]	= { 0.3f, 0,0,0 };
+	m_waveParams.direction[0]	= { 1.0f,  0.2f, 0,0 };
+	m_waveParams.waveLength[0]	= { 6.0f, 0,0,0 };
+	m_waveParams.speed[0]		= { 1.0f, 0,0,0 };
 
-	m_waveParams.amplitude[1] = { 0.2f, 0,0,0 };
-	m_waveParams.direction[1] = { -0.7f,  1.0f, 0,0 };
-	m_waveParams.waveLength[1] = { 5.0f, 0,0,0 };
-	m_waveParams.speed[1] = { 0.8f, 0,0,0 };
+	m_waveParams.amplitude[1]	= { 0.2f, 0,0,0 };
+	m_waveParams.direction[1]	= { -0.7f,  1.0f, 0,0 };
+	m_waveParams.waveLength[1]	= { 5.0f, 0,0,0 };
+	m_waveParams.speed[1]		= { 0.8f, 0,0,0 };
 
-	m_waveParams.amplitude[2] = { 0.15f, 0,0,0 };
-	m_waveParams.direction[2] = { 0.5f, -1.0f, 0,0 };
-	m_waveParams.waveLength[2] = { 4.5f, 0,0,0 };
-	m_waveParams.speed[2] = { 1.2f, 0,0,0 };
+	m_waveParams.amplitude[2]	= { 0.15f, 0,0,0 };
+	m_waveParams.direction[2]	= { 0.5f, -1.0f, 0,0 };
+	m_waveParams.waveLength[2]	= { 4.5f, 0,0,0 };
+	m_waveParams.speed[2]		= { 1.2f, 0,0,0 };
 
-	m_waveParams.amplitude[3] = { 0.1f, 0,0,0 };
-	m_waveParams.direction[3] = { -1.0f, -0.3f, 0,0 };
-	m_waveParams.waveLength[3] = { 3.0f, 0,0,0 };
-	m_waveParams.speed[3] = { 0.6f, 0,0,0 };
+	m_waveParams.amplitude[3]	= { 0.1f, 0,0,0 };
+	m_waveParams.direction[3]	= { -1.0f, -0.3f, 0,0 };
+	m_waveParams.waveLength[3]	= { 3.0f, 0,0,0 };
+	m_waveParams.speed[3]		= { 0.6f, 0,0,0 };
 
 	// バッファにコピー
 	std::memcpy(m_pWaveBuffer->GetPtr(), &m_waveParams, sizeof(GerstnerParams));
+
+	m_pLightBuffer = new ConstantBuffer(sizeof(LightPalams));
+	if (!m_pLightBuffer->IsValid())
+	{
+		printf("水面メッシュ:ライト用コンスタントバッファ生成失敗\n");
+		return false;
+	}
+	// ライトの初期値を設定
+	LightPalams lightParams;
+	// ライトの方向設定
+	lightParams.lightDir = XMFLOAT3(0.0f, -1.0f, 0.0f);	
+	// ライトのカラー設定
+	lightParams.lightColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);	
+	
+	// バッファにコピー
+	std::memcpy(m_pLightBuffer->GetPtr(), &lightParams, sizeof(LightPalams));
 
 	// ディスクリプタヒープ
 	m_pDescriptorHeap = new DescriptorHeap();
@@ -139,31 +155,19 @@ bool WaterMesh::Init(Camera* _camera,int _gridX,int _gridY,int _gridSize)
 		return false;
 	}
 
-	printf("\n");
 	return true;
 }
 
 void WaterMesh::Update()
 {
-	// 毎フレーム(60FPS)
+	// 時間更新
 	g_time += 0.016f;	
+	m_waveTime += 0.016f;
 
-	// カメラの更新処理
-	auto pos = GetPos();
-	auto rota = GetRota();
-	auto scale = GetScale();
+	Update_WaterWave(m_waveTime);
 
-	auto world =
-		DirectX::XMMatrixScalingFromVector(scale) *
-		DirectX::XMMatrixRotationRollPitchYawFromVector(rota) *
-		DirectX::XMMatrixTranslationFromVector(pos);
-
-	auto currentIndex = g_DrawBase->CurrentBackBufferIndex();
-	auto ptr = m_pConstantBuffer[currentIndex]->GetPtr<Matrix>();
-	ptr->world = world;
-	ptr->view = m_camera->GetViewMatrix();
-	ptr->proj = m_camera->GetProjMatrix();
-	ptr->time = g_time;
+	Update_Transform();
+	Update_CameraMatrix();
 }
 
 void WaterMesh::Draw()
@@ -186,11 +190,12 @@ void WaterMesh::Draw()
 	// 定数バッファをセット
 	cmdList->SetGraphicsRootConstantBufferView(0, m_pConstantBuffer[currentIndex]->GetAddress());
 	cmdList->SetGraphicsRootConstantBufferView(1, m_pWaveBuffer->GetAddress());
-	
+	cmdList->SetGraphicsRootConstantBufferView(2, m_pLightBuffer->GetAddress());
+
 	// ディスクリプタヒープをセット
 	cmdList->SetDescriptorHeaps(1, &Heap);
 	// テクスチャをセット
-	cmdList->SetGraphicsRootDescriptorTable(2, m_pTexHandle->handleGPU);
+	cmdList->SetGraphicsRootDescriptorTable(3, m_pTexHandle->handleGPU);
 
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	cmdList->IASetVertexBuffers(0, 1, &vbView);
@@ -202,4 +207,52 @@ void WaterMesh::Draw()
 void WaterMesh::Uninit()
 {
 
+}
+
+void WaterMesh::Update_Transform()
+{
+	// カメラの更新処理
+	auto pos = GetPos();
+	auto rota = GetRota();
+	auto scale = GetScale();
+
+	m_worldMatrix =
+		DirectX::XMMatrixScalingFromVector(scale) *
+		DirectX::XMMatrixRotationRollPitchYawFromVector(rota) *
+		DirectX::XMMatrixTranslationFromVector(pos);
+}
+
+void WaterMesh::Update_CameraMatrix()
+{
+	auto currentIndex = g_DrawBase->CurrentBackBufferIndex();
+	auto ptr = m_pConstantBuffer[currentIndex]->GetPtr<Matrix>();
+	ptr->world = m_worldMatrix;
+	ptr->view = m_camera->GetViewMatrix();
+	ptr->proj = m_camera->GetProjMatrix();
+	ptr->time = g_time;
+}
+
+void WaterMesh::Update_WaterWave(float _waveTime)
+{
+	if (m_waveTime >= 3.0f)
+	{
+		for (int i = 0; i < 4; ++i)
+		{
+			float amp = GetRandomAmplitude();
+			m_waveParams.amplitude[i] = { amp,0,0,0 };
+		}
+	}
+
+	// バッファに変更内容を反映
+	std::memcpy(m_pWaveBuffer->GetPtr(), &m_waveParams, sizeof(GerstnerParams));
+	// 時間のリセット
+	m_waveTime = 0.0f;
+}
+
+float WaterMesh::GetRandomAmplitude(float _min, float _max)
+{
+	static std::random_device rd;
+	static std::mt19937 mt(rd());
+	std::uniform_real_distribution<float> dist(_min, _max);
+	return dist(mt);
 }

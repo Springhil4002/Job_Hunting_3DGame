@@ -3,6 +3,7 @@
 #include "DrawBase.h"
 #include "App.h"
 #include <d3dx12.h>
+#include <random>
 #include "System/SharedStruct.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
@@ -26,6 +27,8 @@ private:
 	// 波用定数バッファとパラメータ
 	ConstantBuffer* m_pWaveBuffer;
 	GerstnerParams m_waveParams{};
+	// ライト用コンスタントバッファ
+	ConstantBuffer* m_pLightBuffer;
 	// ディスクリプタヒープ
 	DescriptorHeap* m_pDescriptorHeap;
 	// ルートシグネチャ
@@ -36,11 +39,15 @@ private:
 	Camera* m_camera;
 	// ディスクリプタハンドル
 	DescriptorHandle* m_pTexHandle;
-	// 波のための時間
+	// 時間
 	float g_time = 0.0f;
+	// 波の切り替え用変数
+	float m_waveTime = 0.0f;
 public:
 	// 共通テクスチャハンドル
 	static DescriptorHandle* s_pSharedTexHandle;
+	// ワールド行列更新操作用
+	DirectX::XMMATRIX m_worldMatrix;
 	/// @brief コンストラクタ
 	WaterMesh() = default;
 	/// @brief デストラクタ
@@ -61,4 +68,15 @@ public:
 	void Draw()		override;
 	/// @brief 終了処理
 	void Uninit()	override;
+	/// @brief ワールド行列の更新
+	void Update_Transform();
+	/// @brief ビュー・プロジェクションの更新
+	void Update_CameraMatrix();
+	/// @brief 波形更新関数
+	void Update_WaterWave(float _waveTime);
+	/// @brief ランダムな振幅を取得する関数
+	/// @param _min 最低値
+	/// @param _max 最大値
+	/// @return ランダムな振幅値
+	float GetRandomAmplitude(float _min = 0.1f, float _max = 0.5f);
 };
