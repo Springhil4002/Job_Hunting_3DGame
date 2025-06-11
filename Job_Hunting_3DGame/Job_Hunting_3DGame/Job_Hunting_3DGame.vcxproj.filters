@@ -156,21 +156,6 @@
     <ClCompile Include="TextureManager.cpp">
       <Filter>ソース ファイル\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="RootSignature_SkyBox.cpp">
-      <Filter>ソース ファイル\Draw\RootSignature</Filter>
-    </ClCompile>
-    <ClCompile Include="PipelineState_SkyBox.cpp">
-      <Filter>ソース ファイル\Draw\PipelineState</Filter>
-    </ClCompile>
-    <ClCompile Include="SkyBox.cpp">
-      <Filter>ソース ファイル\Obj</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureCube.cpp">
-      <Filter>ソース ファイル\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureCubeManager.cpp">
-      <Filter>ソース ファイル\Resource</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h">
@@ -269,21 +254,6 @@
     <ClInclude Include="TextureManager.h">
       <Filter>ヘッダー ファイル\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="SkyBox.h">
-      <Filter>ヘッダー ファイル\Obj</Filter>
-    </ClInclude>
-    <ClInclude Include="PipelineState_SkyBox.h">
-      <Filter>ヘッダー ファイル\Draw\pipelineState</Filter>
-    </ClInclude>
-    <ClInclude Include="RootSignature_SkyBox.h">
-      <Filter>ヘッダー ファイル\Draw\RootSignature</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureCube.h">
-      <Filter>ヘッダー ファイル\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureCubeManager.h">
-      <Filter>ヘッダー ファイル\Resource</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PS_Simple.hlsl">
@@ -296,12 +266,6 @@
       <Filter>リソース ファイル\VertexShader</Filter>
     </FxCompile>
     <FxCompile Include="PS_WaterMesh.hlsl">
-      <Filter>リソース ファイル\PixelShader</Filter>
-    </FxCompile>
-    <FxCompile Include="VS_SkyBox.hlsl">
-      <Filter>リソース ファイル\VertexShader</Filter>
-    </FxCompile>
-    <FxCompile Include="PS_SkyBox.hlsl">
       <Filter>リソース ファイル\PixelShader</Filter>
     </FxCompile>
   </ItemGroup>
