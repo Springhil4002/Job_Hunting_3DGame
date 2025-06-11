@@ -24,9 +24,9 @@ struct alignas(256) Matrix
 	Matrix4x4 world;	// ワールド行列
 	Matrix4x4 view;		// ビュー行列
 	Matrix4x4 proj;		// 投影行列
-
 	float time;			// 波のための時間
-	float padding[3];	// 16バイトアライメント
+	XMFLOAT3 cameraPos;	// カメラ位置
+	float pad1;			// 16バイトアライメント
 };
 
 struct GerstnerParams
