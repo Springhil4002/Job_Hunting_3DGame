@@ -20,4 +20,3 @@ public:
 	/// @return // ルートシグネチャを返す
 	ID3D12RootSignature* Get();
 };
-

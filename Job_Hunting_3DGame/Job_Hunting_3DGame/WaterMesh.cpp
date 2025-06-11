@@ -72,6 +72,11 @@ bool WaterMesh::Init(Camera* _camera,int _gridX,int _gridY,int _gridSize)
 		ptr->world = XMMatrixIdentity();
 		ptr->view = m_camera->GetViewMatrix();
 		ptr->proj = m_camera->GetProjMatrix();
+
+		XMVECTOR camPosVec = m_camera->GetPos();
+		XMFLOAT3 camPos;
+		XMStoreFloat3(&camPos, camPosVec);
+		ptr->cameraPos = XMFLOAT3(camPos.x, camPos.y, camPos.z);
 	}
 
 	m_pWaveBuffer = new ConstantBuffer(sizeof(GerstnerParams));
@@ -230,6 +235,12 @@ void WaterMesh::Update_CameraMatrix()
 	ptr->view = m_camera->GetViewMatrix();
 	ptr->proj = m_camera->GetProjMatrix();
 	ptr->time = g_time;
+
+	// カメラ位置を毎フレーム更新
+	XMVECTOR camPosVec = m_camera->GetPos();
+	XMFLOAT3 camPos;
+	XMStoreFloat3(&camPos, camPosVec);
+	ptr->cameraPos = camPos;
 }
 
 void WaterMesh::Update_WaterWave(float _waveTime)
