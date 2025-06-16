@@ -6,8 +6,8 @@
 #include "System/SharedStruct.h"
 #include "VertexBuffer.h"
 #include "ConstantBuffer.h"
-#include "RootSignature.h"
-#include "PipelineState.h"
+#include "RootSignature_Player.h"
+#include "PipelineState_Player.h"
 #include "IndexBuffer.h"
 #include "AssimpLoader.h"
 #include "DescriptorHeap.h"
@@ -16,9 +16,8 @@
 
 #include <filesystem>
 
-class Model3D : public Object
+class Player : public Object
 {
-private:
 	// 頂点バッファ
 	VertexBuffer* m_pVertexBuffer;
 	// インデックスバッファ
@@ -28,9 +27,9 @@ private:
 	// ディスクリプタヒープ
 	DescriptorHeap* m_pDescriptorHeap;
 	// ルートシグネチャ
-	RootSignature* m_pRootSignature;
+	RootSignature_Player* m_pRootSignature;
 	// パイプラインステート
-	PipelineState* m_pPipelineState;
+	PipelineState_Player* m_pPipelineState;
 	// カメラ
 	Camera* m_camera;
 
@@ -39,14 +38,18 @@ private:
 	// メッシュ配列
 	std::vector<Mesh> m_meshes;
 	// メッシュの数分の頂点バッファ
-	std::vector<VertexBuffer*> m_pVertexBuffers;	
+	std::vector<VertexBuffer*> m_pVertexBuffers;
 	// メッシュの数分のインデックスバッファ
-	std::vector<IndexBuffer*> m_pIndexBuffers;		
+	std::vector<IndexBuffer*> m_pIndexBuffers;
 	// テクスチャ用のハンドル
 	std::vector<DescriptorHandle*> m_pMaterialHandles;
 public:
-	Model3D() = default;
-	~Model3D() = default;
+	// ワールド行列更新操作用
+	DirectX::XMMATRIX m_worldMatrix;
+	/// @brief コンストラクタ
+	Player() = default;
+	/// @brief デストラクタ
+	~Player() = default;
 
 	// クローンメソッド
 	Object* clone() const override;
@@ -67,4 +70,10 @@ public:
 	/// @param _ext 拡張子
 	/// @return 拡張子を置き換えたファイルパス
 	std::wstring ReplaceExtension(const std::wstring& _origin, const char* _ext);
+
+	/// @brief ワールド行列の更新
+	void Update_Transform();
+	/// @brief ビュー・プロジェクションの更新
+	void Update_CameraMatrix();
 };
+

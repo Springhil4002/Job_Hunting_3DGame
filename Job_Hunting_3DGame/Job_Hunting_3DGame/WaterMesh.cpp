@@ -116,10 +116,21 @@ bool WaterMesh::Init(Camera* _camera,int _gridX,int _gridY,int _gridSize)
 		printf("水面メッシュ:ライト用コンスタントバッファ生成失敗\n");
 		return false;
 	}
+
+	// カメラの視点と注視点から方向ベクトルを求める
+	XMVECTOR eye = m_camera->GetPos();
+	XMVECTOR target = m_camera->GetTarget();
+	XMVECTOR camDir = XMVector3Normalize(XMVectorSubtract(target, eye));
+
+	// カメラと反対方向にライトを向ける
+	XMVECTOR lightDirVec = XMVectorScale(camDir, -1.0f);
+	XMFLOAT3 lightDir;
+	XMStoreFloat3(&lightDir, lightDirVec);
+
 	// ライトの初期値を設定
 	LightPalams lightParams;
 	// ライトの方向設定
-	lightParams.lightDir = XMFLOAT3(0.0f, -1.0f, 0.0f);	
+	lightParams.lightDir = lightDir;
 	// ライトのカラー設定
 	lightParams.lightColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);	
 	

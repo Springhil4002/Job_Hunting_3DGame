@@ -1,21 +1,20 @@
-#include "Model3D.h"
-
-std::wstring Model3D::ReplaceExtension(const std::wstring& _origin, const char* _ext)
+#include "Player.h"
+std::wstring Player::ReplaceExtension(const std::wstring& _origin, const char* _ext)
 {
 	if (_origin.empty()) return L"";
 	std::filesystem::path path = _origin.c_str();
 	return path.replace_extension(_ext).wstring();
 }
 
-Object* Model3D::clone() const
+Object* Player::clone() const
 {
-	return new Model3D(*this);
+	return new Player(*this);
 }
 
-bool Model3D::Init(Camera* _camera)
+bool Player::Init(Camera* _camera)
 {
 
-	m_pModelFile = L"Assets/Alicia/FBX/Alicia_solid_Unity.FBX";
+	m_pModelFile = L"Assets//";
 	m_camera = _camera;
 	// インポートに必要なパラメータ設定
 	ImportSettings importSetting = {
@@ -24,7 +23,7 @@ bool Model3D::Init(Camera* _camera)
 		false,
 		true	// アリシアはテクスチャV座標が反転してるためtrue	
 	};
-	
+
 	// モデルローダー
 	AssimpLoader loader;
 
@@ -69,7 +68,7 @@ bool Model3D::Init(Camera* _camera)
 	for (size_t i = 0; i < DrawBase::FRAME_BUFFER_COUNT; ++i)
 	{
 		m_pConstantBuffer[i] = new ConstantBuffer(sizeof(Matrix));
-		if (!m_pConstantBuffer[i]->IsValid()) 
+		if (!m_pConstantBuffer[i]->IsValid())
 		{
 			printf("コンスタントバッファ生成失敗\n");
 			return false;
@@ -107,7 +106,7 @@ bool Model3D::Init(Camera* _camera)
 		m_pMaterialHandles.push_back(handle);
 	}
 
-	m_pRootSignature = new RootSignature();
+	m_pRootSignature = new RootSignature_Player();
 	if (!m_pRootSignature->IsValid())
 	{
 		printf("ルートシグネチャの生成に失敗\n");
@@ -115,7 +114,7 @@ bool Model3D::Init(Camera* _camera)
 	}
 
 	// パイプラインステートのインスタンス生成
-	m_pPipelineState = new PipelineState();
+	m_pPipelineState = new PipelineState_Player();
 	// 頂点レイアウトの設定
 	m_pPipelineState->SetInputLayout(Vertex::InputLayout);
 	// ルートシグネチャの設定
@@ -142,30 +141,17 @@ bool Model3D::Init(Camera* _camera)
 		return false;
 	}
 
-	printf("モデル:Aliciaの初期化処理に成功\n");
+	printf("Player:モデルの初期化処理に成功\n");
 	return true;
 }
 
-void Model3D::Update()
+void Player::Update()
 {
-	// カメラの更新処理
-	auto pos = GetPos();
-	auto rota = GetRota();
-	auto scale = GetScale();
-
-	auto world =
-		DirectX::XMMatrixScalingFromVector(scale) *
-		DirectX::XMMatrixRotationRollPitchYawFromVector(rota) *
-		DirectX::XMMatrixTranslationFromVector(pos);
-
-	auto currentIndex = g_DrawBase->CurrentBackBufferIndex();
-	auto ptr = m_pConstantBuffer[currentIndex]->GetPtr<Matrix>();
-	ptr->world = world;
-	ptr->view = m_camera->GetViewMatrix();
-	ptr->proj = m_camera->GetProjMatrix();
+	Update_Transform();
+	Update_CameraMatrix();
 }
 
-void Model3D::Draw()
+void Player::Draw()
 {
 	// 現在のフレーム番号を取得
 	auto currentIndex = g_DrawBase->CurrentBackBufferIndex();
@@ -201,7 +187,29 @@ void Model3D::Draw()
 	}
 }
 
-void Model3D::Uninit()
+void Player::Uninit()
 {
 
+}
+
+void Player::Update_Transform()
+{
+	// カメラの更新処理
+	auto pos = GetPos();
+	auto rota = GetRota();
+	auto scale = GetScale();
+
+	m_worldMatrix =
+		DirectX::XMMatrixScalingFromVector(scale) *
+		DirectX::XMMatrixRotationRollPitchYawFromVector(rota) *
+		DirectX::XMMatrixTranslationFromVector(pos);
+}
+
+void Player::Update_CameraMatrix()
+{
+	auto currentIndex = g_DrawBase->CurrentBackBufferIndex();
+	auto ptr = m_pConstantBuffer[currentIndex]->GetPtr<Matrix>();
+	ptr->world = m_worldMatrix;
+	ptr->view = m_camera->GetViewMatrix();
+	ptr->proj = m_camera->GetProjMatrix();
 }

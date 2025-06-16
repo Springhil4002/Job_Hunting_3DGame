@@ -1,5 +1,6 @@
 #pragma once
 #include <DirectXMath.h>
+#include <Windows.h>
 
 class Camera
 {
@@ -10,6 +11,7 @@ private:
 	DirectX::XMMATRIX m_view;
 	DirectX::XMMATRIX m_proj;
 
+	POINT m_lastMousePos;
 	void UpdateViewMatrix();
 
 public:
@@ -32,5 +34,6 @@ public:
 	void MoveLeft(float _distance);
 	void MoveUp(float _distance);
 	void MoveDown(float _distance);
+	void Ratate_Yaw(float _angle);
+	void Ratate_Pitch(float _angle);
 };
-

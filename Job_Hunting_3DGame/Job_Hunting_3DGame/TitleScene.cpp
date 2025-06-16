@@ -14,6 +14,7 @@ void TitleScene::Init(Camera* _camera)
 	printf("シーン名：TitleScene\n");
 	
 	prototypeManager->AddPrototype("WaterMesh", new WaterMesh);
+	//prototypeManager->AddPrototype("Player", new Player);
 
 	WaterMesh* waterMesh[MAX_OBJECT];
 	for (int i = 0; i < GRID_SIZE; ++i)
@@ -36,53 +37,72 @@ void TitleScene::Init(Camera* _camera)
 		}
 	}
 	
-	/*int test = 1;
-	WaterMesh* waterMesh[1];
-	for (int i = 0; i < test; ++i)
-	{
-		waterMesh[i] = static_cast<WaterMesh*>(CreateObj("WaterMesh"));
-		waterMesh[i]->Init(camera);
-		waterMesh[i]->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
-		waterMesh[i]->SetRota(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
-		waterMesh[i]->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
-	}
-	waterMesh[0]->m_tags.AddTag("Water_MS");
-
-	for (int i = 0; i < test; ++i)
-	{
-		objectInstance.insert(waterMesh[i]);
-	}*/
+	/*Player* player;
+	player = static_cast<Player*>(CreateObj("Player"));
+	player->Init(camera);
+	player->SetPos(XMVectorSet(0.0f, 10.0f, 0.0f, 0.0f));
+	player->SetRota(XMVectorSet(120.0f, 0.0f, 0.0f, 0.0f));
+	player->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	player->m_tags.AddTag("Player");
+	objectInstance.insert(player);*/
 }
 
 void TitleScene::Update()
 {
 	if (input.GetKeyPress(VK_D))
 	{
+		// 右方向に移動
 		camera->MoveRight(1.0f);
 	}
 	if (input.GetKeyPress(VK_A))
 	{
+		// 左方向に移動
 		camera->MoveLeft(1.0f);
 	}
 	if (input.GetKeyPress(VK_W))
 	{
+		// 前方向に移動
 		camera->MoveForward(1.0f);
 	}
 	if (input.GetKeyPress(VK_S))
 	{
+		// 後ろ方向に移動
 		camera->MoveBack(1.0f);
 	}
 
 	if (input.GetKeyPress(VK_E))
 	{
+		// 上方向に移動
 		camera->MoveUp(1.0f);
 	}
 	if (input.GetKeyPress(VK_Q))
 	{
+		// 下方向に移動
 		camera->MoveDown(1.0f);
 	}
+	
+	if (input.GetKeyPress(VK_SHIFT) && input.GetKeyPress(VK_A))
+	{
+		// 左に10度回転
+		camera->Ratate_Yaw(XMConvertToRadians(1.0f));	
+	}
 
-
+	if (input.GetKeyPress(VK_SHIFT) && input.GetKeyPress(VK_D))
+	{
+		// 右に10度回転
+		camera->Ratate_Yaw(XMConvertToRadians(-1.0f));
+	}
+	if (input.GetKeyPress(VK_SHIFT) && input.GetKeyPress(VK_W))
+	{
+		// 上に10度回転
+		camera->Ratate_Pitch(XMConvertToRadians(1.0f));
+	}
+	if (input.GetKeyPress(VK_SHIFT) && input.GetKeyPress(VK_S))
+	{
+		// 下に10度回転
+		camera->Ratate_Pitch(XMConvertToRadians(-1.0f));
+	}
+	
 	for (auto& obj : objectInstance)
 	{
 		obj->Update();

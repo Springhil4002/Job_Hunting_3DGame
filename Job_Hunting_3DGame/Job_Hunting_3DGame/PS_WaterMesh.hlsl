@@ -39,16 +39,16 @@ float4 PS_Main(VSOutput pin) : SV_TARGET
     NdotL = saturate(NdotL * 0.5f + 0.5f); // 明るさの最低値が0.5
     
     // 鏡面反射
-    float specPower = 64.0f;
+    float specPower = 8.0f;
     float specIntensity = 0.8f;
     float spec = pow(max(dot(R, V), 0.0f), specPower);
     
     // Fresnel効果（Schlick近似）
     float fresnelPower = 5.0f;
     float baseReflectivity = 0.02f; // 水の表現のため
-    float fresnel = baseReflectivity + 
-                    (1.0 - baseReflectivity) * 
-                    pow(1.0 - saturate(dot(N, V)), 
+    float fresnel = baseReflectivity +
+                    (1.0 - baseReflectivity) *
+                    pow(1.0 - saturate(dot(N, V)),
                     fresnelPower);
     // テクスチャカラー
     float4 texColor = tex.Sample(smp, pin.uv);
@@ -58,5 +58,5 @@ float4 PS_Main(VSOutput pin) : SV_TARGET
     float4 diffuse = texColor * pin.color * lightColor * NdotL;
     float4 specular = fresnel * specIntensity * spec * lightColor;
     
-    return ambient + diffuse + specular;
+    return ambient + diffuse + specular; 
 }
