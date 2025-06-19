@@ -36,15 +36,6 @@ void TitleScene::Init(Camera* _camera)
 			objectInstance.insert(waterMesh[index]);
 		}
 	}
-	
-	/*Player* player;
-	player = static_cast<Player*>(CreateObj("Player"));
-	player->Init(camera);
-	player->SetPos(XMVectorSet(0.0f, 10.0f, 0.0f, 0.0f));
-	player->SetRota(XMVectorSet(120.0f, 0.0f, 0.0f, 0.0f));
-	player->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
-	player->m_tags.AddTag("Player");
-	objectInstance.insert(player);*/
 }
 
 void TitleScene::Update()
