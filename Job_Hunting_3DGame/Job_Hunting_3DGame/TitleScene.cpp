@@ -12,9 +12,22 @@ void TitleScene::Init(Camera* _camera)
 {
 	camera = _camera;
 	printf("ƒV[ƒ“–¼FTitleScene\n");
-	
+
+	prototypeManager->AddPrototype("Sky", new SkyDomeMesh);
 	prototypeManager->AddPrototype("WaterMesh", new WaterMesh);
-	//prototypeManager->AddPrototype("Player", new Player);
+	
+	XMVECTOR camPos = camera->GetPos();
+	XMFLOAT3 pos;
+	XMStoreFloat3(&pos, camPos);
+	pos.y -= 30.0f;
+
+	SkyDomeMesh* sky;
+	sky = static_cast<SkyDomeMesh*>(CreateObj("Sky"));
+	sky->Init(camera);
+	sky->SetPos(XMLoadFloat3(&pos));
+	sky->SetRota(XMVectorZero());
+	sky->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	objectInstance.insert(sky);
 
 	WaterMesh* waterMesh[MAX_OBJECT];
 	for (int i = 0; i < GRID_SIZE; ++i)
@@ -40,59 +53,7 @@ void TitleScene::Init(Camera* _camera)
 
 void TitleScene::Update()
 {
-	if (input.GetKeyPress(VK_D))
-	{
-		// ‰E•ûŒü‚ÉˆÚ“®
-		camera->MoveRight(1.0f);
-	}
-	if (input.GetKeyPress(VK_A))
-	{
-		// ¶•ûŒü‚ÉˆÚ“®
-		camera->MoveLeft(1.0f);
-	}
-	if (input.GetKeyPress(VK_W))
-	{
-		// ‘O•ûŒü‚ÉˆÚ“®
-		camera->MoveForward(1.0f);
-	}
-	if (input.GetKeyPress(VK_S))
-	{
-		// Œã‚ë•ûŒü‚ÉˆÚ“®
-		camera->MoveBack(1.0f);
-	}
-
-	if (input.GetKeyPress(VK_E))
-	{
-		// ã•ûŒü‚ÉˆÚ“®
-		camera->MoveUp(1.0f);
-	}
-	if (input.GetKeyPress(VK_Q))
-	{
-		// ‰º•ûŒü‚ÉˆÚ“®
-		camera->MoveDown(1.0f);
-	}
-	
-	if (input.GetKeyPress(VK_SHIFT) && input.GetKeyPress(VK_A))
-	{
-		// ¶‚É10“x‰ñ“]
-		camera->Ratate_Yaw(XMConvertToRadians(1.0f));	
-	}
-
-	if (input.GetKeyPress(VK_SHIFT) && input.GetKeyPress(VK_D))
-	{
-		// ‰E‚É10“x‰ñ“]
-		camera->Ratate_Yaw(XMConvertToRadians(-1.0f));
-	}
-	if (input.GetKeyPress(VK_SHIFT) && input.GetKeyPress(VK_W))
-	{
-		// ã‚É10“x‰ñ“]
-		camera->Ratate_Pitch(XMConvertToRadians(1.0f));
-	}
-	if (input.GetKeyPress(VK_SHIFT) && input.GetKeyPress(VK_S))
-	{
-		// ‰º‚É10“x‰ñ“]
-		camera->Ratate_Pitch(XMConvertToRadians(-1.0f));
-	}
+	Update_Input();
 	
 	for (auto& obj : objectInstance)
 	{
@@ -119,4 +80,30 @@ void TitleScene::Uninit()
 	{
 		obj->Uninit();
 	}
+}
+
+void TitleScene::Update_Input()
+{
+	// ãˆÚ“®
+	if (input.GetKeyPress(VK_E)) camera->MoveUp(0.1f);
+	// ‰ºˆÚ“®
+	if (input.GetKeyPress(VK_Q)) camera->MoveDown(0.1f);
+
+	// ‰EˆÚ“®
+	if (input.GetKeyPress(VK_D)) camera->MoveRight(0.1f);
+	// ¶ˆÚ“®
+	if (input.GetKeyPress(VK_A)) camera->MoveLeft(0.1f);
+	// ‘OˆÚ“®
+	if (input.GetKeyPress(VK_W)) camera->MoveForward(0.1f);
+	// ŒãˆÚ“®
+	if (input.GetKeyPress(VK_S)) camera->MoveBack(0.1f);
+
+	// ‰E•ûŒü‰ñ“]
+	if (input.GetKeyPress(VK_SHIFT) && input.GetKeyPress(VK_D)) camera->Ratate_Yaw(XMConvertToRadians(0.1f));
+	// ¶•ûŒü‰ñ“]
+	if (input.GetKeyPress(VK_SHIFT) && input.GetKeyPress(VK_A)) camera->Ratate_Yaw(XMConvertToRadians(-0.1f));
+	// ãŒü‚«‚É‰ñ“]
+	if (input.GetKeyPress(VK_SHIFT) && input.GetKeyPress(VK_W)) camera->Ratate_Pitch(XMConvertToRadians(-0.1f));
+	// ‰ºŒü‚«‚É‰ñ“]
+	if (input.GetKeyPress(VK_SHIFT) && input.GetKeyPress(VK_S)) camera->Ratate_Pitch(XMConvertToRadians(0.1f));
 }

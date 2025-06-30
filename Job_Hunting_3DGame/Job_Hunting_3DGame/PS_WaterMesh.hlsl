@@ -40,7 +40,7 @@ float4 PS_Main(VSOutput pin) : SV_TARGET
     
     // ‹¾–Ê”½Ë
     float specPower = 8.0f;
-    float specIntensity = 0.8f;
+    float specIntensity = 0.65f;
     float spec = pow(max(dot(R, V), 0.0f), specPower);
     
     // FresnelŒø‰ÊiSchlick‹ß—j

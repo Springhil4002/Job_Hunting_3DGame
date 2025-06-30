@@ -15,3 +15,16 @@ const D3D12_INPUT_LAYOUT_DESC Vertex::InputLayout =
 	Vertex::InputElements,
 	Vertex::InputElementCount
 };
+
+// 入力レイアウトの定義
+const D3D12_INPUT_ELEMENT_DESC SkyVertex::InputElements[] =
+{
+	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },		// float3のPOSITION
+	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },		// float2のTEXCOORD
+};
+
+const D3D12_INPUT_LAYOUT_DESC SkyVertex::InputLayout =
+{
+	SkyVertex::InputElements,
+	SkyVertex::InputElementCount
+};

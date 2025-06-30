@@ -156,13 +156,13 @@
     <ClCompile Include="TextureManager.cpp">
       <Filter>ソース ファイル\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
+    <ClCompile Include="SkyDomeMesh.cpp">
       <Filter>ソース ファイル\Obj</Filter>
     </ClCompile>
-    <ClCompile Include="RootSignature_Player.cpp">
+    <ClCompile Include="RootSignature_SkyDomeMesh.cpp">
       <Filter>ソース ファイル\Draw\RootSignature</Filter>
     </ClCompile>
-    <ClCompile Include="PipelineState_Player.cpp">
+    <ClCompile Include="PipelineState_SkyDomeMesh.cpp">
       <Filter>ソース ファイル\Draw\PipelineState</Filter>
     </ClCompile>
   </ItemGroup>
@@ -263,14 +263,14 @@
     <ClInclude Include="TextureManager.h">
       <Filter>ヘッダー ファイル\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
+    <ClInclude Include="SkyDomeMesh.h">
       <Filter>ヘッダー ファイル\Obj</Filter>
     </ClInclude>
-    <ClInclude Include="RootSignature_Player.h">
-      <Filter>ヘッダー ファイル\Draw\RootSignature</Filter>
-    </ClInclude>
-    <ClInclude Include="PipelineState_Player.h">
+    <ClInclude Include="PipelineState_SkyDomeMesh.h">
       <Filter>ヘッダー ファイル\Draw\pipelineState</Filter>
+    </ClInclude>
+    <ClInclude Include="RootSignature_SkyDomeMesh.h">
+      <Filter>ヘッダー ファイル\Draw\RootSignature</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -284,6 +284,12 @@
       <Filter>リソース ファイル\VertexShader</Filter>
     </FxCompile>
     <FxCompile Include="PS_WaterMesh.hlsl">
+      <Filter>リソース ファイル\PixelShader</Filter>
+    </FxCompile>
+    <FxCompile Include="VS_SkyDomeMesh.hlsl">
+      <Filter>リソース ファイル\VertexShader</Filter>
+    </FxCompile>
+    <FxCompile Include="PS_SkyDomeMesh.hlsl">
       <Filter>リソース ファイル\PixelShader</Filter>
     </FxCompile>
   </ItemGroup>

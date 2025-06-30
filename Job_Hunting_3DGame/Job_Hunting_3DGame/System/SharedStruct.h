@@ -50,3 +50,12 @@ struct LightPalams
 	float pad1;				// パディング
 	XMFLOAT4 lightColor;	// ライトの色
 };
+
+struct SkyVertex {
+	DirectX::XMFLOAT3 Position;
+	DirectX::XMFLOAT2 UV;
+	static const D3D12_INPUT_LAYOUT_DESC InputLayout;
+private:
+	static const int InputElementCount = 2;
+	static const D3D12_INPUT_ELEMENT_DESC InputElements[InputElementCount];
+};

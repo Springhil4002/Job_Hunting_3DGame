@@ -4,11 +4,11 @@ using namespace DirectX;
 
 Camera::Camera()
 	: m_eye(XMVectorSet(0.0f,30.0f,-50.0f,1.0f)),
-	  m_target(XMVectorZero()),
+	  m_target(XMVectorSet(0.0f,0.0f,0.0f,0.0f)),
 	  m_up(XMVectorSet(0.0f,1.0f,0.0f,0.0f))
 {
 	UpdateViewMatrix();
-	SetPerspective(XMConvertToRadians(60.0f), 1.0f, 0.1f, 1000.0f);
+	SetPerspective(XMConvertToRadians(45.0f), 1.0f, 0.1f, 1000.0f);
 }
 
 void Camera::SetPos(const XMVECTOR& _eye)
@@ -107,23 +107,34 @@ void Camera::MoveDown(float _distance)
 
 void Camera::Ratate_Yaw(float _angle)
 {
-	// 注視点とカメラとの距離
-	XMVECTOR offset = XMVectorSubtract(m_eye, m_target);
-	// 上方向を軸に回転
-	XMMATRIX rot = XMMatrixRotationAxis(m_up, _angle);
-	offset = XMVector3TransformNormal(offset, rot);
-	m_eye = XMVectorAdd(m_target, offset);
+	// カメラ位置から注視点への方向ベクトル
+	XMVECTOR forward = XMVectorSubtract(m_target, m_eye);
+	
+	// ワールドのY軸を基準に
+	XMVECTOR worldUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+	XMMATRIX rot = XMMatrixRotationAxis(worldUp, _angle);
+	
+	// 視点ベクトルを回転
+	forward = XMVector3TransformNormal(forward, rot);
+	
+	// 視点を基準に注視点を再設定
+	m_target = XMVectorAdd(m_eye, forward); 
+	
+	// 上ベクトルも再計算
+	m_up = XMVector3TransformNormal(m_up, rot);
+	
 	UpdateViewMatrix();
 }
 void Camera::Ratate_Pitch(float _angle)
 {
-	XMVECTOR offset = XMVectorSubtract(m_eye, m_target);
-	XMVECTOR right = XMVector3Normalize(XMVector3Cross(m_up, XMVectorSubtract(m_target, m_eye)));
+	XMVECTOR forward = XMVectorSubtract(m_target, m_eye);
+	XMVECTOR right = XMVector3Normalize(XMVector3Cross(m_up, forward)); 
 	XMMATRIX rot = XMMatrixRotationAxis(right, _angle);
-	offset = XMVector3TransformNormal(offset, rot);
-	m_eye = XMVectorAdd(m_target, offset);
+	forward = XMVector3TransformNormal(forward, rot);
+	// 視点を基準に注視点を再設定
+	m_target = XMVectorAdd(m_eye, forward); 
 
-	// カメラの上方向に対しても回転させる
+	// upベクトルも回転（チルト）
 	m_up = XMVector3TransformNormal(m_up, rot);
 
 	UpdateViewMatrix();

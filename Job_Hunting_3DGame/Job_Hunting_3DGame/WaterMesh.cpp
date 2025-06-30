@@ -146,7 +146,7 @@ bool WaterMesh::Init(Camera* _camera,int _gridX,int _gridY,int _gridSize)
 		s_pSharedTexHandle = m_pDescriptorHeap->Register(tex.get());
 	}
 	m_pTexHandle = s_pSharedTexHandle;
-
+	
 	m_pRootSignature = new RootSignature_WaterMesh();
 	if (!m_pRootSignature->IsValid())
 	{

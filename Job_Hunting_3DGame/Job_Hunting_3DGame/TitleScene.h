@@ -29,4 +29,6 @@ public:
 	void Draw() override;
 	/// @brief I—¹ˆ—
 	void Uninit() override;
+	/// @brief “ü—Íˆ—
+	void Update_Input();
 };

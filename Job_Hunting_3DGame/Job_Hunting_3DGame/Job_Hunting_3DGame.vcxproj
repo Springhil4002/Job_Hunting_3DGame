@@ -158,18 +158,18 @@
     <ClCompile Include="Model3D.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="PipelineState.cpp" />
-    <ClCompile Include="PipelineState_Player.cpp" />
+    <ClCompile Include="PipelineState_SkyDomeMesh.cpp" />
     <ClCompile Include="PipelineState_WaterMesh.cpp" />
-    <ClCompile Include="Player.cpp" />
     <ClCompile Include="ResultScene.cpp" />
     <ClCompile Include="RootSignature.cpp" />
-    <ClCompile Include="RootSignature_Player.cpp" />
+    <ClCompile Include="RootSignature_SkyDomeMesh.cpp" />
     <ClCompile Include="RootSignature_WaterMesh.cpp" />
     <ClCompile Include="Sample.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="SkyDomeMesh.cpp" />
     <ClCompile Include="System\Input.cpp" />
     <ClCompile Include="System\SharedStruct.cpp" />
     <ClCompile Include="Tags.cpp" />
@@ -197,19 +197,19 @@
     <ClInclude Include="Model3D.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="PipelineState.h" />
-    <ClInclude Include="PipelineState_Player.h" />
+    <ClInclude Include="PipelineState_SkyDomeMesh.h" />
     <ClInclude Include="PipelineState_WaterMesh.h" />
-    <ClInclude Include="Player.h" />
     <ClInclude Include="PrototypeManager.h" />
     <ClInclude Include="ResultScene.h" />
     <ClInclude Include="RootSignature.h" />
-    <ClInclude Include="RootSignature_Player.h" />
+    <ClInclude Include="RootSignature_SkyDomeMesh.h" />
     <ClInclude Include="RootSignature_WaterMesh.h" />
     <ClInclude Include="Sample.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="SkyDomeMesh.h" />
     <ClInclude Include="System\CommonTypes.h" />
     <ClInclude Include="System\ComPtr.h" />
     <ClInclude Include="System\Input.h" />
@@ -235,6 +235,16 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pixel</EntryPointName>
     </FxCompile>
+    <FxCompile Include="PS_SkyDomeMesh.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PS_Main</EntryPointName>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PS_Main</EntryPointName>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+    </FxCompile>
     <FxCompile Include="PS_WaterMesh.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
@@ -253,6 +263,16 @@
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">vert</EntryPointName>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">vert</EntryPointName>
+    </FxCompile>
+    <FxCompile Include="VS_SkyDomeMesh.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">VS_Main</EntryPointName>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">VS_Main</EntryPointName>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="VS_WaterMesh.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
