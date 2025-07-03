@@ -19,36 +19,22 @@ void TitleScene::Init(Camera* _camera)
 	XMVECTOR camPos = camera->GetPos();
 	XMFLOAT3 pos;
 	XMStoreFloat3(&pos, camPos);
-	pos.y -= 30.0f;
+	pos.y -= 100.0f;
 
-	SkyDomeMesh* sky;
-	sky = static_cast<SkyDomeMesh*>(CreateObj("Sky"));
+	SkyDomeMesh* sky = static_cast<SkyDomeMesh*>(CreateObj("Sky"));
 	sky->Init(camera);
 	sky->SetPos(XMLoadFloat3(&pos));
 	sky->SetRota(XMVectorZero());
 	sky->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
 	objectInstance.insert(sky);
 
-	WaterMesh* waterMesh[MAX_OBJECT];
-	for (int i = 0; i < GRID_SIZE; ++i)
-	{
-		for (int j = 0; j < GRID_SIZE; ++j)
-		{
-			int index = i * GRID_SIZE + j;
-			waterMesh[index] = static_cast<WaterMesh*>(CreateObj("WaterMesh"));
-			waterMesh[index]->Init(camera, j, i, GRID_SIZE);
-
-			// 原点を中心とした配置座標を計算
-			float x = j * SPACE - OFFSET;
-			float z = i * SPACE - OFFSET;
-
-			waterMesh[index]->SetPos(XMVectorSet(x, 0.0f, z, 0.0f));
-			waterMesh[index]->SetRota(XMVectorZero());
-			waterMesh[index]->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
-			waterMesh[index]->m_tags.AddTag("Water_MS");
-			objectInstance.insert(waterMesh[index]);
-		}
-	}
+	WaterMesh* waterMesh = static_cast<WaterMesh*>(CreateObj("WaterMesh"));
+	waterMesh->Init(camera, gridX, gridZ, gridMeshSize);
+	waterMesh->SetPos(XMVectorZero());
+	waterMesh->SetRota(XMVectorZero());
+	waterMesh->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	waterMesh->m_tags.AddTag("WaterMesh");
+	objectInstance.insert(waterMesh);
 }
 
 void TitleScene::Update()

@@ -27,12 +27,11 @@ VS_OUT VS_Main(VS_INPUT vin)
     float4x4 identity =
     {
         1, 0, 0, 0,
-    0, 1, 0, 0,
-    0, 0, 1, 0,
-    0, 0, 0, 1
+        0, 1, 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1
     };
 
-    
     // カメラ位置へスカイドームを追従させる(移動部分だけ)
     float4 worldPos = mul(world, float4(vin.pos, 1.0f));
     float4 viewPos = mul(view, worldPos);

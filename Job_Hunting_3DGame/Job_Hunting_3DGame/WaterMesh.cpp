@@ -9,30 +9,56 @@ Object* WaterMesh::clone() const
 	return new WaterMesh(*this);
 }
 
-Mesh WaterMesh::CreateQuad(int _gridX,int _gridY,int _gridSize)
+Mesh WaterMesh::CreateGridMesh(int _gridX,int _gridZ,int _gridSize)
 {
-	float uvStep = 1.0f / _gridSize;
-	float u0 = uvStep * _gridX;
-	float v0 = uvStep * _gridY;
-	float u1 = u0 + uvStep;
-	float v1 = v0 + uvStep;
-
 	Mesh mesh;
-	mesh.Vertices.resize(4);
-	XMFLOAT3 normal		= XMFLOAT3(0.0f, 1.0f, 0.0f);
-	XMFLOAT3 tangent	= XMFLOAT3(1.0f, 0.0f, 0.0f);
-	XMFLOAT4 color		= XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	
-	mesh.Vertices[0] = { XMFLOAT3(-1.0f, 0.0f, 1.0f), normal, XMFLOAT2(u0, v0), tangent, color };
-	mesh.Vertices[1] = { XMFLOAT3(1.0f, 0.0f, 1.0f), normal, XMFLOAT2(u1, v0), tangent, color };
-	mesh.Vertices[2] = { XMFLOAT3(1.0f, 0.0f, -1.0f), normal, XMFLOAT2(u1, v1), tangent, color };
-	mesh.Vertices[3] = { XMFLOAT3(-1.0f, 0.0f, -1.0f), normal, XMFLOAT2(u0, v1), tangent, color };
+	mesh.Vertices.resize((_gridX + 1) * (_gridZ + 1));
+	mesh.Indices.reserve(_gridX * _gridZ * 6);
 
-	mesh.Indices = {
-		0,1,2,
-		0,2,3
-	};
+	float halfSize = _gridSize * 0.5f;
+	float stepX = _gridSize / _gridX;
+	float stepZ = _gridSize / _gridZ;
 	
+	for (int z = 0; z <= _gridZ; ++z)
+	{
+		for (int x = 0; x <= _gridX; ++x)
+		{
+			float px = x * stepX - halfSize;
+			float pz = z * stepZ - halfSize;
+			float u = (float)x / _gridX;
+			float v = (float)z / _gridZ;
+
+			int index = z * (_gridX + 1) + x;
+			mesh.Vertices[index] = {
+				XMFLOAT3(px,0.0f,pz),
+				XMFLOAT3(0.0f,1.0f,0.0f),
+				XMFLOAT2(u,v),
+				XMFLOAT3(1.0f,0.0f,0.0f),
+				XMFLOAT4(1.0f,1.0f,1.0f,1.0f)
+			};
+		}
+	}
+	
+	for (int z = 0; z < _gridZ; ++z)
+	{
+		for (int x = 0; x < _gridX; ++x)
+		{
+			int i0 = z * (_gridX + 1) + x;
+			int i1 = i0 + 1;
+			int i2 = i0 + _gridX + 1;
+			int i3 = i2 + 1;
+
+			mesh.Indices.push_back(i0);
+			mesh.Indices.push_back(i1);
+			mesh.Indices.push_back(i3);
+
+			mesh.Indices.push_back(i0);
+			mesh.Indices.push_back(i3);
+			mesh.Indices.push_back(i2);
+		}
+	}
+
+	m_indexCount = static_cast<UINT>(mesh.Indices.size());
 	return mesh;
 }
 
@@ -40,7 +66,7 @@ bool WaterMesh::Init(Camera* _camera,int _gridX,int _gridY,int _gridSize)
 {
 	m_camera = _camera;
 	
-	auto mesh = CreateQuad(_gridX, _gridY, _gridSize);
+	auto mesh = CreateGridMesh(_gridX, _gridY, _gridSize);
 	auto vertexSize = sizeof(Vertex) * std::size(mesh.Vertices);
 	auto vertexStride = sizeof(Vertex);
 	m_pVertexBuffer = new VertexBuffer(vertexSize, vertexStride, mesh.Vertices.data());
@@ -117,23 +143,18 @@ bool WaterMesh::Init(Camera* _camera,int _gridX,int _gridY,int _gridSize)
 		return false;
 	}
 
-	// カメラの視点と注視点から方向ベクトルを求める
-	XMVECTOR eye = m_camera->GetPos();
-	XMVECTOR target = m_camera->GetTarget();
-	XMVECTOR camDir = XMVector3Normalize(XMVectorSubtract(target, eye));
+	// 固定のライト方向を設定
+	XMVECTOR lightDirVec = XMVectorSet(0.0f, -1.0f, 0.5f, 0.0f);
+	lightDirVec = XMVector3Normalize(lightDirVec);
 
-	// カメラと反対方向にライトを向ける
-	XMVECTOR lightDirVec = XMVectorScale(camDir, -1.0f);
 	XMFLOAT3 lightDir;
 	XMStoreFloat3(&lightDir, lightDirVec);
 
 	// ライトの初期値を設定
 	LightPalams lightParams;
-	// ライトの方向設定
 	lightParams.lightDir = lightDir;
-	// ライトのカラー設定
-	lightParams.lightColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);	
-	
+	lightParams.lightColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+
 	// バッファにコピー
 	std::memcpy(m_pLightBuffer->GetPtr(), &lightParams, sizeof(LightPalams));
 
@@ -179,7 +200,6 @@ void WaterMesh::Update()
 	// 時間更新
 	g_time += 0.016f;	
 	m_waveTime += 0.016f;
-
 	Update_WaterWave(m_waveTime);
 
 	Update_Transform();
@@ -217,7 +237,7 @@ void WaterMesh::Draw()
 	cmdList->IASetVertexBuffers(0, 1, &vbView);
 	cmdList->IASetIndexBuffer(&ibView);
 
-	cmdList->DrawIndexedInstanced(6, 1, 0, 0, 0);
+	cmdList->DrawIndexedInstanced(m_indexCount, 1, 0, 0, 0);
 }
 
 void WaterMesh::Uninit()
@@ -269,6 +289,22 @@ void WaterMesh::Update_WaterWave(float _waveTime)
 	std::memcpy(m_pWaveBuffer->GetPtr(), &m_waveParams, sizeof(GerstnerParams));
 	// 時間のリセット
 	m_waveTime = 0.0f;
+}
+
+void WaterMesh::Update_Light()
+{
+	XMVECTOR lightDirVec = XMVectorSet(0.0f, -1.0f, 0.5f, 0.0f);
+	lightDirVec = XMVector3Normalize(lightDirVec);
+
+	XMFLOAT3 lightDir;
+	XMStoreFloat3(&lightDir, lightDirVec);
+
+	LightPalams lightParams;
+	lightParams.lightDir = lightDir;
+	lightParams.lightColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+
+	// 定数バッファに反映
+	std::memcpy(m_pLightBuffer->GetPtr(), &lightParams, sizeof(LightPalams));
 }
 
 float WaterMesh::GetRandomAmplitude(float _min, float _max)

@@ -43,6 +43,8 @@ private:
 	float g_time = 0.0f;
 	// 波の切り替え用変数
 	float m_waveTime = 0.0f;
+	// 頂点数
+	UINT m_indexCount;
 public:
 	// 共通テクスチャハンドル
 	static DescriptorHandle* s_pSharedTexHandle;
@@ -55,8 +57,8 @@ public:
 	
 	// クローンメソッド
 	Object* clone() const override;
-	/// @brief メッシュ用四角形生成
-	Mesh CreateQuad(int _gridX,int _gridY,int _gridSize);
+	/// @brief 水面メッシュ生成関数
+	Mesh CreateGridMesh(int _gridX,int _gridZ,int _gridSize);
 
 	/// @brief 初期化処理
 	/// @return 初期化処理の成否を返します
@@ -74,6 +76,8 @@ public:
 	void Update_CameraMatrix();
 	/// @brief 波形更新関数
 	void Update_WaterWave(float _waveTime);
+	/// @brief 光源の更新
+	void Update_Light();
 	/// @brief ランダムな振幅を取得する関数
 	/// @param _min 最低値
 	/// @param _max 最大値

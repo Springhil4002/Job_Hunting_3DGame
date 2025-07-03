@@ -12,7 +12,7 @@ bool SkyDomeMesh::Init(Camera* _camera)
 	m_camera = _camera;
 
 	// メッシュ生成
-	CreateMesh(32, 64, 60.0f);
+	CreateMesh(32, 64, 1000.0f);
 
 	// 頂点バッファ生成
 	auto vbSize = sizeof(SkyVertex) * vertices.size();
@@ -124,17 +124,6 @@ void SkyDomeMesh::Draw()
 
 void SkyDomeMesh::Uninit()
 {
-	auto currentIndex = g_DrawBase->CurrentBackBufferIndex();
-	auto ptr = m_pConstantBuffer[currentIndex]->GetPtr<Matrix>();
-
-	ptr->world = XMMatrixTranslationFromVector(m_camera->GetPos()); // カメラ追従
-	ptr->view = m_camera->GetViewMatrix();
-	ptr->proj = m_camera->GetProjMatrix();
-
-	XMVECTOR camPosVec = m_camera->GetPos();
-	XMFLOAT3 camPos;
-	XMStoreFloat3(&camPos, camPosVec);
-	ptr->cameraPos = camPos;
 }
 
 void SkyDomeMesh::CreateMesh(int _slices, int _stacks, float _radius)
@@ -144,7 +133,7 @@ void SkyDomeMesh::CreateMesh(int _slices, int _stacks, float _radius)
 
 	for (int stack = 0; stack <= _stacks; ++stack)
 	{
-		float phi = XM_PIDIV2 * float(stack) / float(_stacks);
+		float phi = XM_PI * float(stack) / float(_stacks);
 		for (int slice = 0; slice <= _slices; ++slice)
 		{
 			float theta = XM_2PI * float(slice) / float(_slices);
