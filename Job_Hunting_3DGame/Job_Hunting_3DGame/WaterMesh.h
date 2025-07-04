@@ -76,7 +76,7 @@ public:
 	void Update_CameraMatrix();
 	/// @brief 波形更新関数
 	void Update_WaterWave(float _waveTime);
-	/// @brief 光源の更新
+	/// @brief ライト更新
 	void Update_Light();
 	/// @brief ランダムな振幅を取得する関数
 	/// @param _min 最低値

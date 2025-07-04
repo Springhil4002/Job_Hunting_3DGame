@@ -34,7 +34,7 @@ Mesh WaterMesh::CreateGridMesh(int _gridX,int _gridZ,int _gridSize)
 				XMFLOAT3(0.0f,1.0f,0.0f),
 				XMFLOAT2(u,v),
 				XMFLOAT3(1.0f,0.0f,0.0f),
-				XMFLOAT4(1.0f,1.0f,1.0f,1.0f)
+				XMFLOAT4(0.3f,0.8f,1.0f,1.0f)	// 水色
 			};
 		}
 	}
@@ -113,22 +113,22 @@ bool WaterMesh::Init(Camera* _camera,int _gridX,int _gridY,int _gridSize)
 	}
 
 	// 4つの波のパラメータ設定
-	m_waveParams.amplitude[0]	= { 0.3f, 0,0,0 };
+	m_waveParams.amplitude[0]	= { 0.7f, 0,0,0 };
 	m_waveParams.direction[0]	= { 1.0f,  0.2f, 0,0 };
 	m_waveParams.waveLength[0]	= { 6.0f, 0,0,0 };
 	m_waveParams.speed[0]		= { 1.0f, 0,0,0 };
 
-	m_waveParams.amplitude[1]	= { 0.2f, 0,0,0 };
+	m_waveParams.amplitude[1]	= { 0.5f, 0,0,0 };
 	m_waveParams.direction[1]	= { -0.7f,  1.0f, 0,0 };
 	m_waveParams.waveLength[1]	= { 5.0f, 0,0,0 };
 	m_waveParams.speed[1]		= { 0.8f, 0,0,0 };
 
-	m_waveParams.amplitude[2]	= { 0.15f, 0,0,0 };
+	m_waveParams.amplitude[2]	= { 0.3f, 0,0,0 };
 	m_waveParams.direction[2]	= { 0.5f, -1.0f, 0,0 };
 	m_waveParams.waveLength[2]	= { 4.5f, 0,0,0 };
 	m_waveParams.speed[2]		= { 1.2f, 0,0,0 };
 
-	m_waveParams.amplitude[3]	= { 0.1f, 0,0,0 };
+	m_waveParams.amplitude[3]	= { 0.2f, 0,0,0 };
 	m_waveParams.direction[3]	= { -1.0f, -0.3f, 0,0 };
 	m_waveParams.waveLength[3]	= { 3.0f, 0,0,0 };
 	m_waveParams.speed[3]		= { 0.6f, 0,0,0 };
@@ -143,14 +143,15 @@ bool WaterMesh::Init(Camera* _camera,int _gridX,int _gridY,int _gridSize)
 		return false;
 	}
 
-	// 固定のライト方向を設定
-	XMVECTOR lightDirVec = XMVectorSet(0.0f, -1.0f, 0.5f, 0.0f);
-	lightDirVec = XMVector3Normalize(lightDirVec);
+	// カメラ方向と反対方向にライト方向を設定
+	XMVECTOR eye = m_camera->GetPos();
+	XMVECTOR target = m_camera->GetTarget();
+	XMVECTOR camDir = XMVector3Normalize(XMVectorSubtract(target, eye));
 
+	XMVECTOR lightDirVec = XMVectorScale(camDir, -1.0f);
 	XMFLOAT3 lightDir;
 	XMStoreFloat3(&lightDir, lightDirVec);
 
-	// ライトの初期値を設定
 	LightPalams lightParams;
 	lightParams.lightDir = lightDir;
 	lightParams.lightColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -160,13 +161,6 @@ bool WaterMesh::Init(Camera* _camera,int _gridX,int _gridY,int _gridSize)
 
 	// ディスクリプタヒープ
 	m_pDescriptorHeap = new DescriptorHeap();
-	
-	if (s_pSharedTexHandle == nullptr)
-	{
-		auto tex = TextureManager::Instance().LoadTexture(L"Assets/Texture/WaterMesh.png");
-		s_pSharedTexHandle = m_pDescriptorHeap->Register(tex.get());
-	}
-	m_pTexHandle = s_pSharedTexHandle;
 	
 	m_pRootSignature = new RootSignature_WaterMesh();
 	if (!m_pRootSignature->IsValid())
@@ -201,9 +195,9 @@ void WaterMesh::Update()
 	g_time += 0.016f;	
 	m_waveTime += 0.016f;
 	Update_WaterWave(m_waveTime);
-
 	Update_Transform();
 	Update_CameraMatrix();
+	Update_Light();
 }
 
 void WaterMesh::Draw()
@@ -230,8 +224,6 @@ void WaterMesh::Draw()
 
 	// ディスクリプタヒープをセット
 	cmdList->SetDescriptorHeaps(1, &Heap);
-	// テクスチャをセット
-	cmdList->SetGraphicsRootDescriptorTable(3, m_pTexHandle->handleGPU);
 
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	cmdList->IASetVertexBuffers(0, 1, &vbView);
@@ -293,9 +285,12 @@ void WaterMesh::Update_WaterWave(float _waveTime)
 
 void WaterMesh::Update_Light()
 {
-	XMVECTOR lightDirVec = XMVectorSet(0.0f, -1.0f, 0.5f, 0.0f);
-	lightDirVec = XMVector3Normalize(lightDirVec);
+	// カメラ方向と反対方向にライト方向を設定
+	XMVECTOR eye = m_camera->GetPos();
+	XMVECTOR target = m_camera->GetTarget();
+	XMVECTOR camDir = XMVector3Normalize(XMVectorSubtract(target, eye));
 
+	XMVECTOR lightDirVec = XMVectorScale(camDir, -1.0f);
 	XMFLOAT3 lightDir;
 	XMStoreFloat3(&lightDir, lightDirVec);
 
@@ -303,7 +298,7 @@ void WaterMesh::Update_Light()
 	lightParams.lightDir = lightDir;
 	lightParams.lightColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
-	// 定数バッファに反映
+	// 定数バッファに更新
 	std::memcpy(m_pLightBuffer->GetPtr(), &lightParams, sizeof(LightPalams));
 }
 
