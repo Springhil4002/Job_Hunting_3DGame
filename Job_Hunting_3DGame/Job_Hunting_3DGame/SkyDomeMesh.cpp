@@ -58,6 +58,13 @@ bool SkyDomeMesh::Init(Camera* _camera)
 	// ディスクリプタヒープ
 	m_pDescriptorHeap = new DescriptorHeap();
 
+	// テクスチャの適用
+	if (m_pTexHandle == nullptr)
+	{
+		auto tex = TextureManager::Instance().LoadTexture(L"Assets/Texture/SkyDome.dds");
+		m_pTexHandle = m_pDescriptorHeap->Register(tex.get());
+	}
+	
 	// ルートシグネチャ生成
 	m_pRootSignature = new RootSignature_SkyDomeMesh();
 	if (!m_pRootSignature->IsValid())
@@ -114,6 +121,8 @@ void SkyDomeMesh::Draw()
 	cmdList->SetGraphicsRootConstantBufferView(0, m_pConstantBuffer[currentIndex]->GetAddress());
 	// ディスクリプタヒープをセット
 	cmdList->SetDescriptorHeaps(1, &Heap);
+	// テクスチャをセット
+	cmdList->SetGraphicsRootDescriptorTable(1,m_pTexHandle->handleGPU);
 	
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	cmdList->IASetVertexBuffers(0, 1, &vbView);

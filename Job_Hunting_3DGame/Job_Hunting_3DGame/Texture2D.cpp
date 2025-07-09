@@ -34,53 +34,48 @@ Texture2D::Texture2D(std::string _path)
 
 Texture2D::Texture2D(std::wstring _path)
 {
-	m_IsValid = Load(_path);
+	m_IsValid = LoadFromFile(_path);
 }
 
-Texture2D::Texture2D(ID3D12Resource* _buffer)
-{
-	m_pResource = _buffer;
-	m_IsValid = m_pResource != nullptr;
-}
-
-bool Texture2D::Load(std::string& _path)
-{
-	auto wpath = GetWideString(_path);
-	return Load(wpath);
-}
-
-bool Texture2D::Load(std::wstring& _path)
+bool Texture2D::LoadFromFile(const std::wstring& _path)
 {
 	// テクスチャのロード
 	DirectX::TexMetadata meta = {};
 	DirectX::ScratchImage scratch = {};
-	auto ext = FileExtension(_path);
+	std::wstring ext = FileExtension(_path);
 
 	HRESULT hr = S_FALSE;
+
 	// 拡張子に応じて画像を読み込む
-	if (ext == L"png") 
+	if (ext == L"dds")
 	{
-		hr = LoadFromWICFile(_path.c_str(), DirectX::WIC_FLAGS_NONE, &meta, scratch);
+		hr = DirectX::LoadFromDDSFile(_path.c_str(),
+			DirectX::DDS_FLAGS_NONE, &meta, scratch);
 	}
-	else if (ext == L"tga") 
+	else if (ext == L"png")
 	{
-		hr = LoadFromTGAFile(_path.c_str(), &meta, scratch);
+		hr = DirectX::LoadFromWICFile(_path.c_str(), 
+			DirectX::WIC_FLAGS_NONE, &meta, scratch);
 	}
+	else if (ext == L"tga")
+	{
+		hr = DirectX::LoadFromTGAFile(_path.c_str(), &meta, scratch);
+	}
+
 	// 失敗時エラー出力
 	if (FAILED(hr))
 	{
+		printf("テクスチャ2D:読み込み失敗:%ls\n", _path.c_str());
 		return false;
 	}
 
 	// 読み込んだ画像のメタ情報とピクセル情報を取得
 	auto img = scratch.GetImage(0, 0, 0);
-	auto prop = CD3DX12_HEAP_PROPERTIES(D3D12_CPU_PAGE_PROPERTY_WRITE_BACK, D3D12_MEMORY_POOL_L0);
-	auto desc = CD3DX12_RESOURCE_DESC::Tex2D(meta.format,
-		meta.width,
-		meta.height,
-		static_cast<UINT16>(meta.arraySize),
-		static_cast<UINT16>(meta.mipLevels));
-
+	auto prop = CD3DX12_HEAP_PROPERTIES(D3D12_CPU_PAGE_PROPERTY_WRITE_BACK, 
+										D3D12_MEMORY_POOL_L0);
+	auto desc = CD3DX12_RESOURCE_DESC::Tex2D(meta.format, meta.width, meta.height,
+		static_cast<UINT16>(meta.arraySize), static_cast<UINT16>(meta.mipLevels));
+	
 	// テクスチャリソースを生成
 	hr = g_DrawBase->Device()->CreateCommittedResource(
 		&prop,
@@ -92,28 +87,40 @@ bool Texture2D::Load(std::wstring& _path)
 	);
 
 	// 失敗時エラー出力
-	if (FAILED(hr))
+	if(FAILED(hr))
 	{
+		printf("テクスチャ2D:リソース生成失敗:%ls\n", _path.c_str());
 		return false;
 	}
+
 	// 画像のピクセルデータをGPUメモリに送る
 	hr = m_pResource->WriteToSubresource(0,
-		// リソース全体に書きこみ
-		nullptr,		
-		// 送り先のメモリ
+		nullptr,
 		img->pixels,
-		// 一行あたりのデータ量
 		static_cast<UINT>(img->rowPitch),
-		// 一枚の画像全体のデータ量
-		static_cast<UINT>(img->slicePitch) 
+		static_cast<UINT>(img->slicePitch)
 	);
+
 	// 失敗時エラー出力
 	if (FAILED(hr))
 	{
+		printf("テクスチャ2D:GPUメモリ送信失敗\n");
 		return false;
 	}
 
 	return true;
+}
+
+Texture2D::Texture2D(ID3D12Resource* _buffer)
+{
+	m_pResource = _buffer;
+	m_IsValid = m_pResource != nullptr;
+}
+
+bool Texture2D::Load(std::string& _path)
+{
+	auto wpath = GetWideString(_path);
+	return LoadFromFile(wpath);
 }
 
 Texture2D* Texture2D::Get(std::string _path)

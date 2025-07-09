@@ -11,6 +11,8 @@
 #include "RootSignature_SkyDomeMesh.h"
 #include "PipelineState_SkyDomeMesh.h"
 #include "DescriptorHeap.h"
+#include "Texture2D.h"
+#include "TextureManager.h"
 #include "Camera.h"
 
 class SkyDomeMesh : public Object
@@ -28,6 +30,8 @@ private:
 	RootSignature_SkyDomeMesh* m_pRootSignature;
 	// パイプラインステート
 	PipelineState_SkyDomeMesh* m_pPipelineState;
+	// ディスクリプタハンドル
+	DescriptorHandle* m_pTexHandle;
 	// カメラ
 	Camera* m_camera;
 public:

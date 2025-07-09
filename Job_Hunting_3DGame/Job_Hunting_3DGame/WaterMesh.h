@@ -37,8 +37,6 @@ private:
 	PipelineState_WaterMesh* m_pPipelineState;
 	// カメラ
 	Camera* m_camera;
-	// ディスクリプタハンドル
-	DescriptorHandle* m_pTexHandle;
 	// 時間
 	float g_time = 0.0f;
 	// 波の切り替え用変数

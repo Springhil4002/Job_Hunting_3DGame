@@ -234,7 +234,6 @@ void WaterMesh::Draw()
 
 void WaterMesh::Uninit()
 {
-
 }
 
 void WaterMesh::Update_Transform()

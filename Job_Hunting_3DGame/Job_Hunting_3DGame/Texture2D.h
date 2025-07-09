@@ -20,7 +20,7 @@ private:
 	/// @brief ファイルパスを読み込んでテクスチャリソースを作成
 	/// @param _path ファイルパス
 	/// @return 作成の成否を返します
-	bool Load(std::wstring& _path);
+	bool LoadFromFile(const std::wstring& _path);
 	/// @brief 色なしのテクスチャなどのリソースを作る関数
 	/// @param _width 横幅
 	/// @param _height 高さ
