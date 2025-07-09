@@ -51,6 +51,14 @@ bool Texture2D::LoadFromFile(const std::wstring& _path)
 	{
 		hr = DirectX::LoadFromDDSFile(_path.c_str(),
 			DirectX::DDS_FLAGS_NONE, &meta, scratch);
+		if (meta.IsCubemap())
+		{
+			printf("このDDSはキューブマップです\n");
+		}
+		else
+		{
+			printf("このDDSはキューブマップではありません\n");
+		}
 	}
 	else if (ext == L"png")
 	{
