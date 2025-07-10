@@ -165,6 +165,9 @@
     <ClCompile Include="PipelineState_SkyDomeMesh.cpp">
       <Filter>ソース ファイル\Draw\PipelineState</Filter>
     </ClCompile>
+    <ClCompile Include="TextureCube.cpp">
+      <Filter>ソース ファイル\Resource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h">
@@ -271,6 +274,9 @@
     </ClInclude>
     <ClInclude Include="RootSignature_SkyDomeMesh.h">
       <Filter>ヘッダー ファイル\Draw\RootSignature</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureCube.h">
+      <Filter>ヘッダー ファイル\Resource</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

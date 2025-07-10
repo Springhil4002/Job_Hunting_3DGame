@@ -3,7 +3,7 @@
 using namespace DirectX;
 
 Camera::Camera()
-	: m_eye(XMVectorSet(0.0f,30.0f,0.0f,1.0f)),
+	: m_eye(XMVectorSet(0.0f,15.0f,0.0f,1.0f)),
 	  m_target(XMVectorSet(0.0f,0.0f,50.0f,0.0f)),
 	  m_up(XMVectorSet(0.0f,1.0f,0.0f,0.0f))
 {

@@ -161,7 +161,15 @@ bool WaterMesh::Init(Camera* _camera,int _gridX,int _gridY,int _gridSize)
 
 	// ディスクリプタヒープ
 	m_pDescriptorHeap = new DescriptorHeap();
-	
+
+	auto cubeTex = TextureManager::Instance().LoadCubeMap(L"Assets/Texture/SkyDome.dds");
+	if (!cubeTex)
+	{
+		printf("水面メッシュ:キューブマップ読み込み失敗\n");
+		return false;
+	}
+	m_pSkyCubeTexHandle = m_pDescriptorHeap->Register(cubeTex.get());
+
 	m_pRootSignature = new RootSignature_WaterMesh();
 	if (!m_pRootSignature->IsValid())
 	{
@@ -224,6 +232,8 @@ void WaterMesh::Draw()
 
 	// ディスクリプタヒープをセット
 	cmdList->SetDescriptorHeaps(1, &Heap);
+	// キューブマップをセット
+	cmdList->SetGraphicsRootDescriptorTable(3, m_pSkyCubeTexHandle->handleGPU);
 
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	cmdList->IASetVertexBuffers(0, 1, &vbView);

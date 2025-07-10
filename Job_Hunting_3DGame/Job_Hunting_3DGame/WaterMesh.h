@@ -35,6 +35,8 @@ private:
 	RootSignature_WaterMesh* m_pRootSignature;
 	// パイプラインステート
 	PipelineState_WaterMesh* m_pPipelineState;
+	// ディスクリプタハンドル
+	DescriptorHandle* m_pSkyCubeTexHandle;
 	// カメラ
 	Camera* m_camera;
 	// 時間

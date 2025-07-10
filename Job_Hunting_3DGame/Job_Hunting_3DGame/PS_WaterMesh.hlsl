@@ -24,8 +24,9 @@ struct VSOutput
     float3 worldPos : POSITION1;    // 頂点シェーダーから来たワールド空間座標(スペキュラ計算用)
 };
 
-Texture2D tex : register(t0);       // テクスチャ
-SamplerState smp : register(s0);    // サンプラー
+Texture2D tex : register(t0);           // テクスチャ
+SamplerState smp : register(s0);        // サンプラー
+TextureCube skyCube : register(t3);     // キューブマップ
 
 float4 PS_Main(VSOutput pin) : SV_TARGET
 {
@@ -35,8 +36,8 @@ float4 PS_Main(VSOutput pin) : SV_TARGET
     float3 R = reflect(-L, N); // 反射ベクトル
     
     // ハーフランバート
-    float NdotL = dot(N, L);
-    NdotL = saturate(NdotL * 0.5f + 0.5f); // 明るさの最低値が0.5
+    float NdotL = saturate(dot(N, L));
+    NdotL = lerp(0.8f, 1.0f, NdotL); // 明るさの最低値が0.5
     
     // 鏡面反射
     float specPower = 32.0f;
@@ -45,15 +46,24 @@ float4 PS_Main(VSOutput pin) : SV_TARGET
     
     // Fresnel効果（Schlick近似）
     float fresnelPower = 5.0f;
-    float baseReflectivity = 0.05f; // 水の表現のため
+    float baseReflectivity = 0.1f; // 水の表現のため
     float fresnel = baseReflectivity +
                     (1.0 - baseReflectivity) *
                     pow(1.0 - saturate(dot(N, V)),
                     fresnelPower);
     // ライティング
-    float4 ambient = 0.1f;
-    float4 diffuse = pin.color * lightColor * NdotL;
+    float4 ambient = float4(0.5f,0.6f,0.8f,1.0f);
+    float4 diffuse = pin.color * lightColor * NdotL * 0.7f;
+    //float4 diffuse = 0.0f;
     float4 specular = fresnel * specIntensity * spec * lightColor;
     
-    return ambient + diffuse + specular; 
+    float4 lighting = ambient + diffuse + specular;
+    
+    float3 reflectDir = reflect(-V, N); // 視線ベクトルに反射方向
+    float4 envColor = skyCube.Sample(smp,reflectDir);
+    float envStrength = 0.4f;
+    
+    float4 finalColor = lerp(lighting, envColor, envStrength);
+    
+    return finalColor;
 }

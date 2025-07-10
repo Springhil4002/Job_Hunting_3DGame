@@ -5,6 +5,7 @@
 
 class ConstantBuffer;
 class Texture2D;
+class TextureCube;
 
 class DescriptorHandle
 {
@@ -33,7 +34,11 @@ public:
 	/// @return ディスクリプタヒープを返します
 	ID3D12DescriptorHeap* GetHeap(); 
 	/// @brief テクスチャ2Dをディスクリプタヒープに登録、ハンドルを取得する関数
-	/// @param texture テクスチャ
+	/// @param texture テクスチャ2D
 	/// @return ディスクリプタハンドルを返します
 	DescriptorHandle* Register(Texture2D* _texture); 
+	/// @brief テクスチャキューブをディスクリプタヒープに登録、ハンドルを取得する関数
+	/// @param _texture テクスチャキューブ
+	/// @return ディスクリプタハンドルを返します
+	DescriptorHandle* Register(TextureCube* _texture);
 };

@@ -1,5 +1,6 @@
 #include "DescriptorHeap.h"
 #include "Texture2D.h"
+#include "TextureCube.h"
 #include "DrawBase.h"
 #include <d3dx12.h>
 
@@ -88,4 +89,38 @@ DescriptorHandle* DescriptorHeap::Register(Texture2D* _texture)
 	m_pHandles.push_back(pHandle);
 	// ハンドルを返す
 	return pHandle;	
+}
+
+DescriptorHandle* DescriptorHeap::Register(TextureCube* _texture)
+{
+	if (!_texture)
+	{
+		OutputDebugStringA("Error:nul キューブマップをRegisterに渡しました。\n");
+		return nullptr;
+	}
+
+	auto count = m_pHandles.size();
+	if (HANDLE_MAX <= count)
+	{
+		return nullptr;
+	}
+
+	auto handleCPU = m_pHeap->GetCPUDescriptorHandleForHeapStart();
+	handleCPU.ptr += m_IncrementSize * count;
+
+	auto handleGPU = m_pHeap->GetGPUDescriptorHandleForHeapStart();
+	handleGPU.ptr += m_IncrementSize * count;
+
+	DescriptorHandle* pHandle = new DescriptorHandle();
+	pHandle->handleCPU = handleCPU;
+	pHandle->handleGPU = handleGPU;
+
+	auto device = g_DrawBase->Device();
+	auto resource = _texture->Resource();
+	auto desc = _texture->ViewDesc();
+
+	device->CreateShaderResourceView(resource, &desc, pHandle->handleCPU);
+	m_pHandles.push_back(pHandle);
+
+	return pHandle;
 }

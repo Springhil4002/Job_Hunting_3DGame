@@ -35,8 +35,29 @@ std::shared_ptr<Texture2D> TextureManager::GetWhiteTexture()
 	return m_WhiteTexture;
 }
 
+std::shared_ptr<TextureCube> TextureManager::LoadCubeMap(const std::wstring& _path)
+{
+	auto it = m_CubeMapResource.find(_path);
+	if (it != m_CubeMapResource.end())
+	{
+		// 既にあるならそれを返す
+		return it->second;
+	}
+
+	// キューブマップ読み込み
+	std::shared_ptr<TextureCube> cubeMap = std::make_shared<TextureCube>(_path);
+	if (!cubeMap->IsValid())
+	{
+		printf("TextureManager:CubeMap読み込み失敗%ls\n", _path.c_str());
+		return nullptr;
+	}
+	m_CubeMapResource[_path] = cubeMap;
+	return cubeMap;
+}
+
 void TextureManager::Clear()
 {
 	m_TexResource.clear();
+	m_CubeMapResource.clear();
 	m_WhiteTexture.reset();
 }

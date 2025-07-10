@@ -1,4 +1,4 @@
-#include "Texture2D.h"
+#include "TextureCube.h"
 #include "DrawBase.h"
 #include <DirectXTex.h>
 
@@ -27,17 +27,17 @@ inline std::wstring FileExtension(const std::wstring& _path)
 	return _path.substr(idx + 1, _path.length() - idx - 1);
 }
 
-Texture2D::Texture2D(std::string _path)
+TextureCube::TextureCube(std::string _path)
 {
 	m_IsValid = Load(_path);
 }
 
-Texture2D::Texture2D(std::wstring _path)
+TextureCube::TextureCube(std::wstring _path)
 {
 	m_IsValid = LoadFromFile(_path);
 }
 
-bool Texture2D::LoadFromFile(const std::wstring& _path)
+bool TextureCube::LoadFromFile(const std::wstring& _path)
 {
 	// テクスチャのロード
 	DirectX::TexMetadata meta = {};
@@ -62,7 +62,7 @@ bool Texture2D::LoadFromFile(const std::wstring& _path)
 	}
 	else if (ext == L"png")
 	{
-		hr = DirectX::LoadFromWICFile(_path.c_str(), 
+		hr = DirectX::LoadFromWICFile(_path.c_str(),
 			DirectX::WIC_FLAGS_NONE, &meta, scratch);
 	}
 	else if (ext == L"tga")
@@ -73,17 +73,17 @@ bool Texture2D::LoadFromFile(const std::wstring& _path)
 	// 失敗時エラー出力
 	if (FAILED(hr))
 	{
-		printf("テクスチャ2D:読み込み失敗:%ls\n", _path.c_str());
+		printf("TextureCube:読み込み失敗:%ls\n", _path.c_str());
 		return false;
 	}
 
 	// 読み込んだ画像のメタ情報とピクセル情報を取得
-	auto img = scratch.GetImage(0, 0, 0);
-	auto prop = CD3DX12_HEAP_PROPERTIES(D3D12_CPU_PAGE_PROPERTY_WRITE_BACK, 
-										D3D12_MEMORY_POOL_L0);
+	
+	auto prop = CD3DX12_HEAP_PROPERTIES(D3D12_CPU_PAGE_PROPERTY_WRITE_BACK,
+		D3D12_MEMORY_POOL_L0);
 	auto desc = CD3DX12_RESOURCE_DESC::Tex2D(meta.format, meta.width, meta.height,
 		static_cast<UINT16>(meta.arraySize), static_cast<UINT16>(meta.mipLevels));
-	
+
 	// テクスチャリソースを生成
 	hr = g_DrawBase->Device()->CreateCommittedResource(
 		&prop,
@@ -95,60 +95,70 @@ bool Texture2D::LoadFromFile(const std::wstring& _path)
 	);
 
 	// 失敗時エラー出力
-	if(FAILED(hr))
-	{
-		printf("テクスチャ2D:リソース生成失敗:%ls\n", _path.c_str());
-		return false;
-	}
-
-	// 画像のピクセルデータをGPUメモリに送る
-	hr = m_pResource->WriteToSubresource(0,
-		nullptr,
-		img->pixels,
-		static_cast<UINT>(img->rowPitch),
-		static_cast<UINT>(img->slicePitch)
-	);
-
-	// 失敗時エラー出力
 	if (FAILED(hr))
 	{
-		printf("テクスチャ2D:GPUメモリ送信失敗\n");
+		printf("TextureCube:リソース生成失敗: % ls\n", _path.c_str());
 		return false;
 	}
 
+	const DirectX::Image* imgs = scratch.GetImages();
+	size_t imageCount = scratch.GetImageCount();
+
+	if (!imgs || imageCount == 0)
+	{
+		printf("TextureCube:イメージの取得に失敗\n");
+		return false;
+	}
+
+	for (size_t face = 0; face < meta.arraySize; ++face)
+	{
+		size_t index = face * meta.mipLevels;
+		const auto& img = imgs[index];
+
+		hr = m_pResource->WriteToSubresource(
+			static_cast<UINT>(face), nullptr,
+			img.pixels,
+			static_cast<UINT>(img.rowPitch),
+			static_cast<UINT>(img.slicePitch));
+		if (FAILED(hr))
+		{
+			printf("TextureCube:face %uの書きこみ失敗\n", face);
+			return false;
+		}
+	}
 	return true;
 }
 
-Texture2D::Texture2D(ID3D12Resource* _buffer)
+TextureCube::TextureCube(ID3D12Resource* _buffer)
 {
 	m_pResource = _buffer;
 	m_IsValid = m_pResource != nullptr;
 }
 
-bool Texture2D::Load(std::string& _path)
+bool TextureCube::Load(std::string& _path)
 {
 	auto wpath = GetWideString(_path);
 	return LoadFromFile(wpath);
 }
 
-Texture2D* Texture2D::Get(std::string _path)
+TextureCube* TextureCube::Get(std::string _path)
 {
 	auto wpath = GetWideString(_path);
 	return Get(wpath);
 }
 
-Texture2D* Texture2D::Get(std::wstring _path)
+TextureCube* TextureCube::Get(std::wstring _path)
 {
-	auto tex = new Texture2D(_path);
+	auto tex = new TextureCube(_path);
 	if (!tex->IsValid())
 	{
 		// 読み込み失敗なら白色テクスチャを返す
-		return GetWhite(); 
+		return GetWhite();
 	}
 	return tex;
 }
 
-Texture2D* Texture2D::GetWhite()
+TextureCube* TextureCube::GetWhite()
 {
 	// 白色テクスチャを生成
 	ID3D12Resource* buff = GetDefaultResource(4, 4);
@@ -162,15 +172,15 @@ Texture2D* Texture2D::GetWhite()
 		return nullptr;
 	}
 
-	return new Texture2D(buff);;
+	return new TextureCube(buff);
 }
 
-ID3D12Resource* Texture2D::GetDefaultResource(size_t _width, size_t _height)
+ID3D12Resource* TextureCube::GetDefaultResource(size_t _width, size_t _height)
 {
 	// テクスチャリソースの設定
 	auto resDesc = CD3DX12_RESOURCE_DESC::Tex2D(
 		// 32ビットのRGBAカラー:各8ビット
-		DXGI_FORMAT_R8G8B8A8_UNORM, 
+		DXGI_FORMAT_R8G8B8A8_UNORM,
 		// テクスチャの幅と高さ
 		_width, _height
 	);
@@ -178,7 +188,7 @@ ID3D12Resource* Texture2D::GetDefaultResource(size_t _width, size_t _height)
 	// テクスチャのピーププロパティ設定
 	auto texHeapProp = CD3DX12_HEAP_PROPERTIES(
 		// CPUが直接書き込めるようなメモリ
-		D3D12_CPU_PAGE_PROPERTY_WRITE_BACK, 
+		D3D12_CPU_PAGE_PROPERTY_WRITE_BACK,
 		// CPUアクセス可能なピープ
 		D3D12_MEMORY_POOL_L0
 	);
@@ -186,14 +196,14 @@ ID3D12Resource* Texture2D::GetDefaultResource(size_t _width, size_t _height)
 	ID3D12Resource* buff = nullptr;
 	auto result = g_DrawBase->Device()->CreateCommittedResource(
 		&texHeapProp,
-		D3D12_HEAP_FLAG_NONE, 
+		D3D12_HEAP_FLAG_NONE,
 		&resDesc,
 		// ピクセルシェーダー用のテクスチャとして使えるように
 		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
 		nullptr,
 		IID_PPV_ARGS(&buff)
 	);
-	
+
 	if (FAILED(result))
 	{
 		assert(SUCCEEDED(result));
@@ -202,17 +212,17 @@ ID3D12Resource* Texture2D::GetDefaultResource(size_t _width, size_t _height)
 	return buff;
 }
 
-bool Texture2D::IsValid()
+bool TextureCube::IsValid()
 {
 	return m_IsValid;
 }
 
-ID3D12Resource* Texture2D::Resource()
+ID3D12Resource* TextureCube::Resource() const
 {
 	return m_pResource.Get();
 }
 
-D3D12_SHADER_RESOURCE_VIEW_DESC Texture2D::ViewDesc()
+D3D12_SHADER_RESOURCE_VIEW_DESC TextureCube::ViewDesc() const
 {
 	// シェーダーリソースビューの初期化
 	D3D12_SHADER_RESOURCE_VIEW_DESC desc = {};
@@ -221,9 +231,9 @@ D3D12_SHADER_RESOURCE_VIEW_DESC Texture2D::ViewDesc()
 	// シェーダーにテクスチャのマッピング読み込みを指定(基本的にはデフォルト)
 	desc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	// リソースの次元指定:2Dテクスチャ
-	desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D; 
+	desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
 	// ミップマップレベルの数:1(ミップマップを使用しない)
-	desc.Texture2D.MipLevels = 1; 
+	desc.TextureCube.MipLevels = static_cast<UINT>(m_pResource->GetDesc().MipLevels);
 	// SRV設定を返す
 	return desc;
 }
