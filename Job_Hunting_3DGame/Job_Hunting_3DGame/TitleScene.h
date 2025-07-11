@@ -4,6 +4,7 @@
 class TitleScene : public BaseScene
 {
 private:
+	HWND hwnd;
 	Camera* camera;
 	const int gridX = 256;
 	const int gridZ = 256;
@@ -11,7 +12,7 @@ private:
 public:
 	/// @brief コンストラクタ
 	TitleScene() = default;
-	TitleScene(Camera* _camera) { Init(_camera); }
+	TitleScene(Camera* _camera, HWND _hwnd) { Init(_camera, _hwnd); }
 	/// @brief デストラクタ
 	~TitleScene() = default;
 
@@ -22,7 +23,7 @@ public:
 
 	/// @brief 初期化処理
 	void Init() {};
-	void Init(Camera* _camera);
+	void Init(Camera* _camera,HWND _hwnd);
 	/// @brief 更新処理
 	void Update() override;
 	/// @brief 描画処理
@@ -31,4 +32,6 @@ public:
 	void Uninit() override;
 	/// @brief 入力処理
 	void Update_Input();
+	/// @brief マウスの回転更新処理
+	void Update_MouseRotate(float _sensi);
 };

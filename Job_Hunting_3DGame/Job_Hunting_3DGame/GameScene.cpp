@@ -8,9 +8,10 @@ Object* GameScene::CreateObj(const std::string& _objectID)
 	return prototypeManager->Create(_objectID);
 }
 
-void GameScene::Init(Camera* _camera)
+void GameScene::Init(Camera* _camera,HWND _hwnd)
 {
 	camera = _camera;
+	hwnd = _hwnd;
 	printf("ƒV[ƒ“–¼FGameScene\n");
 
 	prototypeManager->AddPrototype("3DModel", new Model3D);
@@ -73,7 +74,7 @@ void GameScene::Update()
 
 	if (input.GetKeyTrigger(VK_RETURN))
 	{
-		SceneManager::ChangeScene(SCENE_ID_RESULT, camera);
+		SceneManager::ChangeScene(SCENE_ID_RESULT, camera, hwnd);
 	}
 }
 

@@ -5,10 +5,11 @@ class ResultScene : public BaseScene
 {
 private:
 	Camera* camera;
+	HWND hwnd;
 public:
 	/// @brief コンストラクタ
 	ResultScene() = default;
-	ResultScene(Camera* _camera) { Init(_camera); }
+	ResultScene(Camera* _camera,HWND _hwnd) { Init(_camera,_hwnd); }
 	/// @brief デストラクタ
 	~ResultScene() = default;
 
@@ -19,7 +20,7 @@ public:
 
 	/// @brief 初期化処理
 	void Init() {};
-	void Init(Camera* _camera);
+	void Init(Camera* _camera,HWND _hwnd);
 	/// @brief 更新処理
 	void Update() override;
 	/// @brief 描画処理

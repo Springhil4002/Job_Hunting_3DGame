@@ -17,9 +17,9 @@ private:
 public:
 	SceneManager() = default;
 	/// @brief コンストラクタ
-	SceneManager(Camera* _camera)
+	SceneManager(Camera* _camera,HWND _hwnd)
 	{
-		currentScene = sceneFactory.CreateScene(SCENE_ID_TITLE,_camera);
+		currentScene = sceneFactory.CreateScene(SCENE_ID_TITLE,_camera,_hwnd);
 	}
 	/// @brief デストラクタ
 	~SceneManager() = default;
@@ -35,7 +35,7 @@ public:
 
 	/// @brief シーン遷移関数
 	/// @param _scene_ID 遷移したいシーンのID
-	static void ChangeScene(SCENE_ID _scene_ID,Camera* _camera);
+	static void ChangeScene(SCENE_ID _scene_ID, Camera* _camera, HWND _hwnd);
 
 	/// @brief 追加されたオブジェクトの生成
 	void Create();

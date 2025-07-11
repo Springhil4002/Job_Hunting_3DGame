@@ -8,9 +8,11 @@ Object* TitleScene::CreateObj(const std::string& _objectID)
 	return prototypeManager->Create(_objectID);
 }
 
-void TitleScene::Init(Camera* _camera)
+void TitleScene::Init(Camera* _camera,HWND _hwnd)
 {
 	camera = _camera;
+	hwnd = _hwnd;
+
 	printf("シーン名：TitleScene\n");
 
 	prototypeManager->AddPrototype("Sky", new SkyDomeMesh);
@@ -48,7 +50,7 @@ void TitleScene::Update()
 
 	if (input.GetKeyTrigger(VK_RETURN))
 	{
-		SceneManager::ChangeScene(SCENE_ID_GAME, camera);
+		SceneManager::ChangeScene(SCENE_ID_GAME, camera, hwnd);
 	}
 }
 
@@ -92,4 +94,33 @@ void TitleScene::Update_Input()
 	if (input.GetKeyPress(VK_SHIFT) && input.GetKeyPress(VK_W)) camera->Ratate_Pitch(XMConvertToRadians(-0.1f));
 	// 下向きに回転
 	if (input.GetKeyPress(VK_SHIFT) && input.GetKeyPress(VK_S)) camera->Ratate_Pitch(XMConvertToRadians(0.1f));
+	// マウス右入力で自由にカメラを回転
+	Update_MouseRotate(0.001f);
+}
+
+void TitleScene::Update_MouseRotate(float _sensi)
+{
+	// マウスの現在位置取得
+	POINT currentMousePos;
+	GetCursorPos(&currentMousePos);
+	ScreenToClient(hwnd, &currentMousePos);
+
+	// 差分取得
+	static POINT lastMousePos = currentMousePos;
+	int dx = currentMousePos.x - lastMousePos.x;
+	int dy = currentMousePos.y - lastMousePos.y;
+	lastMousePos = currentMousePos;
+
+	// マウス感度
+	float sensi = _sensi;	
+
+	if (GetForegroundWindow() == hwnd)
+	{
+		// マウス右入力でカメラを回転
+		if (GetAsyncKeyState(VK_RBUTTON) & 0x8000)
+		{
+			camera->Ratate_Yaw(dx * sensi);
+			camera->Ratate_Pitch(dy * sensi);
+		}
+	}
 }

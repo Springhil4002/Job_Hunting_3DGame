@@ -6,9 +6,9 @@ SceneFactory SceneManager::sceneFactory;
 std::set<Object*> SceneManager::createObjects;
 std::set<Object*> SceneManager::deleteObjects;
 
-void SceneManager::ChangeScene(SCENE_ID _scene_ID,Camera* _camera)
+void SceneManager::ChangeScene(SCENE_ID _scene_ID,Camera* _camera,HWND _hwnd)
 {
-	currentScene = sceneFactory.CreateScene(_scene_ID, _camera);
+	currentScene = sceneFactory.CreateScene(_scene_ID, _camera, _hwnd);
 	change = true;
 }
 

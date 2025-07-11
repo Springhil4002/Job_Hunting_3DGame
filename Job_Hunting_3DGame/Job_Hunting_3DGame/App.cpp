@@ -95,7 +95,7 @@ void MainLoop(const TCHAR* _appName)
 	}
 
 	// シーン管理クラスの生成
-	auto sm = new SceneManager(camera);
+	auto sm = new SceneManager(camera,g_hWnd);
 	
 	// メッセージを受け取るまでループ
 	while (WM_QUIT != msg.message)
