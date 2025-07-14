@@ -168,6 +168,15 @@
     <ClCompile Include="TextureCube.cpp">
       <Filter>ソース ファイル\Resource</Filter>
     </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>ソース ファイル\Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="RootSignature_Player.cpp">
+      <Filter>ソース ファイル\Draw\RootSignature</Filter>
+    </ClCompile>
+    <ClCompile Include="PipelineState_Player.cpp">
+      <Filter>ソース ファイル\Draw\PipelineState</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h">
@@ -277,6 +286,15 @@
     </ClInclude>
     <ClInclude Include="TextureCube.h">
       <Filter>ヘッダー ファイル\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>ヘッダー ファイル\Obj</Filter>
+    </ClInclude>
+    <ClInclude Include="RootSignature_Player.h">
+      <Filter>ヘッダー ファイル\Draw\RootSignature</Filter>
+    </ClInclude>
+    <ClInclude Include="PipelineState_Player.h">
+      <Filter>ヘッダー ファイル\Draw\pipelineState</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

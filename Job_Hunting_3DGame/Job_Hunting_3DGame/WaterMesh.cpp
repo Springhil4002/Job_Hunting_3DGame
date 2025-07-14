@@ -302,18 +302,6 @@ void WaterMesh::Update_Light()
 	XMFLOAT3 lightDir;
 	XMStoreFloat3(&lightDir, lightDirVec);
 
-	static XMFLOAT3 lastLightDir = { 0.0f,0.0f,0.0f };
-	const float threshold = 0.001f;
-	bool isChanged=
-		fabsf(lastLightDir.x - lightDir.x) > threshold ||
-		fabsf(lastLightDir.y - lightDir.y) > threshold ||
-		fabsf(lastLightDir.z - lightDir.z) > threshold;
-	if (isChanged)
-	{
-		printf("ƒ‰ƒCƒg•ûŒü•ÏX: (%.2f, %.2f, %.2f)\n", lightDir.x, lightDir.y, lightDir.z);
-		lastLightDir = lightDir;
-	}
-
 	LightPalams lightParams;
 	lightParams.lightDir = lightDir;
 	lightParams.lightColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);

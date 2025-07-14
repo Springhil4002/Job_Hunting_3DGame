@@ -8,6 +8,7 @@ std::set<Object*> SceneManager::deleteObjects;
 
 void SceneManager::ChangeScene(SCENE_ID _scene_ID,Camera* _camera,HWND _hwnd)
 {
+	ClearConsole();
 	currentScene = sceneFactory.CreateScene(_scene_ID, _camera, _hwnd);
 	change = true;
 }
@@ -85,4 +86,28 @@ void SceneManager::Delete()
 			delete obj;
 		}
 	}
+}
+
+void SceneManager::ClearConsole()
+{
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+	DWORD count;
+	DWORD cellCount;
+	COORD homeCoords = { 0,0 };
+
+	if (hConsole == INVALID_HANDLE_VALUE) return;
+
+	// 現在のコンソールのバッファ情報を取得
+	if (!GetConsoleScreenBufferInfo(hConsole, &csbi)) return;
+	cellCount = csbi.dwSize.X * csbi.dwSize.Y;
+
+	// 空白でコンソールバッファを上書き
+	if ((!FillConsoleOutputCharacter(hConsole, (TCHAR)' ', cellCount, homeCoords, &count))) return;
+	
+	// 属性情報のリセット
+	if (!FillConsoleOutputAttribute(hConsole, csbi.wAttributes, cellCount, homeCoords, &count)) return;
+	
+	// カーソル位置を左上に戻す
+	SetConsoleCursorPosition(hConsole, homeCoords);
 }

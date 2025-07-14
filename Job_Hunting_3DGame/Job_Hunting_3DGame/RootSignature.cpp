@@ -33,7 +33,7 @@ RootSignature::RootSignature()
 	// ルートシグニチャの設定（設定したいルートパラメーターとスタティックサンプラーを入れる）
 	D3D12_ROOT_SIGNATURE_DESC desc = {};
 	// ルートパラメーターの個数をいれる
-	desc.NumParameters = std::size(rootParam);
+	desc.NumParameters = _countof(rootParam);
 	// サンプラーの個数をいれる
 	desc.NumStaticSamplers = 1; 
 	// ルートパラメーターのポインタをいれる

@@ -16,21 +16,13 @@ void GameScene::Init(Camera* _camera,HWND _hwnd)
 
 	prototypeManager->AddPrototype("3DModel", new Model3D);
 
-	Model3D* model[MAX_OBJECT];
-	for (int i = 0; i < MAX_OBJECT; ++i)
-	{
-		model[i] = static_cast<Model3D*>(CreateObj("3DModel"));
-		model[i]->Init(camera);
-		model[i]->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
-		model[i]->SetRota(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
-		model[i]->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
-	}
-	model[0]->m_tags.AddTag("Alicia");
-
-	for (int i = 0; i < MAX_OBJECT; ++i)
-	{
-		objectInstance.insert(model[i]);
-	}
+	Model3D* model = static_cast<Model3D*>(CreateObj("3DModel"));
+	model->Init(camera);
+	model->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
+	model->SetRota(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
+	model->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	model->m_tags.AddTag("Alicia");
+	objectInstance.insert(model);
 }
 
 void GameScene::Update()

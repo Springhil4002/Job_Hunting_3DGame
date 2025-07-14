@@ -54,7 +54,7 @@ void PipelineState_WaterMesh::SetVS(std::wstring filePath)
 	auto hr = D3DReadFileToBlob(filePath.c_str(), m_pVsBlob.GetAddressOf());
 	if (FAILED(hr))
 	{
-		printf("頂点シェーダーの読み込みに失敗\n");
+		printf("PSO_WaterMesh:頂点シェーダーの読み込みに失敗\n");
 		return;
 	}
 
@@ -67,7 +67,7 @@ void PipelineState_WaterMesh::SetPS(std::wstring filePath)
 	auto hr = D3DReadFileToBlob(filePath.c_str(), m_pPSBlob.GetAddressOf());
 	if (FAILED(hr))
 	{
-		printf("ピクセルシェーダーの読み込みに失敗\n");
+		printf("PSO_WaterMesh:ピクセルシェーダーの読み込みに失敗\n");
 		return;
 	}
 
@@ -80,7 +80,7 @@ void PipelineState_WaterMesh::Create()
 	auto hr = g_DrawBase->Device()->CreateGraphicsPipelineState(&desc, IID_PPV_ARGS(m_pPipelineState.ReleaseAndGetAddressOf()));
 	if (FAILED(hr))
 	{
-		printf("パイプラインステートの生成に失敗\n");
+		printf("PSO_WaterMesh:パイプラインステートの生成に失敗\n");
 		return;
 	}
 

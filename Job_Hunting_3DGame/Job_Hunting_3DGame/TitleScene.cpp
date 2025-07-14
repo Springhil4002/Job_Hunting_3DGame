@@ -16,6 +16,7 @@ void TitleScene::Init(Camera* _camera,HWND _hwnd)
 	printf("ƒV[ƒ“–¼FTitleScene\n");
 
 	prototypeManager->AddPrototype("Sky", new SkyDomeMesh);
+	prototypeManager->AddPrototype("Player", new Player);
 	prototypeManager->AddPrototype("WaterMesh", new WaterMesh);
 	
 	XMVECTOR camPos = camera->GetPos();
@@ -29,6 +30,13 @@ void TitleScene::Init(Camera* _camera,HWND _hwnd)
 	sky->SetRota(XMVectorZero());
 	sky->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
 	objectInstance.insert(sky);
+
+	Player* player = static_cast<Player*>(CreateObj("Player"));
+	player->Init(camera);
+	player->SetPos(XMVectorSet(0.0f,1.5f,0.0f,0.0f));
+	player->SetRota(XMVectorZero());
+	player->SetScale(XMVectorSet(0.01f, 0.01f, 0.01f, 0.0f));
+	objectInstance.insert(player);
 
 	WaterMesh* waterMesh = static_cast<WaterMesh*>(CreateObj("WaterMesh"));
 	waterMesh->Init(camera, gridX, gridZ, gridMeshSize);

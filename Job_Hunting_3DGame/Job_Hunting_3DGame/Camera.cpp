@@ -3,12 +3,12 @@
 using namespace DirectX;
 
 Camera::Camera()
-	: m_eye(XMVectorSet(0.0f,15.0f,0.0f,1.0f)),
-	  m_target(XMVectorSet(0.0f,0.0f,50.0f,0.0f)),
+	: m_eye(XMVectorSet(0.0f,2.5f,0.0f,1.0f)),
+	  m_target(XMVectorSet(0.0f,-15.0f,50.0f,0.0f)),
 	  m_up(XMVectorSet(0.0f,1.0f,0.0f,0.0f))
 {
 	UpdateViewMatrix();
-	SetPerspective(XMConvertToRadians(45.0f), 1.0f, 0.1f, 1000.0f);
+	SetPerspective(XMConvertToRadians(90.0f), 1.0f, 0.1f, 1000.0f);
 }
 
 void Camera::SetPos(const XMVECTOR& _eye)

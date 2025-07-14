@@ -1,8 +1,8 @@
-#include "RootSignature_WaterMesh.h"
+#include "RootSignature_Player.h"
 #include "DrawBase.h"
 #include <d3dx12.h>
 
-RootSignature_WaterMesh::RootSignature_WaterMesh()
+RootSignature_Player::RootSignature_Player()
 {
 	// アプリケーションの入力アセンブラを使用する
 	auto flag = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
@@ -14,37 +14,20 @@ RootSignature_WaterMesh::RootSignature_WaterMesh()
 	// ジオメトリシェーダーのルートシグネチャへのアクセスを拒否する
 	flag |= D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
 
-	// ディスクリプタレンジ
+	// ディスクリプタテーブル
 	CD3DX12_DESCRIPTOR_RANGE texRange[1] = {};
-	// t0に1個SRV
-	texRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 3);
+	// t0に一個、SRV
+	texRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
 
 	// ルートパラメータ設定
-	CD3DX12_ROOT_PARAMETER rootParam[4] = {};
-	// b0:のMatrix定数バッファを設定、全てのシェーダーから見えるようにする
-	rootParam[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL); 
-	// b1:Gerstner波定数バッファを設定、全てのシェーダーから見えるようにする
-	rootParam[1].InitAsConstantBufferView(1, 0, D3D12_SHADER_VISIBILITY_ALL); 
-	// b2:ライト用定数バッファを設定、全てのシェーダーから見えるようにする
-	rootParam[2].InitAsConstantBufferView(2, 0, D3D12_SHADER_VISIBILITY_ALL);
-	// t3：CubeMapを設定、ピクセルシェーダーから見えるようにする
-	rootParam[3].InitAsDescriptorTable(1, &texRange[0], D3D12_SHADER_VISIBILITY_PIXEL);
-	
+	CD3DX12_ROOT_PARAMETER rootParam[2] = {};
+	// b0:定数バッファを設定、全てのシェーダーから見えるようにする
+	rootParam[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
+	// t1:SRVを設定、ピクセルシェーダーから見えるようにする
+	rootParam[1].InitAsDescriptorTable(1,&texRange[0], D3D12_SHADER_VISIBILITY_PIXEL);
+
 	// スタティックサンプラーの設定
-	auto sampler = CD3DX12_STATIC_SAMPLER_DESC(
-		0,									// レジスター
-		D3D12_FILTER_MIN_MAG_MIP_LINEAR,	// フィルター
-		D3D12_TEXTURE_ADDRESS_MODE_WRAP,	// アドレスモード U
-		D3D12_TEXTURE_ADDRESS_MODE_WRAP,	// アドレスモード V
-		D3D12_TEXTURE_ADDRESS_MODE_WRAP,	// アドレスモード W
-		0.0f,								// MipLODBias
-		1,									// MaxAnisotropy
-		D3D12_COMPARISON_FUNC_ALWAYS,		// 比較関数（使ってないなら ALWAYS でOK）
-		D3D12_STATIC_BORDER_COLOR_OPAQUE_WHITE,
-		0.0f,								// MinLOD
-		D3D12_FLOAT32_MAX,					// MaxLOD
-		D3D12_SHADER_VISIBILITY_PIXEL		// PSから見えるように明示
-	);
+	auto sampler = CD3DX12_STATIC_SAMPLER_DESC(0, D3D12_FILTER_MIN_MAG_MIP_LINEAR);
 
 	// ルートシグニチャの設定（設定したいルートパラメーターとスタティックサンプラーを入れる）
 	D3D12_ROOT_SIGNATURE_DESC desc = {};
@@ -89,12 +72,12 @@ RootSignature_WaterMesh::RootSignature_WaterMesh()
 	m_IsValid = true;
 }
 
-bool RootSignature_WaterMesh::IsValid()
+bool RootSignature_Player::IsValid()
 {
 	return m_IsValid;
 }
 
-ID3D12RootSignature* RootSignature_WaterMesh::Get()
+ID3D12RootSignature* RootSignature_Player::Get()
 {
 	return m_pRootSignature.Get();
 }

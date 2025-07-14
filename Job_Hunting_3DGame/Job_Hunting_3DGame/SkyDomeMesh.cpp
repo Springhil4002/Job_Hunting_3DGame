@@ -174,8 +174,8 @@ void SkyDomeMesh::CreateMesh(int _slices, int _stacks, float _radius)
 			indices.push_back(next + 1);
 		}
 	}
-	printf("頂点数:%zu\n", vertices.size());
-	printf("インデックス数:%zu\n", indices.size());
+	//printf("スカイドーム:頂点数:%zu\n", vertices.size());
+	//printf("スカイドーム:インデックス数:%zu\n", indices.size());
 }
 
 void SkyDomeMesh::Update_Transform()

@@ -15,14 +15,14 @@ RootSignature_SkyDomeMesh::RootSignature_SkyDomeMesh()
 	flag |= D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
 
 	// ルートパラメータを設定
-	// 定数バッファとテクスチャの二つ
 	CD3DX12_ROOT_PARAMETER rootParam[2] = {};
 	// [0] b0：定数バッファ、頂点シェーダー用
 	rootParam[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_VERTEX);
-	// [1] t0：テクスチャ、ピクセルシェーダー用
+	
 	CD3DX12_DESCRIPTOR_RANGE texRange;
 	// 初期化処理:SRVを設定、数は１個、t0にバインド
 	texRange.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+	// [1] t0：テクスチャ、ピクセルシェーダー用
 	rootParam[1].InitAsDescriptorTable(1, &texRange, D3D12_SHADER_VISIBILITY_PIXEL);
 
 	// スタティックサンプラーの設定

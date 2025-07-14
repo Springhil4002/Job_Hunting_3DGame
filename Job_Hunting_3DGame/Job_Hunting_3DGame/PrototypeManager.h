@@ -3,6 +3,7 @@
 #include "Model3D.h"
 #include "WaterMesh.h"
 #include "SkyDomeMesh.h"
+#include "Player.h"
 
 class PrototypeManager
 {

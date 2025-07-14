@@ -51,14 +51,6 @@ bool TextureCube::LoadFromFile(const std::wstring& _path)
 	{
 		hr = DirectX::LoadFromDDSFile(_path.c_str(),
 			DirectX::DDS_FLAGS_NONE, &meta, scratch);
-		if (meta.IsCubemap())
-		{
-			printf("このDDSはキューブマップです\n");
-		}
-		else
-		{
-			printf("このDDSはキューブマップではありません\n");
-		}
 	}
 	else if (ext == L"png")
 	{
@@ -120,11 +112,6 @@ bool TextureCube::LoadFromFile(const std::wstring& _path)
 			img.pixels,
 			static_cast<UINT>(img.rowPitch),
 			static_cast<UINT>(img.slicePitch));
-		if (FAILED(hr))
-		{
-			printf("TextureCube:face %uの書きこみ失敗\n", face);
-			return false;
-		}
 	}
 	return true;
 }
