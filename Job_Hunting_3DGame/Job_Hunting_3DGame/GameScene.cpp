@@ -1,5 +1,6 @@
 #include "GameScene.h"
 #include "SceneManager.h"
+#include "System/ImGui/imgui.h"
 
 using namespace DirectX;
 
@@ -19,7 +20,7 @@ void GameScene::Init(Camera* _camera,HWND _hwnd)
 	Model3D* model = static_cast<Model3D*>(CreateObj("3DModel"));
 	model->Init(camera);
 	model->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
-	model->SetRota(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
+	model->SetRota(XMVectorZero());
 	model->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
 	model->m_tags.AddTag("Alicia");
 	objectInstance.insert(model);
@@ -27,37 +28,7 @@ void GameScene::Init(Camera* _camera,HWND _hwnd)
 
 void GameScene::Update()
 {
-	auto allModel = GetInstance()->GetObjects<Model3D>();
-	for (auto* model : allModel)
-	{
-		if (model->m_tags.SearchTag("Alicia"))
-		{
-			if (input.GetKeyPress(VK_D))
-			{
-				XMVECTOR pos = model->GetPos();
-				pos = XMVectorSetX(pos, XMVectorGetX(pos) + 1.0f);
-				model->SetPos(pos);
-			}
-			if (input.GetKeyPress(VK_A))
-			{
-				XMVECTOR pos = model->GetPos();
-				pos = XMVectorSetX(pos, XMVectorGetX(pos) - 1.0f);
-				model->SetPos(pos);
-			}
-			if (input.GetKeyPress(VK_W))
-			{
-				XMVECTOR pos = model->GetPos();
-				pos = XMVectorSetZ(pos, XMVectorGetZ(pos) + 1.0f);
-				model->SetPos(pos);
-			}
-			if (input.GetKeyPress(VK_S))
-			{
-				XMVECTOR pos = model->GetPos();
-				pos = XMVectorSetZ(pos, XMVectorGetZ(pos) - 1.0f);
-				model->SetPos(pos);
-			}
-		}
-	}
+	Update_Input();
 
 	for (auto& obj : objectInstance)
 	{
@@ -84,4 +55,67 @@ void GameScene::Uninit()
 	{
 		obj->Uninit();
 	}
+}
+
+void GameScene::Update_Input()
+{
+	// 上移動
+	if (input.GetKeyPress(VK_E)) camera->MoveUp(0.1f);
+	// 下移動
+	if (input.GetKeyPress(VK_Q)) camera->MoveDown(0.1f);
+
+	// 右移動
+	if (input.GetKeyPress(VK_D)) camera->MoveRight(0.1f);
+	// 左移動
+	if (input.GetKeyPress(VK_A)) camera->MoveLeft(0.1f);
+	// 前移動
+	if (input.GetKeyPress(VK_W)) camera->MoveForward(0.1f);
+	// 後移動
+	if (input.GetKeyPress(VK_S)) camera->MoveBack(0.1f);
+
+	// 右方向回転
+	if (input.GetKeyPress(VK_SHIFT) && input.GetKeyPress(VK_D)) camera->Rotate_Yaw(XMConvertToRadians(0.1f));
+	// 左方向回転
+	if (input.GetKeyPress(VK_SHIFT) && input.GetKeyPress(VK_A)) camera->Rotate_Yaw(XMConvertToRadians(-0.1f));
+	// 上向きに回転
+	if (input.GetKeyPress(VK_SHIFT) && input.GetKeyPress(VK_W)) camera->Rotate_Pitch(XMConvertToRadians(-0.1f));
+	// 下向きに回転
+	if (input.GetKeyPress(VK_SHIFT) && input.GetKeyPress(VK_S)) camera->Rotate_Pitch(XMConvertToRadians(0.1f));
+	// マウス右入力で自由にカメラを回転
+	Update_MouseRotate(0.001f);
+}
+
+void GameScene::Update_MouseRotate(float _sensi)
+{
+	// マウスの現在位置取得
+	POINT currentMousePos;
+	GetCursorPos(&currentMousePos);
+	ScreenToClient(hwnd, &currentMousePos);
+
+	// 差分取得
+	static POINT lastMousePos = currentMousePos;
+	int dx = currentMousePos.x - lastMousePos.x;
+	int dy = currentMousePos.y - lastMousePos.y;
+	lastMousePos = currentMousePos;
+
+	// マウス感度
+	float sensi = _sensi;
+
+	if (GetForegroundWindow() == hwnd)
+	{
+		// マウス右入力でカメラを回転
+		if (GetAsyncKeyState(VK_RBUTTON) & 0x8000)
+		{
+			camera->Rotate_Yaw(dx * sensi);
+			camera->Rotate_Pitch(dy * sensi);
+		}
+	}
+}
+
+void GameScene::Draw_ImGui()
+{
+	ImGui::Begin("SceneName:GameScene");
+	ImGui::Text("FPS: %.2f", ImGui::GetIO().Framerate);
+	ImGui::Text("Press Enter to Result!");
+	ImGui::End();
 }

@@ -34,7 +34,9 @@ public:
 	/// @brief 外部から参照できるようにゲッターとして公開する
 	/// @return UINT(unsigned int型)
 	UINT CurrentBackBufferIndex();
-
+	/// @brief 外部から参照できるようにゲッターとして公開する
+	/// @return ID3D12CommandQueueのポインタ
+	ID3D12CommandQueue* CommandQueue();
 private: 
 	//==================================================================
 	// DirectX12初期化に使う関数群

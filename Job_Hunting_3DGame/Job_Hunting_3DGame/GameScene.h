@@ -27,4 +27,10 @@ public:
 	void Draw() override;
 	/// @brief 終了処理
 	void Uninit() override;
+	/// @brief 入力処理
+	void Update_Input();
+	/// @brief マウスの回転更新処理
+	void Update_MouseRotate(float _sensi);
+	/// @brief ImGuiの描画処理
+	void Draw_ImGui() override;
 };

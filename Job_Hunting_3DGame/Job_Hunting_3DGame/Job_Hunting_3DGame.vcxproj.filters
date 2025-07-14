@@ -73,6 +73,15 @@
     <Filter Include="ヘッダー ファイル\Draw\pipelineState">
       <UniqueIdentifier>{d33fd7f1-cbf2-454f-8be6-8a230821efdc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="System\ImGui">
+      <UniqueIdentifier>{f9e2a5ba-ca73-4ee2-92a1-4253e0e44b56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Draw\ImGui">
+      <UniqueIdentifier>{893710a5-4828-415b-9d50-a40c9896aa5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Draw\ImGui">
+      <UniqueIdentifier>{9cda4ae0-69c1-4b89-a316-288f883b7ef1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp">
@@ -176,6 +185,27 @@
     </ClCompile>
     <ClCompile Include="PipelineState_Player.cpp">
       <Filter>ソース ファイル\Draw\PipelineState</Filter>
+    </ClCompile>
+    <ClCompile Include="System\ImGui\imgui.cpp">
+      <Filter>System\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="System\ImGui\imgui_draw.cpp">
+      <Filter>System\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="System\ImGui\imgui_tables.cpp">
+      <Filter>System\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="System\ImGui\imgui_widgets.cpp">
+      <Filter>System\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="System\ImGui\imgui_impl_dx12.cpp">
+      <Filter>System\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="System\ImGui\imgui_impl_win32.cpp">
+      <Filter>System\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuiManager.cpp">
+      <Filter>ソース ファイル\Draw\ImGui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -295,6 +325,33 @@
     </ClInclude>
     <ClInclude Include="PipelineState_Player.h">
       <Filter>ヘッダー ファイル\Draw\pipelineState</Filter>
+    </ClInclude>
+    <ClInclude Include="System\ImGui\imconfig.h">
+      <Filter>System\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="System\ImGui\imgui.h">
+      <Filter>System\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="System\ImGui\imgui_internal.h">
+      <Filter>System\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="System\ImGui\imstb_rectpack.h">
+      <Filter>System\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="System\ImGui\imstb_textedit.h">
+      <Filter>System\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="System\ImGui\imstb_truetype.h">
+      <Filter>System\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="System\ImGui\imgui_impl_dx12.h">
+      <Filter>System\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="System\ImGui\imgui_impl_win32.h">
+      <Filter>System\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiManager.h">
+      <Filter>ヘッダー ファイル\Draw\ImGui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

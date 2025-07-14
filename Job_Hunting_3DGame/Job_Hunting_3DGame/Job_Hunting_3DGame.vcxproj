@@ -153,6 +153,7 @@
     </ClCompile>
     <ClCompile Include="DrawBase.cpp" />
     <ClCompile Include="GameScene.cpp" />
+    <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Model3D.cpp" />
@@ -173,6 +174,12 @@
     </ClCompile>
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SkyDomeMesh.cpp" />
+    <ClCompile Include="System\ImGui\imgui.cpp" />
+    <ClCompile Include="System\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="System\ImGui\imgui_impl_dx12.cpp" />
+    <ClCompile Include="System\ImGui\imgui_impl_win32.cpp" />
+    <ClCompile Include="System\ImGui\imgui_tables.cpp" />
+    <ClCompile Include="System\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="System\Input.cpp" />
     <ClCompile Include="System\SharedStruct.cpp" />
     <ClCompile Include="Tags.cpp" />
@@ -197,6 +204,7 @@
     <ClInclude Include="DrawBase.h" />
     <ClInclude Include="Enum_Scene.h" />
     <ClInclude Include="GameScene.h" />
+    <ClInclude Include="ImGuiManager.h" />
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="Model3D.h" />
     <ClInclude Include="Object.h" />
@@ -219,6 +227,14 @@
     <ClInclude Include="SkyDomeMesh.h" />
     <ClInclude Include="System\CommonTypes.h" />
     <ClInclude Include="System\ComPtr.h" />
+    <ClInclude Include="System\ImGui\imconfig.h" />
+    <ClInclude Include="System\ImGui\imgui.h" />
+    <ClInclude Include="System\ImGui\imgui_impl_dx12.h" />
+    <ClInclude Include="System\ImGui\imgui_impl_win32.h" />
+    <ClInclude Include="System\ImGui\imgui_internal.h" />
+    <ClInclude Include="System\ImGui\imstb_rectpack.h" />
+    <ClInclude Include="System\ImGui\imstb_textedit.h" />
+    <ClInclude Include="System\ImGui\imstb_truetype.h" />
     <ClInclude Include="System\Input.h" />
     <ClInclude Include="System\Noncopyable.h" />
     <ClInclude Include="System\SharedStruct.h" />

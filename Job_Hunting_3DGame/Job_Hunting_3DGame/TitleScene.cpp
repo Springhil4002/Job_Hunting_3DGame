@@ -1,5 +1,6 @@
 #include "TitleScene.h"
 #include "SceneManager.h"
+#include "System/ImGui/imgui.h"
 
 using namespace DirectX;
 
@@ -131,4 +132,12 @@ void TitleScene::Update_MouseRotate(float _sensi)
 			camera->Rotate_Pitch(dy * sensi);
 		}
 	}
+}
+
+void TitleScene::Draw_ImGui()
+{
+	ImGui::Begin("SceneName:TitleScene");
+	ImGui::Text("FPS: %.2f", ImGui::GetIO().Framerate); 
+	ImGui::Text("Press Enter to Game!");
+	ImGui::End();
 }

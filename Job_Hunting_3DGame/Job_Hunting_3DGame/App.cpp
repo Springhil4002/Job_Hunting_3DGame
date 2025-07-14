@@ -1,12 +1,20 @@
 #include "App.h"
 #include "DrawBase.h"
 #include "SceneManager.h"
+#include "ImGuiManager.h"
+#include "System/ImGui/imgui_impl_win32.h"
 
 HINSTANCE g_hInst;
 HWND g_hWnd = NULL;
+ImGuiManager g_ImGuiManager;
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
 LRESULT CALLBACK WndProc(HWND _hWnd, UINT _msg, WPARAM _wparam, LPARAM _lparam)
 {
+	if (ImGui_ImplWin32_WndProcHandler(_hWnd, _msg, _wparam, _lparam))
+	{
+		return true;
+	}
 	switch(_msg)
 	{
 	case WM_DESTROY:
@@ -94,6 +102,9 @@ void MainLoop(const TCHAR* _appName)
 		return;
 	}
 
+	// ImGuiの初期化
+	g_ImGuiManager.Init(g_hWnd, g_DrawBase);
+	
 	// シーン管理クラスの生成
 	auto sm = new SceneManager(camera,g_hWnd);
 	
@@ -101,7 +112,7 @@ void MainLoop(const TCHAR* _appName)
 	while (WM_QUIT != msg.message)
 	{
 		// メッセージキューを確認、ある場合は取得
-		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE == TRUE))
+		if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 		{
 			TranslateMessage(&msg);	// キーボード入力メッセージを変換する
 			DispatchMessage(&msg);	// メッセージをウィンドウプロシージャに転送する
@@ -114,8 +125,17 @@ void MainLoop(const TCHAR* _appName)
 			// 描画開始処理
 			g_DrawBase->BeginRender();
 			
+			// ImGuiの開始処理
+			g_ImGuiManager.Begin();
+
+			// 現在のシーンのImGui描画処理
+			sm->Draw_ImGui();
+
 			// 現在のシーンの描画処理
 			sm->Draw();
+
+			// ImGuiの終了処理
+			g_ImGuiManager.End();
 			
 			// 描画終了処理
 			g_DrawBase->EndRender();
@@ -127,4 +147,6 @@ void Application::Run(const TCHAR* _appName)
 {
 	// ゲームループ実行
 	MainLoop(_appName);
+	// ImGuiのシャットダウン
+	g_ImGuiManager.ShutDown();
 }

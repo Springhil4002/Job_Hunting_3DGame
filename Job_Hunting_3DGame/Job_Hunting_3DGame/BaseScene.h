@@ -40,6 +40,8 @@ public:
 	virtual void Draw() = 0;
 	/// @brief I—¹ˆ—
 	virtual void Uninit() = 0;
+	/// @brief ImGui‚Ì•`‰æˆ—
+	virtual void Draw_ImGui() = 0;
 
 	/// @brief “ü—Íæ“¾ˆ—ŠÖ”
 	static void Input();

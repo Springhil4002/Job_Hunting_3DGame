@@ -27,4 +27,6 @@ public:
 	void Draw() override;
 	/// @brief I—¹ˆ—
 	void Uninit() override;
+	/// @brief ImGui‚Ì•`‰æˆ—
+	void Draw_ImGui() override;
 };

@@ -502,3 +502,10 @@ UINT DrawBase::CurrentBackBufferIndex()
 {
 	return m_CurrentBackBufferIndex;
 }
+
+/// @brief コマンドキューを取得する関数
+/// @return コマンドキューを返します。
+ID3D12CommandQueue* DrawBase::CommandQueue()
+{
+	return m_pQueue.Get();
+}

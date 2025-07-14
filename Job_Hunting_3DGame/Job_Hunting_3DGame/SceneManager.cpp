@@ -13,6 +13,30 @@ void SceneManager::ChangeScene(SCENE_ID _scene_ID,Camera* _camera,HWND _hwnd)
 	change = true;
 }
 
+void SceneManager::ClearConsole()
+{
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+	DWORD count;
+	DWORD cellCount;
+	COORD homeCoords = { 0,0 };
+
+	if (hConsole == INVALID_HANDLE_VALUE) return;
+
+	// 現在のコンソールのバッファ情報を取得
+	if (!GetConsoleScreenBufferInfo(hConsole, &csbi)) return;
+	cellCount = csbi.dwSize.X * csbi.dwSize.Y;
+
+	// 空白でコンソールバッファを上書き
+	if ((!FillConsoleOutputCharacter(hConsole, (TCHAR)' ', cellCount, homeCoords, &count))) return;
+
+	// 属性情報のリセット
+	if (!FillConsoleOutputAttribute(hConsole, csbi.wAttributes, cellCount, homeCoords, &count)) return;
+
+	// カーソル位置を左上に戻す
+	SetConsoleCursorPosition(hConsole, homeCoords);
+}
+
 void SceneManager::Init()
 {
 	if (currentScene)
@@ -88,26 +112,10 @@ void SceneManager::Delete()
 	}
 }
 
-void SceneManager::ClearConsole()
+void SceneManager::Draw_ImGui()
 {
-	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	CONSOLE_SCREEN_BUFFER_INFO csbi;
-	DWORD count;
-	DWORD cellCount;
-	COORD homeCoords = { 0,0 };
-
-	if (hConsole == INVALID_HANDLE_VALUE) return;
-
-	// 現在のコンソールのバッファ情報を取得
-	if (!GetConsoleScreenBufferInfo(hConsole, &csbi)) return;
-	cellCount = csbi.dwSize.X * csbi.dwSize.Y;
-
-	// 空白でコンソールバッファを上書き
-	if ((!FillConsoleOutputCharacter(hConsole, (TCHAR)' ', cellCount, homeCoords, &count))) return;
-	
-	// 属性情報のリセット
-	if (!FillConsoleOutputAttribute(hConsole, csbi.wAttributes, cellCount, homeCoords, &count)) return;
-	
-	// カーソル位置を左上に戻す
-	SetConsoleCursorPosition(hConsole, homeCoords);
+	if (currentScene)
+	{
+		currentScene->Draw_ImGui();
+	}
 }
