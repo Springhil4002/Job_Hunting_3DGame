@@ -26,6 +26,7 @@ public:
 	const DirectX::XMVECTOR& GetUp() const;
 	const DirectX::XMMATRIX& GetViewMatrix() const;
 	const DirectX::XMMATRIX& GetProjMatrix() const;
+	const DirectX::XMVECTOR& GetForward() const;
 
 	void Translate(const DirectX::XMVECTOR& _offset);
 	void MoveForward(float _distance);
@@ -34,6 +35,6 @@ public:
 	void MoveLeft(float _distance);
 	void MoveUp(float _distance);
 	void MoveDown(float _distance);
-	void Ratate_Yaw(float _angle);
-	void Ratate_Pitch(float _angle);
+	void Rotate_Yaw(float _angle);
+	void Rotate_Pitch(float _angle);
 };

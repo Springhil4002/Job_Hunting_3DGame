@@ -294,18 +294,30 @@ void WaterMesh::Update_WaterWave(float _waveTime)
 
 void WaterMesh::Update_Light()
 {
-	// カメラ方向と反対方向にライト方向を設定
-	XMVECTOR eye = m_camera->GetPos();
-	XMVECTOR target = m_camera->GetTarget();
-	XMVECTOR camDir = XMVector3Normalize(XMVectorSubtract(target, eye));
+	// カメラの前方向ベクトルを取得
+	XMVECTOR camDir = m_camera->GetForward();
 
+	// カメラと向かい合うようにライト方向を求める
 	XMVECTOR lightDirVec = XMVectorScale(camDir, -1.0f);
 	XMFLOAT3 lightDir;
 	XMStoreFloat3(&lightDir, lightDirVec);
 
+	static XMFLOAT3 lastLightDir = { 0.0f,0.0f,0.0f };
+	const float threshold = 0.001f;
+	bool isChanged=
+		fabsf(lastLightDir.x - lightDir.x) > threshold ||
+		fabsf(lastLightDir.y - lightDir.y) > threshold ||
+		fabsf(lastLightDir.z - lightDir.z) > threshold;
+	if (isChanged)
+	{
+		printf("ライト方向変更: (%.2f, %.2f, %.2f)\n", lightDir.x, lightDir.y, lightDir.z);
+		lastLightDir = lightDir;
+	}
+
 	LightPalams lightParams;
 	lightParams.lightDir = lightDir;
 	lightParams.lightColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+
 
 	// 定数バッファに更新
 	std::memcpy(m_pLightBuffer->GetPtr(), &lightParams, sizeof(LightPalams));

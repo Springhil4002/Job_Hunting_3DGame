@@ -59,6 +59,11 @@ const XMMATRIX& Camera::GetProjMatrix() const
 	return m_proj;
 }
 
+const XMVECTOR& Camera::GetForward() const
+{
+	return XMVector3Normalize(XMVectorSubtract(m_target, m_eye));
+}
+
 void Camera::UpdateViewMatrix()
 {
 	m_view = XMMatrixLookAtLH(m_eye, m_target, m_up);
@@ -105,7 +110,7 @@ void Camera::MoveDown(float _distance)
 	MoveUp(-_distance);
 }
 
-void Camera::Ratate_Yaw(float _angle)
+void Camera::Rotate_Yaw(float _angle)
 {
 	// カメラ位置から注視点への方向ベクトル
 	XMVECTOR forward = XMVectorSubtract(m_target, m_eye);
@@ -125,7 +130,7 @@ void Camera::Ratate_Yaw(float _angle)
 	
 	UpdateViewMatrix();
 }
-void Camera::Ratate_Pitch(float _angle)
+void Camera::Rotate_Pitch(float _angle)
 {
 	XMVECTOR forward = XMVectorSubtract(m_target, m_eye);
 	XMVECTOR right = XMVector3Normalize(XMVector3Cross(m_up, forward)); 

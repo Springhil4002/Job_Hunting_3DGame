@@ -87,13 +87,13 @@ void TitleScene::Update_Input()
 	if (input.GetKeyPress(VK_S)) camera->MoveBack(0.1f);
 
 	// ‰E•ûŒü‰ñ“]
-	if (input.GetKeyPress(VK_SHIFT) && input.GetKeyPress(VK_D)) camera->Ratate_Yaw(XMConvertToRadians(0.1f));
+	if (input.GetKeyPress(VK_SHIFT) && input.GetKeyPress(VK_D)) camera->Rotate_Yaw(XMConvertToRadians(0.1f));
 	// ¶•ûŒü‰ñ“]
-	if (input.GetKeyPress(VK_SHIFT) && input.GetKeyPress(VK_A)) camera->Ratate_Yaw(XMConvertToRadians(-0.1f));
+	if (input.GetKeyPress(VK_SHIFT) && input.GetKeyPress(VK_A)) camera->Rotate_Yaw(XMConvertToRadians(-0.1f));
 	// ãŒü‚«‚É‰ñ“]
-	if (input.GetKeyPress(VK_SHIFT) && input.GetKeyPress(VK_W)) camera->Ratate_Pitch(XMConvertToRadians(-0.1f));
+	if (input.GetKeyPress(VK_SHIFT) && input.GetKeyPress(VK_W)) camera->Rotate_Pitch(XMConvertToRadians(-0.1f));
 	// ‰ºŒü‚«‚É‰ñ“]
-	if (input.GetKeyPress(VK_SHIFT) && input.GetKeyPress(VK_S)) camera->Ratate_Pitch(XMConvertToRadians(0.1f));
+	if (input.GetKeyPress(VK_SHIFT) && input.GetKeyPress(VK_S)) camera->Rotate_Pitch(XMConvertToRadians(0.1f));
 	// ƒ}ƒEƒX‰E“ü—Í‚ÅŽ©—R‚ÉƒJƒƒ‰‚ð‰ñ“]
 	Update_MouseRotate(0.001f);
 }
@@ -119,8 +119,8 @@ void TitleScene::Update_MouseRotate(float _sensi)
 		// ƒ}ƒEƒX‰E“ü—Í‚ÅƒJƒƒ‰‚ð‰ñ“]
 		if (GetAsyncKeyState(VK_RBUTTON) & 0x8000)
 		{
-			camera->Ratate_Yaw(dx * sensi);
-			camera->Ratate_Pitch(dy * sensi);
+			camera->Rotate_Yaw(dx * sensi);
+			camera->Rotate_Pitch(dy * sensi);
 		}
 	}
 }
