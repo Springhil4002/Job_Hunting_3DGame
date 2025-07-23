@@ -13,15 +13,16 @@ private:
 	DirectX::XMVECTOR m_Position;	// 位置
 	DirectX::XMVECTOR m_Rotation;	// 回転
 
-	DirectX::XMVECTOR m_ForwardVec		= DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);		// 前方向ベクトル(移動用)
-	DirectX::XMVECTOR m_RightVec		= DirectX::XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);		// 右向きベクトル(左右回転用)
-	DirectX::XMVECTOR m_UpVec			= DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);		// 上方向は固定
-	DirectX::XMVECTOR m_CamOffset		= DirectX::XMVectorZero();		// カメラオフセット
-	DirectX::XMVECTOR m_LastPlayerPos	= DirectX::XMVectorZero();		// 前フレームプレイヤー位置
-
+	DirectX::XMVECTOR m_ForwardVec		= DirectX::XMVectorZero();	// 前方向ベクトル(移動用)
+	DirectX::XMVECTOR m_RightVec		= DirectX::XMVectorZero();	// 右向きベクトル(左右回転用)
+	DirectX::XMVECTOR m_UpVec			= DirectX::XMVectorZero();	// 上方向は固定
+	DirectX::XMVECTOR m_CamOffset		= DirectX::XMVectorZero();	// カメラオフセット
+	DirectX::XMVECTOR m_LastPlayerPos	= DirectX::XMVectorZero();	// 前フレームプレイヤー位置
+		
+	float m_Yaw;			
 	float m_Speed;			// 速度
 	float m_RotateSpeed;	// 回転速度
-
+	
 	/// @brief 入力処理
 	void Update_Input(float _deltaTime);
 	/// @brief Playerとカメラの位置更新
