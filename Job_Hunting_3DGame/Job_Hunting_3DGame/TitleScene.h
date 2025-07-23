@@ -1,11 +1,13 @@
 #pragma once
 #include "BaseScene.h"
+#include "PlayerController.h"
 
 class TitleScene : public BaseScene
 {
 private:
 	HWND hwnd;
 	Camera* camera;
+	PlayerController* playerCtrl;
 	const int gridX = 256;
 	const int gridZ = 256;
 	const int gridMeshSize = 512;

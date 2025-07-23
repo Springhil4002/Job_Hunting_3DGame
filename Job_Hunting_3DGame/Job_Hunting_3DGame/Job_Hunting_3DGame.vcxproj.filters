@@ -82,6 +82,12 @@
     <Filter Include="ヘッダー ファイル\Draw\ImGui">
       <UniqueIdentifier>{9cda4ae0-69c1-4b89-a316-288f883b7ef1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Obj\Player">
+      <UniqueIdentifier>{d99c5978-3297-4d29-a58d-541de2241019}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Obj\Player">
+      <UniqueIdentifier>{a2624871-fdbd-4dba-a4a5-ccb5f1857534}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp">
@@ -177,9 +183,6 @@
     <ClCompile Include="TextureCube.cpp">
       <Filter>ソース ファイル\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>ソース ファイル\Obj</Filter>
-    </ClCompile>
     <ClCompile Include="RootSignature_Player.cpp">
       <Filter>ソース ファイル\Draw\RootSignature</Filter>
     </ClCompile>
@@ -206,6 +209,12 @@
     </ClCompile>
     <ClCompile Include="ImGuiManager.cpp">
       <Filter>ソース ファイル\Draw\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>ソース ファイル\Obj\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerController.cpp">
+      <Filter>ソース ファイル\Obj\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -317,9 +326,6 @@
     <ClInclude Include="TextureCube.h">
       <Filter>ヘッダー ファイル\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>ヘッダー ファイル\Obj</Filter>
-    </ClInclude>
     <ClInclude Include="RootSignature_Player.h">
       <Filter>ヘッダー ファイル\Draw\RootSignature</Filter>
     </ClInclude>
@@ -352,6 +358,12 @@
     </ClInclude>
     <ClInclude Include="ImGuiManager.h">
       <Filter>ヘッダー ファイル\Draw\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>ヘッダー ファイル\Obj\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerController.h">
+      <Filter>ヘッダー ファイル\Obj\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

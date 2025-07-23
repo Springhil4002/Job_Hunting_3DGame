@@ -71,4 +71,3 @@ public:
 	/// @brief ビュー・プロジェクションの更新
 	void Update_CameraMatrix();
 };
-

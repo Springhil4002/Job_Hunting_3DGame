@@ -46,12 +46,17 @@ void TitleScene::Init(Camera* _camera,HWND _hwnd)
 	waterMesh->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
 	waterMesh->m_tags.AddTag("WaterMesh");
 	objectInstance.insert(waterMesh);
+
+	playerCtrl = new PlayerController();
+	playerCtrl->Init(player, camera, &BaseScene::input);
 }
 
 void TitleScene::Update()
 {
-	Update_Input();
+	//Update_Input();
 	
+	playerCtrl->Update();
+
 	for (auto& obj : objectInstance)
 	{
 		obj->Update();
@@ -137,7 +142,17 @@ void TitleScene::Update_MouseRotate(float _sensi)
 void TitleScene::Draw_ImGui()
 {
 	ImGui::Begin("SceneName:TitleScene");
-	ImGui::Text("FPS: %.2f", ImGui::GetIO().Framerate); 
+	ImGui::Text("FPS: %.2f", ImGui::GetIO().Framerate);
 	ImGui::Text("Press Enter to Game!");
+	
+	// プレイヤーの位置を表示
+	if (playerCtrl)
+	{
+		XMVECTOR position = playerCtrl->GetPosition();
+		XMFLOAT3 pos;
+		XMStoreFloat3(&pos, position);
+		ImGui::Text("Player.Position：X=%.3f Y=%.3f Z=%.3f", pos.x, pos.y, pos.z);
+	}
+
 	ImGui::End();
 }

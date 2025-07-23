@@ -163,6 +163,7 @@
     <ClCompile Include="PipelineState_SkyDomeMesh.cpp" />
     <ClCompile Include="PipelineState_WaterMesh.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayerController.cpp" />
     <ClCompile Include="ResultScene.cpp" />
     <ClCompile Include="RootSignature.cpp" />
     <ClCompile Include="RootSignature_Player.cpp" />
@@ -213,6 +214,7 @@
     <ClInclude Include="PipelineState_SkyDomeMesh.h" />
     <ClInclude Include="PipelineState_WaterMesh.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerController.h" />
     <ClInclude Include="PrototypeManager.h" />
     <ClInclude Include="ResultScene.h" />
     <ClInclude Include="RootSignature.h" />
