@@ -1,6 +1,7 @@
 #pragma once
 #include "SceneFactory.h"
 
+
 class SceneManager
 {
 private:
@@ -33,7 +34,7 @@ public:
 	/// @brief ‰Šú‰»ˆ—
 	void Init();
 	/// @brief XVˆ—
-	void Update();
+	void Update(float _deltaTime);
 	/// @brief •`‰æˆ—
 	void Draw();
 	/// @brief I—¹ˆ—

@@ -51,11 +51,11 @@ void TitleScene::Init(Camera* _camera,HWND _hwnd)
 	playerCtrl->Init(player, camera, &BaseScene::input);
 }
 
-void TitleScene::Update()
+void TitleScene::Update(float _deltaTime)
 {
 	//Update_Input();
 	
-	playerCtrl->Update();
+	playerCtrl->Update(_deltaTime);
 
 	for (auto& obj : objectInstance)
 	{
@@ -151,7 +151,29 @@ void TitleScene::Draw_ImGui()
 		XMVECTOR position = playerCtrl->GetPosition();
 		XMFLOAT3 pos;
 		XMStoreFloat3(&pos, position);
-		ImGui::Text("Player.PositionFX=%.3f Y=%.3f Z=%.3f", pos.x, pos.y, pos.z);
+
+		XMVECTOR forwardVec = playerCtrl->GetForwardVec();
+		XMFLOAT3 forward;
+		XMStoreFloat3(&forward, forwardVec);
+
+		if (ImGui::CollapsingHeader("PlayerInfo", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			if (ImGui::TreeNodeEx("Position", ImGuiTreeNodeFlags_DefaultOpen))
+			{
+				ImGui::Text("X: %.3f", pos.x);	ImGui::SameLine();
+				ImGui::Text("Y: %.3f", pos.y);	ImGui::SameLine();
+				ImGui::Text("Z: %.3f", pos.z);
+				ImGui::TreePop();
+			}
+
+			if (ImGui::TreeNodeEx("ForwardVec", ImGuiTreeNodeFlags_DefaultOpen))
+			{
+				ImGui::Text("X: %.3f", forward.x);	ImGui::SameLine();
+				ImGui::Text("Y: %.3f", forward.y);	ImGui::SameLine();
+				ImGui::Text("Z: %.3f", forward.z);
+				ImGui::TreePop();
+			}
+		}
 	}
 
 	ImGui::End();

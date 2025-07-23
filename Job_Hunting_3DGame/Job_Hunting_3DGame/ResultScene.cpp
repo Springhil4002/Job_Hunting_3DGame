@@ -14,7 +14,7 @@ void ResultScene::Init(Camera* _camera,HWND _hwnd)
 	printf("ÉVÅ[ÉìñºÅFResultScene\n");
 }
 
-void ResultScene::Update()
+void ResultScene::Update(float _deltaTime)
 {
 	for (auto& obj : objectInstance)
 	{

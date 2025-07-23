@@ -216,6 +216,9 @@
     <ClCompile Include="PlayerController.cpp">
       <Filter>ソース ファイル\Obj\Player</Filter>
     </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h">
@@ -364,6 +367,9 @@
     </ClInclude>
     <ClInclude Include="PlayerController.h">
       <Filter>ヘッダー ファイル\Obj\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

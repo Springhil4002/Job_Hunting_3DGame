@@ -18,30 +18,42 @@ bool PlayerController::Init(Player* _player, Camera* _camera, Input* _input)
 	m_CamOffset = XMVectorSubtract(_camera->GetPos(), _player->GetPos());
 	m_LastPlayerPos = m_Position;
 
+	m_Speed = 1.0f;
+	m_RotateSpeed = XMConvertToRadians(1.5f);
+
 	return true;
 }
 
-void PlayerController::Update()
+void PlayerController::Update(float _deltaTime)
 {
-	Update_Input();
+	Update_Input(_deltaTime);
 	Update_PlayerTransform();
 }
 
-void PlayerController::Update_Input()
+void PlayerController::Update_Input(float _deltaTime)
 {
 	if (m_Input->GetKeyPress(VK_W))
-		m_Position += m_ForwardVec * m_Speed;
+		m_Position += m_ForwardVec * m_Speed * _deltaTime;
 	if (m_Input->GetKeyPress(VK_S))
-		m_Position -= m_ForwardVec * m_Speed;
+		m_Position -= m_ForwardVec * m_Speed * _deltaTime;
 	if (m_Input->GetKeyPress(VK_A))
-		m_Position -= m_RightVec * m_Speed;
+		m_Position -= m_RightVec * m_Speed * _deltaTime;
 	if (m_Input->GetKeyPress(VK_D))
-		m_Position += m_RightVec * m_Speed;
+		m_Position += m_RightVec * m_Speed * _deltaTime;
 }
 
 void PlayerController::Update_PlayerTransform()
 {
+	// プレイヤーの位置更新
 	m_Player->SetPos(m_Position);
+
+	// カメラの視点更新
+	XMVECTOR newCamPos = XMVectorAdd(m_Position, m_CamOffset);
+	m_Camera->SetPos(newCamPos);
+
+	// カメラの注視点更新
+	XMVECTOR newCamTarget = XMVectorAdd(m_Position, m_ForwardVec * 15.0f);
+	m_Camera->SetTarget(newCamTarget);
 }
 
 XMVECTOR PlayerController::GetPosition()

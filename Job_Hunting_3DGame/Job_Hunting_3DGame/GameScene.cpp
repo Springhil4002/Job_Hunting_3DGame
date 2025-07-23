@@ -26,7 +26,7 @@ void GameScene::Init(Camera* _camera,HWND _hwnd)
 	objectInstance.insert(model);
 }
 
-void GameScene::Update()
+void GameScene::Update(float _deltaTime)
 {
 	Update_Input();
 

@@ -1,4 +1,5 @@
 #include "App.h"
+#include "Timer.h"
 #include "DrawBase.h"
 #include "SceneManager.h"
 #include "ImGuiManager.h"
@@ -108,6 +109,10 @@ void MainLoop(const TCHAR* _appName)
 	// シーン管理クラスの生成
 	auto sm = new SceneManager(camera,g_hWnd);
 	
+	// 経過時間計測処理の初期化
+	Timer* timer = new Timer();
+	timer->Init();
+
 	// メッセージを受け取るまでループ
 	while (WM_QUIT != msg.message)
 	{
@@ -119,26 +124,19 @@ void MainLoop(const TCHAR* _appName)
 		}
 		else
 		{
+			// 毎フレーム経過時間を更新
+			timer->Update();
+			float deltaTime = timer->GetDeltaTime();
+
 			// 現在のシーンの更新処理
-			sm->Update();
+			sm->Update(deltaTime);
 			
-			// 描画開始処理
-			g_DrawBase->BeginRender();
-			
-			// ImGuiの開始処理
-			g_ImGuiManager.Begin();
-
-			// 現在のシーンのImGui描画処理
-			sm->Draw_ImGui();
-
-			// 現在のシーンの描画処理
-			sm->Draw();
-
-			// ImGuiの終了処理
-			g_ImGuiManager.End();
-			
-			// 描画終了処理
-			g_DrawBase->EndRender();
+			g_DrawBase->BeginRender();	// 描画開始処理
+			g_ImGuiManager.Begin();		// ImGuiの開始処理
+			sm->Draw_ImGui();			// 現在のシーンのImGui描画処理
+			sm->Draw();					// 現在のシーンの描画処理
+			g_ImGuiManager.End();		// ImGuiの終了処理
+			g_DrawBase->EndRender();	// 描画終了処理
 		}
 	}
 }

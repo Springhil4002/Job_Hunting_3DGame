@@ -45,7 +45,7 @@ void SceneManager::Init()
 	}
 }
 
-void SceneManager::Update()
+void SceneManager::Update(float _deltaTime)
 {
 	if (change)
 	{
@@ -58,7 +58,7 @@ void SceneManager::Update()
 	// 入力処理
 	currentScene->Input();
 	// 更新処理
-	currentScene->Update();
+	currentScene->Update(_deltaTime);
 
 	// オブジェクトの削除・終了処理
 	Delete();

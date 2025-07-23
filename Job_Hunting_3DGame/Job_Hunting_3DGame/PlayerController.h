@@ -19,11 +19,11 @@ private:
 	DirectX::XMVECTOR m_CamOffset		= DirectX::XMVectorZero();		// カメラオフセット
 	DirectX::XMVECTOR m_LastPlayerPos	= DirectX::XMVectorZero();		// 前フレームプレイヤー位置
 
-	float m_Speed = 1.0f;		// 速度
-	float m_RotateSpeed = DirectX::XMConvertToRadians(1.5f);	// 回転速度
+	float m_Speed;			// 速度
+	float m_RotateSpeed;	// 回転速度
 
 	/// @brief 入力処理
-	void Update_Input();
+	void Update_Input(float _deltaTime);
 	/// @brief Playerとカメラの位置更新
 	void Update_PlayerTransform();
 public:
@@ -33,7 +33,7 @@ public:
 	/// @return 初期化処理の成否
 	bool Init(Player* _player, Camera* _camera, Input* _input);
 	/// @brief 更新処理
-	void Update();
+	void Update(float _deltaTime);
 
 	// 各種ゲッター関数 
 	DirectX::XMVECTOR GetPosition();

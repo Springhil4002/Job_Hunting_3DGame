@@ -27,7 +27,7 @@ public:
 	void Init() {};
 	void Init(Camera* _camera,HWND _hwnd);
 	/// @brief XVˆ—
-	void Update() override;
+	void Update(float _deltaTime) override;
 	/// @brief •`‰æˆ—
 	void Draw() override;
 	/// @brief I—¹ˆ—
