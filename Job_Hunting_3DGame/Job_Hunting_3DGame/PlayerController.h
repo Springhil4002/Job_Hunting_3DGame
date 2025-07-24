@@ -18,15 +18,21 @@ private:
 	DirectX::XMVECTOR m_UpVec			= DirectX::XMVectorZero();	// 上方向は固定
 	DirectX::XMVECTOR m_CamOffset		= DirectX::XMVectorZero();	// カメラオフセット
 	DirectX::XMVECTOR m_LastPlayerPos	= DirectX::XMVectorZero();	// 前フレームプレイヤー位置
-		
-	float m_Yaw;			
-	float m_Speed;			// 速度
+	DirectX::XMVECTOR m_Velocity		= DirectX::XMVectorZero();	// 現在の移動速度ベクトル
+			
 	float m_RotateSpeed;	// 回転速度
-	
+	float m_Acceleration;	// 加速度
+	float m_Friction;		// 摩擦力
+	float m_MaxSpeed;		// 最大速度
+
 	/// @brief 入力処理
 	void Update_Input(float _deltaTime);
 	/// @brief Playerとカメラの位置更新
 	void Update_PlayerTransform();
+	/// @brief 入力による回転処理
+	void Input_Rotate(float _deltaTime);
+	/// @brief 入力による移動処理
+	void Input_Move(float _deltaTime);
 public:
 	/// @brief 初期化処理
 	/// @param _player プレイヤーのポインタ変数 
@@ -37,8 +43,9 @@ public:
 	void Update(float _deltaTime);
 
 	// 各種ゲッター関数 
-	DirectX::XMVECTOR GetPosition();
-	DirectX::XMVECTOR GetRotation();
-	DirectX::XMVECTOR GetForwardVec();
-	DirectX::XMVECTOR GetRightVec();
+	DirectX::XMVECTOR GetPosition() const;
+	DirectX::XMVECTOR GetRotation() const;
+	DirectX::XMVECTOR GetForwardVec() const;
+	DirectX::XMVECTOR GetRightVec() const;
+	DirectX::XMVECTOR GetVelocity() const;
 };

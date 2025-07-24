@@ -173,6 +173,13 @@ void TitleScene::Draw_ImGui()
 				ImGui::Text("Z: %.3f", forward.z);
 				ImGui::TreePop();
 			}
+
+			if (ImGui::TreeNodeEx("Speed", ImGuiTreeNodeFlags_DefaultOpen))
+			{
+				float speed = XMVectorGetX(XMVector3Length(playerCtrl->GetVelocity()));
+				ImGui::Text("Speed: %.3f", speed);
+				ImGui::TreePop();
+			}
 		}
 	}
 
