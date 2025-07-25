@@ -48,7 +48,7 @@ void TitleScene::Init(Camera* _camera,HWND _hwnd)
 	objectInstance.insert(waterMesh);
 
 	playerCtrl = new PlayerController();
-	playerCtrl->Init(player, camera, &BaseScene::input);
+	playerCtrl->Init(player, waterMesh, camera, &BaseScene::input);
 }
 
 void TitleScene::Update(float _deltaTime)
@@ -145,16 +145,25 @@ void TitleScene::Draw_ImGui()
 	ImGui::Text("FPS: %.2f", ImGui::GetIO().Framerate);
 	ImGui::Text("Press Enter to Game!");
 	
-	// プレイヤーの位置を表示
+	// プレイヤーの状態
 	if (playerCtrl)
 	{
+		// プレイヤーの座標
 		XMVECTOR position = playerCtrl->GetPosition();
 		XMFLOAT3 pos;
 		XMStoreFloat3(&pos, position);
 
+		// プレイヤーの前方向ベクトル
 		XMVECTOR forwardVec = playerCtrl->GetForwardVec();
 		XMFLOAT3 forward;
 		XMStoreFloat3(&forward, forwardVec);
+
+		// プレイヤーの現在速度
+		float currentSpeed = XMVectorGetX(XMVector3Length(playerCtrl->GetVelocity()));
+		float maxSpeed = playerCtrl->GetMaxSpeed();
+
+		// カメラの追尾速度
+		float followSpeed = playerCtrl->GetFollowSpeed();
 
 		if (ImGui::CollapsingHeader("PlayerInfo", ImGuiTreeNodeFlags_DefaultOpen))
 		{
@@ -174,12 +183,14 @@ void TitleScene::Draw_ImGui()
 				ImGui::TreePop();
 			}
 
-			if (ImGui::TreeNodeEx("Speed", ImGuiTreeNodeFlags_DefaultOpen))
-			{
-				float speed = XMVectorGetX(XMVector3Length(playerCtrl->GetVelocity()));
-				ImGui::Text("Speed: %.3f", speed);
-				ImGui::TreePop();
-			}
+			// プレイヤーの速度関係
+			ImGui::Text("Player_CurrentSpeed: %.3f/%.3f", currentSpeed, maxSpeed);
+			ImGui::SliderFloat("Player_MaxSpeed", &maxSpeed, 1.0f, 50.0f);
+			playerCtrl->SetMaxSpeed(maxSpeed);
+
+			// カメラの追尾速度(調節可能)
+			ImGui::SliderFloat("Camera_FollowSpeed", &followSpeed, 12.0f, 50.0f);
+			playerCtrl->SetFollowSpeed(followSpeed);
 		}
 	}
 

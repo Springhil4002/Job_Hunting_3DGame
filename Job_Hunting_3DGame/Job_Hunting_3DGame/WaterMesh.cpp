@@ -318,3 +318,21 @@ float WaterMesh::GetRandomAmplitude(float _min, float _max)
 	std::uniform_real_distribution<float> dist(_min, _max);
 	return dist(mt);
 }
+
+float WaterMesh::GetWaveHeight(float _x, float _z, float _time)
+{
+	float height = 0.0f;
+	for (int i = 0; i < 4; ++i)
+	{
+		XMFLOAT2 dir = XMFLOAT2(m_waveParams.direction[i].x, m_waveParams.direction[i].y);
+		float len = m_waveParams.waveLength[i].x;
+		float amp = m_waveParams.amplitude[i].x;
+		float speed = m_waveParams.speed[i].x;
+
+		float k = XM_2PI / len;
+		float dot = _x * dir.x + _z * dir.y;
+		float phase = k * dot + _time * speed;
+		height += amp * sinf(phase);
+	}
+	return height;
+}

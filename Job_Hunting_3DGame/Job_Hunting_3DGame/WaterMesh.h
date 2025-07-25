@@ -83,4 +83,6 @@ public:
 	/// @param _max Å‘å’l
 	/// @return ƒ‰ƒ“ƒ_ƒ€‚ÈU•’l
 	float GetRandomAmplitude(float _min = 0.1f, float _max = 0.5f);
+
+	float GetWaveHeight(float _x, float _z, float _time);
 };
