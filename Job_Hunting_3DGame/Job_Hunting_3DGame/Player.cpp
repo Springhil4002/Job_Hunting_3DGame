@@ -9,7 +9,7 @@ Object* Player::clone() const
 
 bool Player::Init(Camera* _camera)
 {
-	m_pModelFile = L"Assets/Player/Player.fbx";
+	m_pModelFile = L"Assets/Player/Player.FBX";
 	m_camera = _camera;
 	// インポートに必要なパラメータ設定
 	ImportSettings importSetting = {
@@ -79,13 +79,13 @@ bool Player::Init(Camera* _camera)
 	// ディスクリプタヒープの生成
 	m_pDescriptorHeap = new DescriptorHeap();
 
-	/*auto tex = TextureManager::Instance().LoadTexture(L"Assets/Texture/Player.png");
+	auto tex = TextureManager::Instance().LoadTexture(L"Assets/Texture/Player.png");
 	if (!tex)
 	{
 		printf("Player:テクスチャ読み込み失敗\n");
 		return false;
 	}
-	m_pTexHandle = m_pDescriptorHeap->Register(tex.get());*/
+	m_pTexHandle = m_pDescriptorHeap->Register(tex.get());
 
 	m_pRootSignature = new RootSignature_Player();
 	if (!m_pRootSignature->IsValid())
@@ -157,10 +157,10 @@ void Player::Draw()
 		commandList->IASetVertexBuffers(0, 1, &vbView);
 		commandList->IASetIndexBuffer(&ibView);
 
-		//// 使用するディスクリプタヒープをセット
-		//commandList->SetDescriptorHeaps(1, &materialHeap);
-		//// テクスチャをセット
-		//commandList->SetGraphicsRootDescriptorTable(1, m_pTexHandle->handleGPU);
+		// 使用するディスクリプタヒープをセット
+		commandList->SetDescriptorHeaps(1, &materialHeap);
+		// テクスチャをセット
+		commandList->SetGraphicsRootDescriptorTable(1, m_pTexHandle->handleGPU);
 		// インデックスの数分描画
 		commandList->DrawIndexedInstanced(m_meshes[i].Indices.size(), 1, 0, 0, 0);
 	}
