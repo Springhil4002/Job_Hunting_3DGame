@@ -185,7 +185,7 @@ void TitleScene::Draw_ImGui()
 
 			// プレイヤーの速度関係
 			ImGui::Text("Player_CurrentSpeed: %.3f/%.3f", currentSpeed, maxSpeed);
-			ImGui::SliderFloat("Player_MaxSpeed", &maxSpeed, 1.0f, 50.0f);
+			ImGui::SliderFloat("Player_MaxSpeed", &maxSpeed, 1.0f, 200.0f);
 			playerCtrl->SetMaxSpeed(maxSpeed);
 
 			// カメラの追尾速度(調節可能)
