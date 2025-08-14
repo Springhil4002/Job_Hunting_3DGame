@@ -4,37 +4,8 @@ using namespace DirectX;
 
 bool PlayerController::Init(Player* _player, WaterMesh* _waterMesh, Camera* _camera, Input* _input)
 {
-	m_Player = _player;
-	if (m_Player == nullptr)
-		return false;
-	m_WaterMesh = _waterMesh;
-	if (m_WaterMesh == nullptr)
-		return false;
-	m_Camera = _camera;
-	if (m_Camera == nullptr)
-		return false;
-	m_Input = _input;
-
-	m_Position = m_Player->GetPos();
-	m_Rotation = m_Player->GetRota();
-
-	m_ForwardVec	= XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
-	m_RightVec		= XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);		
-	m_UpVec			= XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);		
-	m_CamOffset		= XMVectorSubtract(_camera->GetPos(), _player->GetPos());
-	m_LastPlayerPos = m_Position;
-	
-	m_RotateSpeed = XMConvertToRadians(45.0f);	// 回転速度
-	m_Acceleration = 5.0f;	// 加速度
-	m_Friction = 3.0f;		// 摩擦力
-	m_MaxSpeed = 10.0f;		// 最大速度
-
-	m_Gravity = -9.8f;		// 重力
-	m_Buoyancy = 15.0f;		// 浮力
-	m_WaterDamping = 4.0f;	// 水中減衰
-	m_PlayerOffsetY = 3.0f; // プレイヤーの高さオフセット
-	m_FollowSpeed = 40.0f;	// カメラの追従速度
-
+	Init_Prop(_player, _waterMesh, _camera, _input);
+	Init_Param();
 	return true;
 }
 
@@ -43,12 +14,89 @@ void PlayerController::Update(float _deltaTime)
 	Update_Input(_deltaTime);
 	Update_Buoyancy(_deltaTime);
 	Update_PlayerTransform(_deltaTime);
+	Update_Emitter(_deltaTime);
+}
+
+void PlayerController::Draw()
+{
+	if (m_Emitter_Splash)
+	{
+		m_Emitter_Splash->Draw();
+	}
+}
+
+bool PlayerController::Init_Prop(Player* _player, WaterMesh* _waterMesh, Camera* _camera, Input* _input)
+{
+	m_Player = _player;
+	if (!m_Player) return false;
+	m_WaterMesh = _waterMesh;
+	if (!m_WaterMesh) return false;
+	m_Camera = _camera;
+	if (!m_Camera) return false;
+	m_Input = _input;
+	if (!m_Input) return false;
+}
+
+void PlayerController::Init_Param()
+{
+	m_Position = m_Player->GetPos();
+	m_Rotation = m_Player->GetRota();
+
+	m_ForwardVec = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+	m_RightVec = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
+	m_UpVec = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+	m_CamOffset = XMVectorSubtract(m_Camera->GetPos(), m_Player->GetPos());
+	m_LastPlayerPos = m_Position;
+
+	m_RotateSpeed = XMConvertToRadians(45.0f);	// 回転速度
+	m_Acceleration = 5.0f;	// 加速度
+	m_Friction = 3.0f;		// 摩擦力
+	m_MaxSpeed = 60.0f;		// 最大速度
+
+	m_Gravity = -9.8f;		// 重力
+	m_Buoyancy = 15.0f;		// 浮力
+	m_WaterDamping = 4.0f;	// 水中減衰
+	m_PlayerOffsetY = 3.0f; // プレイヤーの高さオフセット
+	m_FollowSpeed = 40.0f;	// カメラの追従速度
+
+	m_Emitter_Splash = std::make_unique<ParticleEmitter_Splash>(m_Camera);
+	m_Emitter_Splash->Init();
 }
 
 void PlayerController::Update_Input(float _deltaTime)
 {
 	Input_Rotate(_deltaTime);
 	Input_Move(_deltaTime);
+}
+
+void PlayerController::Update_Buoyancy(float _deltaTime)
+{
+	if (!m_WaterMesh) return;
+
+	XMVECTOR pos = m_Position;
+	float x = XMVectorGetX(pos);
+	float z = XMVectorGetZ(pos);
+	float y = XMVectorGetY(pos) - m_PlayerOffsetY;
+
+	// 水面の波の高さを取得
+	float waterHeight = m_WaterMesh->GetWaveHeight(x, z, _deltaTime);
+	float depth = waterHeight - y;
+
+	// 水中にいるなら
+	if (depth > 0.0f)
+	{
+		float buoyancyForce = m_Buoyancy * depth;
+		float damping = m_WaterDamping * XMVectorGetY(m_VelocityY);
+		m_VelocityY += XMVectorSet(0, (buoyancyForce + m_Gravity - damping) * _deltaTime, 0, 0);
+	}
+	else
+	{
+		// 水面上なら重力のみ
+		m_VelocityY += XMVectorSet(0, m_Gravity * _deltaTime, 0, 0);
+	}
+
+	// Y軸移動を更新
+	m_Position += m_VelocityY * _deltaTime;
 }
 
 void PlayerController::Update_PlayerTransform(float _deltaTime)
@@ -74,6 +122,23 @@ void PlayerController::Update_PlayerTransform(float _deltaTime)
 	m_Camera->SetTarget(newCamTarget);
 }
 
+void PlayerController::Update_Emitter(float _deltaTime)
+{
+	if (!m_Emitter_Splash) return;
+
+	bool isMoving = false;
+	if (XMVectorGetX(XMVector3Length(m_Velocity)) > 0.1f || XMVectorGetZ(XMVector3Length(m_Velocity)) > 0.1f)
+	{
+		isMoving = true;
+	}
+
+	// Playerの先頭部分(中心座標＋進行方向のオフセット)
+	const float offsetLength = 2.0f;
+	XMVECTOR spawnPos = m_Position + m_ForwardVec * offsetLength;
+
+	m_Emitter_Splash->Update(_deltaTime, spawnPos, m_RightVec, isMoving);
+}
+
 void PlayerController::Input_Rotate(float _deltaTime)
 {
 	// 回転(Q:左回転、E:右回転)
@@ -87,36 +152,6 @@ void PlayerController::Input_Rotate(float _deltaTime)
 	m_ForwardVec = XMVector3TransformNormal(XMVectorSet(0, 0, 1, 0), rotMat);
 	m_RightVec = XMVector3TransformNormal(XMVectorSet(1, 0, 0, 0), rotMat);
 	m_CamOffset = XMVector3TransformCoord(m_CamOffset, rotMat);
-}
-
-void PlayerController::Update_Buoyancy(float _deltaTime)
-{
-	if(!m_WaterMesh) return;
-
-	XMVECTOR pos = m_Position;
-	float x = XMVectorGetX(pos);
-	float z = XMVectorGetZ(pos);
-	float y = XMVectorGetY(pos) - m_PlayerOffsetY;
-	
-	// 水面の波の高さを取得
-	float waterHeight = m_WaterMesh->GetWaveHeight(x, z, _deltaTime);
-	float depth = waterHeight - y;
-
-	// 水中にいるなら
-	if (depth > 0.0f)
-	{
-		float buoyancyForce = m_Buoyancy * depth; 
-		float damping = m_WaterDamping * XMVectorGetY(m_VelocityY);
-		m_VelocityY += XMVectorSet(0, (buoyancyForce + m_Gravity - damping) * _deltaTime, 0, 0);
-	}
-	else
-	{
-		// 水面上なら重力のみ
-		m_VelocityY += XMVectorSet(0, m_Gravity * _deltaTime, 0, 0);
-	}
-
-	// Y軸移動を更新
-	m_Position += m_VelocityY * _deltaTime;
 }
 
 void PlayerController::Input_Move(float _deltaTime)

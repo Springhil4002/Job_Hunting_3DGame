@@ -88,6 +88,24 @@
     <Filter Include="ソース ファイル\Obj\Player">
       <UniqueIdentifier>{a2624871-fdbd-4dba-a4a5-ccb5f1857534}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Particle">
+      <UniqueIdentifier>{5495cba6-3fc0-45a6-9179-d57b23002995}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Particle">
+      <UniqueIdentifier>{86112466-3bcf-49f2-8ccd-6ba4b0866062}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Particle\System">
+      <UniqueIdentifier>{8076391c-c782-4e0c-b5e0-f41e748029ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Particle\Emitter">
+      <UniqueIdentifier>{64f6bd09-fcf3-4cc1-bbf0-9b5332e477a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Particle\System">
+      <UniqueIdentifier>{5c704b42-7278-4b06-afda-341587466028}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Particle\Emitter">
+      <UniqueIdentifier>{7b226ad1-bb76-4b40-b8df-fb811f7bb83c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp">
@@ -218,6 +236,24 @@
     </ClCompile>
     <ClCompile Include="Timer.cpp">
       <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleEmitter.cpp">
+      <Filter>ソース ファイル\Particle\Emitter</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleSystem.cpp">
+      <Filter>ソース ファイル\Particle\System</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleEmitter_Splash.cpp">
+      <Filter>ソース ファイル\Particle\Emitter</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleSystem_Splash.cpp">
+      <Filter>ソース ファイル\Particle\System</Filter>
+    </ClCompile>
+    <ClCompile Include="RootSignature_Splash.cpp">
+      <Filter>ソース ファイル\Draw\RootSignature</Filter>
+    </ClCompile>
+    <ClCompile Include="PipelineState_Splash.cpp">
+      <Filter>ソース ファイル\Draw\PipelineState</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -371,6 +407,24 @@
     <ClInclude Include="Timer.h">
       <Filter>System</Filter>
     </ClInclude>
+    <ClInclude Include="ParticleEmitter.h">
+      <Filter>ヘッダー ファイル\Particle\Emitter</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleSystem.h">
+      <Filter>ヘッダー ファイル\Particle\System</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleEmitter_Splash.h">
+      <Filter>ヘッダー ファイル\Particle\Emitter</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleSystem_Splash.h">
+      <Filter>ヘッダー ファイル\Particle\System</Filter>
+    </ClInclude>
+    <ClInclude Include="RootSignature_Splash.h">
+      <Filter>ヘッダー ファイル\Draw\RootSignature</Filter>
+    </ClInclude>
+    <ClInclude Include="PipelineState_Splash.h">
+      <Filter>ヘッダー ファイル\Draw\pipelineState</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PS_Simple.hlsl">
@@ -389,6 +443,12 @@
       <Filter>リソース ファイル\VertexShader</Filter>
     </FxCompile>
     <FxCompile Include="PS_SkyDomeMesh.hlsl">
+      <Filter>リソース ファイル\PixelShader</Filter>
+    </FxCompile>
+    <FxCompile Include="VS_Splash.hlsl">
+      <Filter>リソース ファイル\VertexShader</Filter>
+    </FxCompile>
+    <FxCompile Include="PS_Splash.hlsl">
       <Filter>リソース ファイル\PixelShader</Filter>
     </FxCompile>
   </ItemGroup>

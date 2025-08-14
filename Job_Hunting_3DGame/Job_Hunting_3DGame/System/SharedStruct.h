@@ -18,6 +18,21 @@ private:
 	static const D3D12_INPUT_ELEMENT_DESC InputElements[InputElementCount];
 };
 
+// 頂点データ(インスタンシング)の定義
+struct VertexInstance
+{
+	XMFLOAT3 position;	// 位置
+	XMFLOAT3 normal;	// 法線
+	XMFLOAT2 uv;		// UV座標
+	XMFLOAT3 tangent;	// 接空間
+	XMFLOAT4 color;		// 頂点カラー
+
+	static const D3D12_INPUT_LAYOUT_DESC InputLayout;
+private:
+	static const int InputElementCount = 8;
+	static const D3D12_INPUT_ELEMENT_DESC InputElements[InputElementCount];
+};
+
 // 変換行列の定義
 struct alignas(256) Matrix
 {

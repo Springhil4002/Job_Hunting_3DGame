@@ -15,7 +15,7 @@ cbuffer LightParams : register(b2)
     float4 lightColor;  // ライトの色
 }
 
-struct VSOutput
+struct PS_IN
 {
     float4 svpos    : SV_POSITION;  // 頂点シェーダーから来た座標
     float4 color    : COLOR;        // 頂点シェーダーから来た色
@@ -28,7 +28,7 @@ Texture2D tex : register(t0);           // テクスチャ
 SamplerState smp : register(s0);        // サンプラー
 TextureCube skyCube : register(t3);     // キューブマップ
 
-float4 PS_Main(VSOutput pin) : SV_TARGET
+float4 PS_Main(PS_IN pin) : SV_TARGET
 {
     float3 N = normalize(pin.normal); // 法線(ワールド空間)
     float3 L = normalize(-lightDir); // ライト方向(ワールド空間)

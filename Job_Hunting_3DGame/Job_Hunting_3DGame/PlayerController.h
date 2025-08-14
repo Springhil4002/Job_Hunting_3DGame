@@ -3,6 +3,7 @@
 #include "Camera.h"
 #include "WaterMesh.h"
 #include "System/Input.h"
+#include "ParticleEmitter_Splash.h"
 
 class PlayerController
 {
@@ -11,7 +12,8 @@ private:
 	WaterMesh* m_WaterMesh;
 	Camera* m_Camera;
 	Input*	m_Input;
-	
+	std::unique_ptr<ParticleEmitter_Splash> m_Emitter_Splash;
+
 	DirectX::XMVECTOR m_Position;	// 位置
 	DirectX::XMVECTOR m_Rotation;	// 回転
 
@@ -34,6 +36,15 @@ private:
 	float m_PlayerOffsetY;	// プレイヤーの高さオフセット
 	float m_FollowSpeed;	// カメラの追従速度	
 
+	/// @brief メンバ変数の初期化
+	/// @param _player プレイヤー
+	/// @param _waterMesh 水面メッシュ
+	/// @param _camera カメラ
+	/// @param _input 入力系統
+	/// @return 初期化の成否
+	bool Init_Prop(Player* _player, WaterMesh* _waterMesh, Camera* _camera, Input* _input);
+	/// @brief パラメータの初期化
+	void Init_Param();
 	/// @brief 入力処理
 	/// @param _deltaTime 経過時間
 	void Update_Input(float _deltaTime);
@@ -42,12 +53,17 @@ private:
 	void Update_Buoyancy(float _deltaTime);
 	/// @brief Playerとカメラの位置更新
 	void Update_PlayerTransform(float _deltaTime);
+	/// @brief エミッタの更新処理
+	/// @param _deltaTime 経過時間
+	void Update_Emitter(float _deltaTime);
 	/// @brief 入力による回転処理
 	/// @param _deltaTime 経過時間
 	void Input_Rotate(float _deltaTime);
 	/// @brief 入力による移動処理
 	/// @param _deltaTime 経過時間
 	void Input_Move(float _deltaTime);
+	/// @brief パーティクルの描画処理
+	void Draw_Particle();
 public:
 	/// @brief 初期化処理
 	/// @param _player プレイヤーのポインタ変数 
@@ -57,6 +73,8 @@ public:
 	/// @brief 更新処理
 	/// @param _deltaTime 経過時間
 	void Update(float _deltaTime);
+	/// @brief 描画処理
+	void Draw();
 
 	// 各種ゲッター・セッター関数 
 	DirectX::XMVECTOR GetPosition() const { return m_Position; }

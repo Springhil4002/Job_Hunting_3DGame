@@ -18,7 +18,7 @@ cbuffer GerstnerParams : register(b1)
     float4 speed[WAVE_COUNT];       // (x = 波の速度, yzw = 予備)
 }
 
-struct VSInput
+struct VS_Input
 {
     float3 pos      : POSITION;  // 頂点座標
     float3 normal   : NORMAL;    // 法線
@@ -27,7 +27,7 @@ struct VSInput
     float4 color    : COLOR;     // 頂点色
 };
 
-struct VSOutput
+struct VS_Out
 {
     float4 svpos    : SV_POSITION;  // 変換された座標
     float4 color    : COLOR;        // 変換された色
@@ -36,7 +36,7 @@ struct VSOutput
     float3 worldPos : POSITION1;    // 変換されたワールド空間座標(スペキュラ計算用)
 };
 
-VSOutput VS_Main(VSInput vin)
+VS_Out VS_Main(VS_Input vin)
 {
     float3 localPos = vin.pos;
     
@@ -96,7 +96,7 @@ VSOutput VS_Main(VSInput vin)
     float4 viewPos = mul(view, float4(worldPos, 1.0f));
     float4 projPos = mul(proj, viewPos);
     
-    VSOutput vout;
+    VS_Out vout;
     vout.svpos = projPos;
     vout.color = vin.color;
     vout.uv = vin.uv;

@@ -2,21 +2,25 @@
 
 using namespace DirectX;
 
-void ParticleSystem::Reset() 
+void Particle::Reset()
 {
-	m_Position = XMVectorZero();
-	m_Velocity = XMVectorZero();
-	m_Color = m_StartColor;
-	m_Time = 0.0f;
-	m_Deg = 0.0f;
+	position = XMVectorZero();
+	velocity = XMVectorZero();
+	color = startColor;
+	elapsedTime = 0.0f;
 }
 
-bool ParticleSystem::IsActive() const 
+bool Particle::IsActive() const
 {
-	return m_State == Active; 
+	return particleState == Active;
 }
 
-float ParticleSystem::colorLerp(float _startColor, float _endColor, float _time)
+XMFLOAT4 Particle::LerpColor(const XMFLOAT4& _startColor, const XMFLOAT4& _endColor, float _time)
 {
-	return _startColor + (_endColor - _startColor) * _time;
+	return XMFLOAT4(
+		_startColor.x + (_endColor.x - _startColor.x) * _time,
+		_startColor.y + (_endColor.y - _startColor.y) * _time,
+		_startColor.z + (_endColor.z - _startColor.z) * _time,
+		_startColor.w + (_endColor.w - _startColor.w) * _time
+	);
 }

@@ -74,6 +74,8 @@ void TitleScene::Draw()
 	{
 		obj->Draw();
 	}
+
+	playerCtrl->Draw();
 }
 
 void TitleScene::Uninit()
