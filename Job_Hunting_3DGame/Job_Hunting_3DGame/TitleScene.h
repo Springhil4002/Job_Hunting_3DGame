@@ -2,12 +2,16 @@
 #include "BaseScene.h"
 #include "PlayerController.h"
 
+static bool runningTimer = false;
+static std::chrono::steady_clock::time_point startTime;
+static std::chrono::milliseconds elapsedTime(0);
+
 class TitleScene : public BaseScene
 {
 private:
 	HWND hwnd;
 	Camera* camera;
-	PlayerController* playerCtrl;
+	PlayerController* playerCtrl;	
 public:
 	/// @brief コンストラクタ
 	TitleScene() = default;
@@ -35,4 +39,9 @@ public:
 	void Update_MouseRotate(float _sensi);
 	/// @brief ImGuiの描画処理
 	void Draw_ImGui() override;
+
+	void ImGui_Prop();
+	void ImGui_PlayerController();
+	void ImGui_WaterMesh();
+	void ImGui_Timer();
 };

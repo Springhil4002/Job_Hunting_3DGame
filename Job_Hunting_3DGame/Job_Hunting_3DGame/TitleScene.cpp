@@ -143,10 +143,23 @@ void TitleScene::Update_MouseRotate(float _sensi)
 
 void TitleScene::Draw_ImGui()
 {
+	ImGui_Prop();
+	ImGui_PlayerController();
+	ImGui_WaterMesh();
+	ImGui_Timer();
+}
+
+void TitleScene::ImGui_Prop()
+{
 	ImGui::Begin("SceneName:TitleScene");
 	ImGui::Text("FPS: %.2f", ImGui::GetIO().Framerate);
 	ImGui::Text("Press Enter to Game!");
-	
+	ImGui::End();
+}
+
+void TitleScene::ImGui_PlayerController()
+{
+	ImGui::Begin("PlayerController");
 	// プレイヤーの状態
 	if (playerCtrl)
 	{
@@ -185,7 +198,7 @@ void TitleScene::Draw_ImGui()
 				ImGui::TreePop();
 			}
 
-			// プレイヤーの速度関係
+			// プレイヤーの速度(調節可能)
 			ImGui::Text("Player_CurrentSpeed: %.3f/%.3f", currentSpeed, maxSpeed);
 			ImGui::SliderFloat("Player_MaxSpeed", &maxSpeed, 1.0f, 200.0f);
 			playerCtrl->SetMaxSpeed(maxSpeed);
@@ -195,7 +208,12 @@ void TitleScene::Draw_ImGui()
 			playerCtrl->SetFollowSpeed(followSpeed);
 		}
 	}
+	ImGui::End();
+}
 
+void TitleScene::ImGui_WaterMesh()
+{
+	ImGui::Begin("WaterMesh");
 	if (ImGui::CollapsingHeader("WaterMesh", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		WaterMesh* waterMesh = nullptr;
@@ -218,6 +236,74 @@ void TitleScene::Draw_ImGui()
 			}
 		}
 	}
+	ImGui::End();
+}
+
+void TitleScene::ImGui_Timer()
+{
+	ImGui::Begin("RaceTimer");
+
+	// SPACEキー入力で開始・停止
+	if (input.GetKeyTrigger(VK_SPACE))
+	{
+		if (!runningTimer)
+		{
+			// 計測開始
+			startTime = std::chrono::steady_clock::now();
+			runningTimer = true;
+		}
+		else
+		{
+			// 計測停止
+			elapsedTime += std::chrono::duration_cast<std::chrono::milliseconds>
+				(std::chrono::steady_clock::now() - startTime);
+			runningTimer = false;
+		}
+	}
+
+	// ImGui用で開始・停止
+	if (!runningTimer)
+	{
+		if (ImGui::Button("Timer Start"))
+		{
+			startTime = std::chrono::steady_clock::now();
+			runningTimer = true;
+		}
+	}
+	else
+	{
+		if (ImGui::Button("Timer Stop"))
+		{
+			elapsedTime += std::chrono::duration_cast<std::chrono::milliseconds>
+				(std::chrono::steady_clock::now() - startTime);
+			runningTimer = false;
+		}
+	}
+
+	// リセットボタン
+	if (ImGui::Button("Timer Reset"))
+	{
+		elapsedTime = std::chrono::milliseconds(0);
+		runningTimer = false;
+	}
+
+	// 現在の経過時間を計算
+	auto currentElapsed = elapsedTime;
+	if (runningTimer)
+	{
+		currentElapsed += std::chrono::duration_cast<std::chrono::milliseconds>
+			(std::chrono::steady_clock::now() - startTime);
+	}
+	
+	int min = static_cast<int>(std::chrono::duration_cast<std::chrono::minutes>(currentElapsed).count());
+	int sec = static_cast<int>(std::chrono::duration_cast<std::chrono::seconds>(currentElapsed).count() % 60);
+	int cenSec = static_cast<int>((currentElapsed.count() % 1000) / 10);
+
+	char buffer[16];
+	snprintf(buffer, sizeof(buffer), "%02d:%02d:%02d", min, sec, cenSec);
+	ImGui::SetWindowFontScale(3.0f);
+	ImGui::Text("Time:%s", buffer);
+	ImGui::SetWindowFontScale(1.0f);
 
 	ImGui::End();
 }
