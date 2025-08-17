@@ -35,6 +35,8 @@ bool PlayerController::Init_Prop(Player* _player, WaterMesh* _waterMesh, Camera*
 	if (!m_Camera) return false;
 	m_Input = _input;
 	if (!m_Input) return false;
+
+	return true;
 }
 
 void PlayerController::Init_Param()
@@ -51,7 +53,7 @@ void PlayerController::Init_Param()
 	m_RotateSpeed = XMConvertToRadians(45.0f);	// 回転速度
 	m_Acceleration = 5.0f;	// 加速度
 	m_Friction = 3.0f;		// 摩擦力
-	m_MaxSpeed = 60.0f;		// 最大速度
+	m_MaxSpeed = 40.0f;		// 最大速度
 
 	m_Gravity = -9.8f;		// 重力
 	m_Buoyancy = 15.0f;		// 浮力
@@ -131,10 +133,12 @@ void PlayerController::Update_Emitter(float _deltaTime)
 	{
 		isMoving = true;
 	}
-
+	
+	const float splashOffsetY = -1.0f;
 	// Playerの先頭部分(中心座標＋進行方向のオフセット)
 	const float offsetLength = 2.0f;
 	XMVECTOR spawnPos = m_Position + m_ForwardVec * offsetLength;
+	spawnPos = XMVectorAdd(spawnPos, XMVectorSet(0, splashOffsetY, 0, 0));
 
 	m_Emitter_Splash->Update(_deltaTime, spawnPos, m_RightVec, isMoving);
 }

@@ -8,9 +8,6 @@ private:
 	HWND hwnd;
 	Camera* camera;
 	PlayerController* playerCtrl;
-	const int gridX = 256;
-	const int gridZ = 256;
-	const int gridMeshSize = 512;
 public:
 	/// @brief コンストラクタ
 	TitleScene() = default;

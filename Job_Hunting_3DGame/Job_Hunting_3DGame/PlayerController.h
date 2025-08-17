@@ -62,8 +62,6 @@ private:
 	/// @brief 入力による移動処理
 	/// @param _deltaTime 経過時間
 	void Input_Move(float _deltaTime);
-	/// @brief パーティクルの描画処理
-	void Draw_Particle();
 public:
 	/// @brief 初期化処理
 	/// @param _player プレイヤーのポインタ変数 

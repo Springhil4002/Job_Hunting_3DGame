@@ -9,26 +9,26 @@ Object* WaterMesh::clone() const
 	return new WaterMesh(*this);
 }
 
-Mesh WaterMesh::CreateGridMesh(int _gridX,int _gridZ,int _gridSize)
+Mesh WaterMesh::CreateGridMesh()
 {
 	Mesh mesh;
-	mesh.Vertices.resize((_gridX + 1) * (_gridZ + 1));
-	mesh.Indices.reserve(_gridX * _gridZ * 6);
+	mesh.Vertices.resize((m_GridX + 1) * (m_GridZ + 1));
+	mesh.Indices.reserve(m_GridX * m_GridZ * 6);
 
-	float halfSize = _gridSize * 0.5f;
-	float stepX = _gridSize / _gridX;
-	float stepZ = _gridSize / _gridZ;
+	float halfSize = m_GridSize * 0.5f;
+	float stepX = m_GridSize / m_GridX;
+	float stepZ = m_GridSize / m_GridZ;
 	
-	for (int z = 0; z <= _gridZ; ++z)
+	for (int z = 0; z <= m_GridZ; ++z)
 	{
-		for (int x = 0; x <= _gridX; ++x)
+		for (int x = 0; x <= m_GridX; ++x)
 		{
 			float px = x * stepX - halfSize;
 			float pz = z * stepZ - halfSize;
-			float u = (float)x / _gridX;
-			float v = (float)z / _gridZ;
+			float u = (float)x / m_GridX;
+			float v = (float)z / m_GridZ;
 
-			int index = z * (_gridX + 1) + x;
+			int index = z * (m_GridX + 1) + x;
 			mesh.Vertices[index] = {
 				XMFLOAT3(px,0.0f,pz),
 				XMFLOAT3(0.0f,1.0f,0.0f),
@@ -39,13 +39,13 @@ Mesh WaterMesh::CreateGridMesh(int _gridX,int _gridZ,int _gridSize)
 		}
 	}
 	
-	for (int z = 0; z < _gridZ; ++z)
+	for (int z = 0; z < m_GridZ; ++z)
 	{
-		for (int x = 0; x < _gridX; ++x)
+		for (int x = 0; x < m_GridX; ++x)
 		{
-			int i0 = z * (_gridX + 1) + x;
+			int i0 = z * (m_GridX + 1) + x;
 			int i1 = i0 + 1;
-			int i2 = i0 + _gridX + 1;
+			int i2 = i0 + m_GridX + 1;
 			int i3 = i2 + 1;
 
 			mesh.Indices.push_back(i0);
@@ -58,15 +58,15 @@ Mesh WaterMesh::CreateGridMesh(int _gridX,int _gridZ,int _gridSize)
 		}
 	}
 
-	m_indexCount = static_cast<UINT>(mesh.Indices.size());
+	m_IndexCount = static_cast<UINT>(mesh.Indices.size());
 	return mesh;
 }
 
-bool WaterMesh::Init(Camera* _camera,int _gridX,int _gridY,int _gridSize)
+bool WaterMesh::Init(Camera* _camera)
 {
-	m_camera = _camera;
+	m_Camera = _camera;
 	
-	auto mesh = CreateGridMesh(_gridX, _gridY, _gridSize);
+	auto mesh = CreateGridMesh();
 	auto vertexSize = sizeof(Vertex) * std::size(mesh.Vertices);
 	auto vertexStride = sizeof(Vertex);
 	m_pVertexBuffer = new VertexBuffer(vertexSize, vertexStride, mesh.Vertices.data());
@@ -96,10 +96,10 @@ bool WaterMesh::Init(Camera* _camera,int _gridX,int _gridY,int _gridSize)
 		// カメラの初期化
 		auto ptr = m_pConstantBuffer[i]->GetPtr<Matrix>();
 		ptr->world = XMMatrixIdentity();
-		ptr->view = m_camera->GetViewMatrix();
-		ptr->proj = m_camera->GetProjMatrix();
+		ptr->view = m_Camera->GetViewMatrix();
+		ptr->proj = m_Camera->GetProjMatrix();
 
-		XMVECTOR camPosVec = m_camera->GetPos();
+		XMVECTOR camPosVec = m_Camera->GetPos();
 		XMFLOAT3 camPos;
 		XMStoreFloat3(&camPos, camPosVec);
 		ptr->cameraPos = XMFLOAT3(camPos.x, camPos.y, camPos.z);
@@ -113,25 +113,25 @@ bool WaterMesh::Init(Camera* _camera,int _gridX,int _gridY,int _gridSize)
 	}
 
 	// 4つの波のパラメータ設定
-	m_waveParams.amplitude[0]	= { 0.7f, 0,0,0 };
-	m_waveParams.direction[0]	= { 1.0f,  0.2f, 0,0 };
-	m_waveParams.waveLength[0]	= { 6.0f, 0,0,0 };
-	m_waveParams.speed[0]		= { 1.0f, 0,0,0 };
+	m_waveParams.amplitude[0]	= { 0.3f, 0,0,0 };
+	m_waveParams.direction[0]	= { 1.0f, 0.2f, 0,0 };
+	m_waveParams.waveLength[0]	= { 8.0f, 0,0,0 };
+	m_waveParams.speed[0]		= { 0.5f, 0,0,0 };
 
-	m_waveParams.amplitude[1]	= { 0.5f, 0,0,0 };
-	m_waveParams.direction[1]	= { -0.7f,  1.0f, 0,0 };
-	m_waveParams.waveLength[1]	= { 5.0f, 0,0,0 };
-	m_waveParams.speed[1]		= { 0.8f, 0,0,0 };
+	m_waveParams.amplitude[1]	= { 0.2f, 0,0,0 };
+	m_waveParams.direction[1]	= { -0.7f,1.0f, 0,0 };
+	m_waveParams.waveLength[1]	= { 7.0f, 0,0,0 };
+	m_waveParams.speed[1]		= { 0.4f, 0,0,0 };
 
-	m_waveParams.amplitude[2]	= { 0.3f, 0,0,0 };
+	m_waveParams.amplitude[2]	= { 0.15f, 0,0,0 };
 	m_waveParams.direction[2]	= { 0.5f, -1.0f, 0,0 };
-	m_waveParams.waveLength[2]	= { 4.5f, 0,0,0 };
-	m_waveParams.speed[2]		= { 1.2f, 0,0,0 };
+	m_waveParams.waveLength[2]	= { 6.0f, 0,0,0 };
+	m_waveParams.speed[2]		= { 0.3f, 0,0,0 };
 
-	m_waveParams.amplitude[3]	= { 0.2f, 0,0,0 };
+	m_waveParams.amplitude[3]	= { 0.1f, 0,0,0 };
 	m_waveParams.direction[3]	= { -1.0f, -0.3f, 0,0 };
-	m_waveParams.waveLength[3]	= { 3.0f, 0,0,0 };
-	m_waveParams.speed[3]		= { 0.6f, 0,0,0 };
+	m_waveParams.waveLength[3]	= { 5.0f, 0,0,0 };
+	m_waveParams.speed[3]		= { 0.2f, 0,0,0 };
 
 	// バッファにコピー
 	std::memcpy(m_pWaveBuffer->GetPtr(), &m_waveParams, sizeof(GerstnerParams));
@@ -144,8 +144,8 @@ bool WaterMesh::Init(Camera* _camera,int _gridX,int _gridY,int _gridSize)
 	}
 
 	// カメラ方向と反対方向にライト方向を設定
-	XMVECTOR eye = m_camera->GetPos();
-	XMVECTOR target = m_camera->GetTarget();
+	XMVECTOR eye = m_Camera->GetPos();
+	XMVECTOR target = m_Camera->GetTarget();
 	XMVECTOR camDir = XMVector3Normalize(XMVectorSubtract(target, eye));
 
 	XMVECTOR lightDirVec = XMVectorScale(camDir, -1.0f);
@@ -200,9 +200,9 @@ bool WaterMesh::Init(Camera* _camera,int _gridX,int _gridY,int _gridSize)
 void WaterMesh::Update()
 {
 	// 時間更新
-	g_time += 0.016f;	
-	m_waveTime += 0.016f;
-	Update_WaterWave(m_waveTime);
+	g_Time += 0.016f;	
+	m_WaveTime += 0.016f;
+	Update_WaterWave(m_WaveTime);
 	Update_Transform();
 	Update_CameraMatrix();
 	Update_Light();
@@ -239,7 +239,7 @@ void WaterMesh::Draw()
 	cmdList->IASetVertexBuffers(0, 1, &vbView);
 	cmdList->IASetIndexBuffer(&ibView);
 
-	cmdList->DrawIndexedInstanced(m_indexCount, 1, 0, 0, 0);
+	cmdList->DrawIndexedInstanced(m_IndexCount, 1, 0, 0, 0);
 }
 
 void WaterMesh::Uninit()
@@ -264,12 +264,12 @@ void WaterMesh::Update_CameraMatrix()
 	auto currentIndex = g_DrawBase->CurrentBackBufferIndex();
 	auto ptr = m_pConstantBuffer[currentIndex]->GetPtr<Matrix>();
 	ptr->world = m_worldMatrix;
-	ptr->view = m_camera->GetViewMatrix();
-	ptr->proj = m_camera->GetProjMatrix();
-	ptr->time = g_time;
+	ptr->view = m_Camera->GetViewMatrix();
+	ptr->proj = m_Camera->GetProjMatrix();
+	ptr->time = g_Time;
 
 	// カメラ位置を毎フレーム更新
-	XMVECTOR camPosVec = m_camera->GetPos();
+	XMVECTOR camPosVec = m_Camera->GetPos();
 	XMFLOAT3 camPos;
 	XMStoreFloat3(&camPos, camPosVec);
 	ptr->cameraPos = camPos;
@@ -277,11 +277,11 @@ void WaterMesh::Update_CameraMatrix()
 
 void WaterMesh::Update_WaterWave(float _waveTime)
 {
-	if (m_waveTime >= 3.0f)
+	if (m_WaveTime >= 3.0f)
 	{
 		for (int i = 0; i < 4; ++i)
 		{
-			float amp = GetRandomAmplitude();
+			float amp = GetRandomAmplitude(0.1f, 1.0f);
 			m_waveParams.amplitude[i] = { amp,0,0,0 };
 		}
 	}
@@ -289,13 +289,13 @@ void WaterMesh::Update_WaterWave(float _waveTime)
 	// バッファに変更内容を反映
 	std::memcpy(m_pWaveBuffer->GetPtr(), &m_waveParams, sizeof(GerstnerParams));
 	// 時間のリセット
-	m_waveTime = 0.0f;
+	m_WaveTime = 0.0f;
 }
 
 void WaterMesh::Update_Light()
 {
 	// カメラの前方向ベクトルを取得
-	XMVECTOR camDir = m_camera->GetForward();
+	XMVECTOR camDir = m_Camera->GetForward();
 
 	// カメラと向かい合うようにライト方向を求める
 	XMVECTOR lightDirVec = XMVectorScale(camDir, -1.0f);

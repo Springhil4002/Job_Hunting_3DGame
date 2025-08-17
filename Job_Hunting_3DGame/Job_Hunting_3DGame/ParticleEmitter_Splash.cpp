@@ -61,7 +61,7 @@ void ParticleEmitter_Splash::Init_Param()
 	m_Time = 0.0f;
 	m_Min_LifeTime = 1.0f;
 	m_Max_LifeTime = 5.0f;
-	m_Gravity = 9.8f;
+	m_Gravity = -9.8f;
 	m_State = Active;
 }
 

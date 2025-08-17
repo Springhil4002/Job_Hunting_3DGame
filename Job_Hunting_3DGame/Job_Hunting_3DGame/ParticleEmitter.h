@@ -41,9 +41,9 @@ public:
 	Camera* m_Camera;		// ÉJÉÅÉâ
 
 	virtual bool Init() = 0;
-	virtual void Update(float deltaTime, DirectX::XMVECTOR _pos, DirectX::XMVECTOR _rightVec, bool _moving) = 0;
+	virtual void Update() = 0;
 	virtual void Draw() = 0;
-	virtual void CreateParticles(DirectX::XMVECTOR _pos, DirectX::XMVECTOR _rigjtVec) = 0;
+	virtual void CreateParticles() = 0;
 
 	int GetMaxParticles() { return m_MaxParticles; }
 	int GetMinCreateParticles() const { return m_Min_CreateParticles; }

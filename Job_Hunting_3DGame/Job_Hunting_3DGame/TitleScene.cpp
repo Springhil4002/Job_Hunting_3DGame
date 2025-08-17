@@ -40,7 +40,7 @@ void TitleScene::Init(Camera* _camera,HWND _hwnd)
 	objectInstance.insert(player);
 
 	WaterMesh* waterMesh = static_cast<WaterMesh*>(CreateObj("WaterMesh"));
-	waterMesh->Init(camera, gridX, gridZ, gridMeshSize);
+	waterMesh->Init(camera);
 	waterMesh->SetPos(XMVectorZero());
 	waterMesh->SetRota(XMVectorZero());
 	waterMesh->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
