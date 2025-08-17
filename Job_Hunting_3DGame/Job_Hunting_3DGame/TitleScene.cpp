@@ -196,5 +196,28 @@ void TitleScene::Draw_ImGui()
 		}
 	}
 
+	if (ImGui::CollapsingHeader("WaterMesh", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		WaterMesh* waterMesh = nullptr;
+		for (auto& obj : objectInstance)
+		{
+			if (obj->m_tags.SearchTag("WaterMesh"))
+			{
+				waterMesh = static_cast<WaterMesh*>(obj);
+				break;
+			}
+		}
+
+		if (waterMesh)
+		{
+			static int gridSize = waterMesh->GetGridSize();
+			ImGui::DragInt("GridSize", &gridSize, 2.0f, 64, 1024);
+			if (ImGui::Button("Apply Grid Size"))
+			{
+				waterMesh->Update_GridSize(gridSize);
+			}
+		}
+	}
+
 	ImGui::End();
 }

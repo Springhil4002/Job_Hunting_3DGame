@@ -246,6 +246,29 @@ void WaterMesh::Uninit()
 {
 }
 
+void WaterMesh::Update_GridSize(int _newGridSize)
+{
+	// サイズを更新
+	m_GridSize = _newGridSize;
+	// メッシュ再生成
+	auto mesh = CreateGridMesh();
+	// 頂点バッファ再生成
+	delete m_pVertexBuffer;
+	m_pVertexBuffer = new VertexBuffer(
+		sizeof(Vertex) * mesh.Vertices.size(),
+		sizeof(Vertex),
+		mesh.Vertices.data()
+	);
+	// インデックスバッファ再生成
+	delete m_pIndexBuffer;
+	m_pIndexBuffer = new IndexBuffer(
+		sizeof(uint32_t) * mesh.Indices.size(),
+		mesh.Indices.data()
+	);
+	// インデックス数更新
+	m_IndexCount = static_cast<UINT>(mesh.Indices.size());
+}
+
 void WaterMesh::Update_Transform()
 {
 	// カメラの更新処理

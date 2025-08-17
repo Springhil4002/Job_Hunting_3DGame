@@ -76,6 +76,9 @@ public:
 	void Draw()		override;
 	/// @brief 終了処理
 	void Uninit()	override;
+	/// @brief グリッドサイズ更新
+	/// @param _newGridSize グリッドサイズ
+	void Update_GridSize(int _newGridSize);
 	/// @brief ワールド行列の更新
 	void Update_Transform();
 	/// @brief ビュー・プロジェクションの更新
