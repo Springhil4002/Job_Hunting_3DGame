@@ -44,7 +44,7 @@ void TitleScene::Init(Camera* _camera,HWND _hwnd)
 
 	Goal* goal = static_cast<Goal*>(CreateObj("Goal"));
 	goal->Init(camera);
-	goal->SetPos(XMVectorSet(0.0f, -1.0f, 0.0f, 0.0f));
+	goal->SetPos(XMVectorSet(0.0f, -1.0f, 50.0f, 0.0f));
 	goal->SetRota(XMVectorZero());
 	goal->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
 	goal->m_tags.AddTag("Goal");
@@ -60,12 +60,16 @@ void TitleScene::Init(Camera* _camera,HWND _hwnd)
 
 	playerCtrl = new PlayerController();
 	playerCtrl->Init(player, waterMesh, camera, &BaseScene::input);
+
+	game = new Game();
+	game->Init(player, goal);
 }
 
 void TitleScene::Update(float _deltaTime)
 {
 	//Update_Input();
-	
+	game->Update(_deltaTime);
+
 	playerCtrl->Update(_deltaTime);
 
 	for (auto& obj : objectInstance)
@@ -73,7 +77,7 @@ void TitleScene::Update(float _deltaTime)
 		obj->Update();
 	}
 
-	if (input.GetKeyTrigger(VK_RETURN))
+	if (input.GetKeyTrigger(VK_RETURN) || game->GetGoalFlag())
 	{
 		SceneManager::ChangeScene(SCENE_ID_GAME, camera, hwnd);
 	}

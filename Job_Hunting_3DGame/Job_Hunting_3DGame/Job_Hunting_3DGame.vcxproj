@@ -152,6 +152,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="DrawBase.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="Goal.cpp" />
     <ClCompile Include="ImGuiManager.cpp" />
@@ -214,6 +215,7 @@
     </ClInclude>
     <ClInclude Include="DrawBase.h" />
     <ClInclude Include="Enum_Scene.h" />
+    <ClInclude Include="Game.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="Goal.h" />
     <ClInclude Include="ImGuiManager.h" />

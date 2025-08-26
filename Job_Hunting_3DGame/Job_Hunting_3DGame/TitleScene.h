@@ -1,6 +1,7 @@
 #pragma once
 #include "BaseScene.h"
 #include "PlayerController.h"
+#include "Game.h"
 
 static bool runningTimer = false;
 static std::chrono::steady_clock::time_point startTime;
@@ -11,6 +12,7 @@ class TitleScene : public BaseScene
 private:
 	HWND hwnd;
 	Camera* camera;
+	Game* game;
 	PlayerController* playerCtrl;	
 public:
 	/// @brief コンストラクタ

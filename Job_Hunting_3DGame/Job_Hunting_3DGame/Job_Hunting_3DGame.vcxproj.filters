@@ -106,6 +106,12 @@
     <Filter Include="ソース ファイル\Particle\Emitter">
       <UniqueIdentifier>{7b226ad1-bb76-4b40-b8df-fb811f7bb83c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Game">
+      <UniqueIdentifier>{46e8a4e7-6df0-4b71-8940-73ba0379405f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Game">
+      <UniqueIdentifier>{516b7aa0-0986-42d9-a769-36f0637bd7e4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp">
@@ -263,6 +269,9 @@
     </ClCompile>
     <ClCompile Include="RootSignature_Goal.cpp">
       <Filter>ソース ファイル\Draw\RootSignature</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>ソース ファイル\Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -442,6 +451,9 @@
     </ClInclude>
     <ClInclude Include="RootSignature_Goal.h">
       <Filter>ヘッダー ファイル\Draw\RootSignature</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>ヘッダー ファイル\Game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
