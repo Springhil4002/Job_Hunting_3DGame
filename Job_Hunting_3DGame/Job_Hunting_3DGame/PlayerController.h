@@ -83,6 +83,7 @@ public:
 	float GetMaxSpeed() const { return m_MaxSpeed; }
 	float GetFollowSpeed() const { return m_FollowSpeed; }
 
+	void SetPosition(DirectX::XMVECTOR _pos) { m_Position = _pos; }
 	void SetMaxSpeed(float _maxSpeed) { m_MaxSpeed = _maxSpeed; }
 	void SetFollowSpeed(float _followSpeed) { m_FollowSpeed = _followSpeed; }
 };

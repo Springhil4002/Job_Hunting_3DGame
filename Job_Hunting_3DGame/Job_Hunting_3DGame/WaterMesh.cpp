@@ -194,6 +194,7 @@ bool WaterMesh::Init(Camera* _camera)
 		return false;
 	}
 
+	printf("WaterMesh:‰Šú‰»ˆ—‚É¬Œ÷\n");
 	return true;
 }
 

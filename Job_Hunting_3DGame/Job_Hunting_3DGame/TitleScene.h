@@ -40,8 +40,10 @@ public:
 	/// @brief ImGui‚Ì•`‰æˆ—
 	void Draw_ImGui() override;
 
+	// Imgui•`‰æŠÖ”ŒQ
 	void ImGui_Prop();
 	void ImGui_PlayerController();
+	void ImGui_Goal();
 	void ImGui_WaterMesh();
 	void ImGui_Timer();
 };

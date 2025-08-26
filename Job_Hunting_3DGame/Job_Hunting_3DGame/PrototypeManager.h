@@ -4,6 +4,7 @@
 #include "WaterMesh.h"
 #include "SkyDomeMesh.h"
 #include "Player.h"
+#include "Goal.h"
 
 class PrototypeManager
 {

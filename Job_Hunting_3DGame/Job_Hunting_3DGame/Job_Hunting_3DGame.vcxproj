@@ -153,6 +153,7 @@
     </ClCompile>
     <ClCompile Include="DrawBase.cpp" />
     <ClCompile Include="GameScene.cpp" />
+    <ClCompile Include="Goal.cpp" />
     <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />
     <ClCompile Include="main.cpp" />
@@ -163,6 +164,7 @@
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="ParticleSystem_Splash.cpp" />
     <ClCompile Include="PipelineState.cpp" />
+    <ClCompile Include="PipelineState_Goal.cpp" />
     <ClCompile Include="PipelineState_Player.cpp" />
     <ClCompile Include="PipelineState_SkyDomeMesh.cpp" />
     <ClCompile Include="PipelineState_Splash.cpp" />
@@ -171,6 +173,7 @@
     <ClCompile Include="PlayerController.cpp" />
     <ClCompile Include="ResultScene.cpp" />
     <ClCompile Include="RootSignature.cpp" />
+    <ClCompile Include="RootSignature_Goal.cpp" />
     <ClCompile Include="RootSignature_Player.cpp" />
     <ClCompile Include="RootSignature_SkyDomeMesh.cpp" />
     <ClCompile Include="RootSignature_Splash.cpp" />
@@ -212,6 +215,7 @@
     <ClInclude Include="DrawBase.h" />
     <ClInclude Include="Enum_Scene.h" />
     <ClInclude Include="GameScene.h" />
+    <ClInclude Include="Goal.h" />
     <ClInclude Include="ImGuiManager.h" />
     <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="Model3D.h" />
@@ -221,6 +225,7 @@
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="ParticleSystem_Splash.h" />
     <ClInclude Include="PipelineState.h" />
+    <ClInclude Include="PipelineState_Goal.h" />
     <ClInclude Include="PipelineState_Player.h" />
     <ClInclude Include="PipelineState_SkyDomeMesh.h" />
     <ClInclude Include="PipelineState_Splash.h" />
@@ -230,6 +235,7 @@
     <ClInclude Include="PrototypeManager.h" />
     <ClInclude Include="ResultScene.h" />
     <ClInclude Include="RootSignature.h" />
+    <ClInclude Include="RootSignature_Goal.h" />
     <ClInclude Include="RootSignature_Player.h" />
     <ClInclude Include="RootSignature_SkyDomeMesh.h" />
     <ClInclude Include="RootSignature_Splash.h" />

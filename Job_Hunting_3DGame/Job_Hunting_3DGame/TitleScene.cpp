@@ -19,6 +19,7 @@ void TitleScene::Init(Camera* _camera,HWND _hwnd)
 	prototypeManager->AddPrototype("Sky", new SkyDomeMesh);
 	prototypeManager->AddPrototype("Player", new Player);
 	prototypeManager->AddPrototype("WaterMesh", new WaterMesh);
+	prototypeManager->AddPrototype("Goal", new Goal);
 	
 	XMVECTOR camPos = camera->GetPos();
 	XMFLOAT3 pos;
@@ -30,14 +31,24 @@ void TitleScene::Init(Camera* _camera,HWND _hwnd)
 	sky->SetPos(XMLoadFloat3(&pos));
 	sky->SetRota(XMVectorZero());
 	sky->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	sky->m_tags.AddTag("SkyDome");
 	objectInstance.insert(sky);
 
 	Player* player = static_cast<Player*>(CreateObj("Player"));
 	player->Init(camera);
-	player->SetPos(XMVectorSet(0.0f,1.5f,0.0f,0.0f));
+	player->SetPos(XMVectorSet(0.0f, 1.5f, 0.0f, 0.0f));
 	player->SetRota(XMVectorZero());
 	player->SetScale(XMVectorSet(0.01f, 0.01f, 0.01f, 0.0f));
+	player->m_tags.AddTag("Player");
 	objectInstance.insert(player);
+
+	Goal* goal = static_cast<Goal*>(CreateObj("Goal"));
+	goal->Init(camera);
+	goal->SetPos(XMVectorSet(0.0f, -1.0f, 0.0f, 0.0f));
+	goal->SetRota(XMVectorZero());
+	goal->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	goal->m_tags.AddTag("Goal");
+	objectInstance.insert(goal);
 
 	WaterMesh* waterMesh = static_cast<WaterMesh*>(CreateObj("WaterMesh"));
 	waterMesh->Init(camera);
@@ -145,6 +156,7 @@ void TitleScene::Draw_ImGui()
 {
 	ImGui_Prop();
 	ImGui_PlayerController();
+	ImGui_Goal();
 	ImGui_WaterMesh();
 	ImGui_Timer();
 }
@@ -182,11 +194,15 @@ void TitleScene::ImGui_PlayerController()
 
 		if (ImGui::CollapsingHeader("PlayerInfo", ImGuiTreeNodeFlags_DefaultOpen))
 		{
+			// プレイヤーの座標の表示＋編集
 			if (ImGui::TreeNodeEx("Position", ImGuiTreeNodeFlags_DefaultOpen))
 			{
-				ImGui::Text("X: %.3f", pos.x);	ImGui::SameLine();
-				ImGui::Text("Y: %.3f", pos.y);	ImGui::SameLine();
-				ImGui::Text("Z: %.3f", pos.z);
+				float posArray[3] = { pos.x,pos.y,pos.z };
+				if (ImGui::DragFloat3("Player Position", posArray, 0.1f))
+				{
+					playerCtrl->SetPosition(XMVectorSet(
+						posArray[0], posArray[1], posArray[2], 0.0f));
+				}
 				ImGui::TreePop();
 			}
 
@@ -211,6 +227,45 @@ void TitleScene::ImGui_PlayerController()
 	ImGui::End();
 }
 
+void TitleScene::ImGui_Goal()
+{
+	ImGui::Begin("Goal");
+	if (ImGui::CollapsingHeader("Goal", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		Goal* goal = nullptr;
+		for (auto& obj : objectInstance)
+		{
+			// ゴールを検索
+			if (obj->m_tags.SearchTag("Goal"))
+			{
+				goal = static_cast<Goal*>(obj);
+				break;
+			}
+		}
+
+		if (goal)
+		{
+			XMVECTOR position = goal->GetPos();
+			XMFLOAT3 pos;
+			XMStoreFloat3(&pos, position);
+
+			// ゴールの座標の表示＋編集
+			if (ImGui::TreeNodeEx("Position", ImGuiTreeNodeFlags_DefaultOpen))
+			{
+				float posArray[3] = { pos.x,pos.y,pos.z };
+				if (ImGui::DragFloat3("Goal Position", posArray, 0.1f))
+				{
+					goal->SetPos(XMVectorSet(
+						posArray[0], posArray[1], posArray[2], 0.0f));
+				}
+				ImGui::TreePop();
+			}
+
+		}
+	}
+	ImGui::End();
+}
+
 void TitleScene::ImGui_WaterMesh()
 {
 	ImGui::Begin("WaterMesh");
@@ -219,6 +274,7 @@ void TitleScene::ImGui_WaterMesh()
 		WaterMesh* waterMesh = nullptr;
 		for (auto& obj : objectInstance)
 		{
+			// 水面メッシュを検索
 			if (obj->m_tags.SearchTag("WaterMesh"))
 			{
 				waterMesh = static_cast<WaterMesh*>(obj);

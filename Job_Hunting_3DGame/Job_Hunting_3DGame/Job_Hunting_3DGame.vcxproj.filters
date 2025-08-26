@@ -255,6 +255,15 @@
     <ClCompile Include="PipelineState_Splash.cpp">
       <Filter>ソース ファイル\Draw\PipelineState</Filter>
     </ClCompile>
+    <ClCompile Include="Goal.cpp">
+      <Filter>ソース ファイル\Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="PipelineState_Goal.cpp">
+      <Filter>ソース ファイル\Draw\PipelineState</Filter>
+    </ClCompile>
+    <ClCompile Include="RootSignature_Goal.cpp">
+      <Filter>ソース ファイル\Draw\RootSignature</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h">
@@ -424,6 +433,15 @@
     </ClInclude>
     <ClInclude Include="PipelineState_Splash.h">
       <Filter>ヘッダー ファイル\Draw\pipelineState</Filter>
+    </ClInclude>
+    <ClInclude Include="Goal.h">
+      <Filter>ヘッダー ファイル\Obj</Filter>
+    </ClInclude>
+    <ClInclude Include="PipelineState_Goal.h">
+      <Filter>ヘッダー ファイル\Draw\pipelineState</Filter>
+    </ClInclude>
+    <ClInclude Include="RootSignature_Goal.h">
+      <Filter>ヘッダー ファイル\Draw\RootSignature</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -91,6 +91,7 @@ bool SkyDomeMesh::Init(Camera* _camera)
 		return false;
 	}
 
+	printf("SkyDomeMesh:‰Šú‰»ˆ—‚É¬Œ÷\n");
 	return true;
 }
 
