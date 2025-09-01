@@ -8,6 +8,9 @@
 // パイプラインステートの設定
 PipelineState_Goal::PipelineState_Goal()
 {
+	// zeroMemoryで初期化
+	ZeroMemory(&desc, sizeof(desc));
+
 	// ラスタライザーステート:デフォルト設定
 	desc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
 	// カリングなし:両面描画
@@ -31,7 +34,7 @@ PipelineState_Goal::PipelineState_Goal()
 	desc.SampleDesc.Quality = 0;
 }
 
-bool PipelineState_Goal::IsValid()
+bool PipelineState_Goal::IsValid() const
 {
 	return m_IsValid;
 }
@@ -52,7 +55,7 @@ void PipelineState_Goal::SetVS(std::wstring filePath)
 	auto hr = D3DReadFileToBlob(filePath.c_str(), m_pVsBlob.GetAddressOf());
 	if (FAILED(hr))
 	{
-		printf("PSO_Player:頂点シェーダーの読み込みに失敗\n");
+		printf("PSO_Goal:頂点シェーダーの読み込みに失敗\n");
 		return;
 	}
 
@@ -65,7 +68,7 @@ void PipelineState_Goal::SetPS(std::wstring filePath)
 	auto hr = D3DReadFileToBlob(filePath.c_str(), m_pPSBlob.GetAddressOf());
 	if (FAILED(hr))
 	{
-		printf("PSO_Player:ピクセルシェーダーの読み込みに失敗\n");
+		printf("PSO_Goal:ピクセルシェーダーの読み込みに失敗\n");
 		return;
 	}
 
@@ -78,7 +81,7 @@ void PipelineState_Goal::Create()
 	auto hr = g_DrawBase->Device()->CreateGraphicsPipelineState(&desc, IID_PPV_ARGS(m_pPipelineState.ReleaseAndGetAddressOf()));
 	if (FAILED(hr))
 	{
-		printf("PSO_Player:パイプラインステートの生成に失敗\n");
+		printf("PSO_Goal:パイプラインステートの生成に失敗\n");
 		return;
 	}
 

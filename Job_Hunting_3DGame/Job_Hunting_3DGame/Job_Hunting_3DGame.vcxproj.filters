@@ -70,9 +70,6 @@
     <Filter Include="ソース ファイル\Draw\PipelineState">
       <UniqueIdentifier>{26c9f362-51df-4517-ad6a-ba3556c32df7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\Draw\pipelineState">
-      <UniqueIdentifier>{d33fd7f1-cbf2-454f-8be6-8a230821efdc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="System\ImGui">
       <UniqueIdentifier>{f9e2a5ba-ca73-4ee2-92a1-4253e0e44b56}</UniqueIdentifier>
     </Filter>
@@ -111,6 +108,15 @@
     </Filter>
     <Filter Include="ヘッダー ファイル\Game">
       <UniqueIdentifier>{516b7aa0-0986-42d9-a769-36f0637bd7e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Obj\DebugObj">
+      <UniqueIdentifier>{176f41e9-9355-4b0f-bfdd-ca84186020eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Obj\DebugObj">
+      <UniqueIdentifier>{ece410ca-c8e8-405f-a6f7-8ab9d2732a47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Draw\PipelineState">
+      <UniqueIdentifier>{d33fd7f1-cbf2-454f-8be6-8a230821efdc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -273,6 +279,15 @@
     <ClCompile Include="Game.cpp">
       <Filter>ソース ファイル\Game</Filter>
     </ClCompile>
+    <ClCompile Include="Debug_Sphere.cpp">
+      <Filter>ソース ファイル\Obj\DebugObj</Filter>
+    </ClCompile>
+    <ClCompile Include="RootSignature_DebugSphere.cpp">
+      <Filter>ソース ファイル\Draw\RootSignature</Filter>
+    </ClCompile>
+    <ClCompile Include="PipelineState_DebugSphere.cpp">
+      <Filter>ソース ファイル\Draw\PipelineState</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h">
@@ -363,10 +378,10 @@
       <Filter>ヘッダー ファイル\Draw\RootSignature</Filter>
     </ClInclude>
     <ClInclude Include="PipelineState.h">
-      <Filter>ヘッダー ファイル\Draw\pipelineState</Filter>
+      <Filter>ヘッダー ファイル\Draw\PipelineState</Filter>
     </ClInclude>
     <ClInclude Include="PipelineState_WaterMesh.h">
-      <Filter>ヘッダー ファイル\Draw\pipelineState</Filter>
+      <Filter>ヘッダー ファイル\Draw\PipelineState</Filter>
     </ClInclude>
     <ClInclude Include="TextureManager.h">
       <Filter>ヘッダー ファイル\Resource</Filter>
@@ -375,7 +390,7 @@
       <Filter>ヘッダー ファイル\Obj</Filter>
     </ClInclude>
     <ClInclude Include="PipelineState_SkyDomeMesh.h">
-      <Filter>ヘッダー ファイル\Draw\pipelineState</Filter>
+      <Filter>ヘッダー ファイル\Draw\PipelineState</Filter>
     </ClInclude>
     <ClInclude Include="RootSignature_SkyDomeMesh.h">
       <Filter>ヘッダー ファイル\Draw\RootSignature</Filter>
@@ -387,7 +402,7 @@
       <Filter>ヘッダー ファイル\Draw\RootSignature</Filter>
     </ClInclude>
     <ClInclude Include="PipelineState_Player.h">
-      <Filter>ヘッダー ファイル\Draw\pipelineState</Filter>
+      <Filter>ヘッダー ファイル\Draw\PipelineState</Filter>
     </ClInclude>
     <ClInclude Include="System\ImGui\imconfig.h">
       <Filter>System\ImGui</Filter>
@@ -441,19 +456,28 @@
       <Filter>ヘッダー ファイル\Draw\RootSignature</Filter>
     </ClInclude>
     <ClInclude Include="PipelineState_Splash.h">
-      <Filter>ヘッダー ファイル\Draw\pipelineState</Filter>
+      <Filter>ヘッダー ファイル\Draw\PipelineState</Filter>
     </ClInclude>
     <ClInclude Include="Goal.h">
       <Filter>ヘッダー ファイル\Obj</Filter>
     </ClInclude>
     <ClInclude Include="PipelineState_Goal.h">
-      <Filter>ヘッダー ファイル\Draw\pipelineState</Filter>
+      <Filter>ヘッダー ファイル\Draw\PipelineState</Filter>
     </ClInclude>
     <ClInclude Include="RootSignature_Goal.h">
       <Filter>ヘッダー ファイル\Draw\RootSignature</Filter>
     </ClInclude>
     <ClInclude Include="Game.h">
       <Filter>ヘッダー ファイル\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug_Sphere.h">
+      <Filter>ヘッダー ファイル\Obj\DebugObj</Filter>
+    </ClInclude>
+    <ClInclude Include="RootSignature_DebugSphere.h">
+      <Filter>ヘッダー ファイル\Draw\RootSignature</Filter>
+    </ClInclude>
+    <ClInclude Include="PipelineState_DebugSphere.h">
+      <Filter>ヘッダー ファイル\Draw\PipelineState</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -479,6 +503,12 @@
       <Filter>リソース ファイル\VertexShader</Filter>
     </FxCompile>
     <FxCompile Include="PS_Splash.hlsl">
+      <Filter>リソース ファイル\PixelShader</Filter>
+    </FxCompile>
+    <FxCompile Include="VS_Sphere.hlsl">
+      <Filter>リソース ファイル\VertexShader</Filter>
+    </FxCompile>
+    <FxCompile Include="PS_Sphere.hlsl">
       <Filter>リソース ファイル\PixelShader</Filter>
     </FxCompile>
   </ItemGroup>

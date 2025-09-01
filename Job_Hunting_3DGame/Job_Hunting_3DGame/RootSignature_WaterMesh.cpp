@@ -70,7 +70,7 @@ RootSignature_WaterMesh::RootSignature_WaterMesh()
 		pErrorBlob.GetAddressOf());
 	if (FAILED(hr))
 	{
-		printf("ルートシグネチャシリアライズに失敗");
+		printf("WaterMesh:ルートシグネチャシリアライズに失敗");
 		return;
 	}
 
@@ -82,14 +82,14 @@ RootSignature_WaterMesh::RootSignature_WaterMesh()
 		IID_PPV_ARGS(m_pRootSignature.GetAddressOf())); // ルートシグニチャ格納先のポインタ
 	if (FAILED(hr))
 	{
-		printf("ルートシグネチャの生成に失敗");
+		printf("WaterMesh:ルートシグネチャの生成に失敗");
 		return;
 	}
 
 	m_IsValid = true;
 }
 
-bool RootSignature_WaterMesh::IsValid()
+bool RootSignature_WaterMesh::IsValid() const
 {
 	return m_IsValid;
 }

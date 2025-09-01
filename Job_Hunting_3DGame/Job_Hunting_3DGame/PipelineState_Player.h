@@ -21,7 +21,7 @@ public:
 	PipelineState_Player();
 	/// @brief 生成の成否を返す処理
 	/// @return　生成の成否を返します 
-	bool IsValid();
+	bool IsValid() const;
 	/// @brief 入力レイアウトを設定する処理
 	/// @param _layout 入力レイアウト
 	void SetInputLayout(D3D12_INPUT_LAYOUT_DESC _layout);

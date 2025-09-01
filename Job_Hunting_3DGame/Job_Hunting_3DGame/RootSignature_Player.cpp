@@ -53,7 +53,7 @@ RootSignature_Player::RootSignature_Player()
 		pErrorBlob.GetAddressOf());
 	if (FAILED(hr))
 	{
-		printf("ルートシグネチャシリアライズに失敗");
+		printf("Player:ルートシグネチャシリアライズに失敗");
 		return;
 	}
 
@@ -65,14 +65,14 @@ RootSignature_Player::RootSignature_Player()
 		IID_PPV_ARGS(m_pRootSignature.GetAddressOf())); // ルートシグニチャ格納先のポインタ
 	if (FAILED(hr))
 	{
-		printf("ルートシグネチャの生成に失敗");
+		printf("Player:ルートシグネチャの生成に失敗");
 		return;
 	}
 
 	m_IsValid = true;
 }
 
-bool RootSignature_Player::IsValid()
+bool RootSignature_Player::IsValid() const
 {
 	return m_IsValid;
 }

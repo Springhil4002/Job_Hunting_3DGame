@@ -8,6 +8,9 @@
 // パイプラインステートの設定
 PipelineState::PipelineState()
 {
+	// zeroMemoryで初期化
+	ZeroMemory(&desc, sizeof(desc));
+
 	// ラスタライザーステート:デフォルト設定
 	desc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT); 
 	// カリングなし:両面描画
@@ -31,7 +34,7 @@ PipelineState::PipelineState()
 	desc.SampleDesc.Quality = 0;
 }
 
-bool PipelineState::IsValid()
+bool PipelineState::IsValid() const
 {
 	return m_IsValid;
 }

@@ -73,7 +73,7 @@ RootSignature::RootSignature()
 	m_IsValid = true;
 }
 
-bool RootSignature::IsValid()
+bool RootSignature::IsValid() const
 {
 	return m_IsValid;
 }

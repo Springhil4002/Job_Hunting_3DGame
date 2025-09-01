@@ -52,7 +52,7 @@ RootSignature_SkyDomeMesh::RootSignature_SkyDomeMesh()
 		pErrorBlob.GetAddressOf());
 	if (FAILED(hr))
 	{
-		printf("ルートシグネチャシリアライズに失敗");
+		printf("SkyDome:ルートシグネチャシリアライズに失敗");
 		return;
 	}
 
@@ -64,14 +64,14 @@ RootSignature_SkyDomeMesh::RootSignature_SkyDomeMesh()
 		IID_PPV_ARGS(m_pRootSignature.ReleaseAndGetAddressOf())); // ルートシグニチャ格納先のポインタ
 	if (FAILED(hr))
 	{
-		printf("ルートシグネチャの生成に失敗");
+		printf("SkyDome:ルートシグネチャの生成に失敗");
 		return;
 	}
 
 	m_IsValid = true;
 }
 
-bool RootSignature_SkyDomeMesh::IsValid()
+bool RootSignature_SkyDomeMesh::IsValid() const
 {
 	return m_IsValid;
 }

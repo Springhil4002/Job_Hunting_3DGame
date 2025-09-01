@@ -8,6 +8,9 @@
 // パイプラインステートの設定
 PipelineState_WaterMesh::PipelineState_WaterMesh()
 {
+	// zeroMemoryで初期化
+	ZeroMemory(&desc, sizeof(desc));
+
 	// ラスタライザーステート:デフォルト設定
 	desc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
 	// カリングなし:両面描画
@@ -33,7 +36,7 @@ PipelineState_WaterMesh::PipelineState_WaterMesh()
 	desc.SampleDesc.Quality = 0;
 }
 
-bool PipelineState_WaterMesh::IsValid()
+bool PipelineState_WaterMesh::IsValid() const
 {
 	return m_IsValid;
 }

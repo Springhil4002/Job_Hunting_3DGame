@@ -41,7 +41,7 @@ struct alignas(256) Matrix
 	Matrix4x4 proj;		// 投影行列
 	float time;			// 波のための時間
 	XMFLOAT3 cameraPos;	// カメラ位置
-	float pad1;			// 16バイトアライメント
+	float alpha;		// 透明度
 };
 
 struct GerstnerParams
