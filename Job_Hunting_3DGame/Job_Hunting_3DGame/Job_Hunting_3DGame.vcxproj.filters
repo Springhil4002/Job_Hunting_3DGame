@@ -279,15 +279,6 @@
     <ClCompile Include="Game.cpp">
       <Filter>ソース ファイル\Game</Filter>
     </ClCompile>
-    <ClCompile Include="Debug_Sphere.cpp">
-      <Filter>ソース ファイル\Obj\DebugObj</Filter>
-    </ClCompile>
-    <ClCompile Include="RootSignature_DebugSphere.cpp">
-      <Filter>ソース ファイル\Draw\RootSignature</Filter>
-    </ClCompile>
-    <ClCompile Include="PipelineState_DebugSphere.cpp">
-      <Filter>ソース ファイル\Draw\PipelineState</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h">
@@ -470,15 +461,6 @@
     <ClInclude Include="Game.h">
       <Filter>ヘッダー ファイル\Game</Filter>
     </ClInclude>
-    <ClInclude Include="Debug_Sphere.h">
-      <Filter>ヘッダー ファイル\Obj\DebugObj</Filter>
-    </ClInclude>
-    <ClInclude Include="RootSignature_DebugSphere.h">
-      <Filter>ヘッダー ファイル\Draw\RootSignature</Filter>
-    </ClInclude>
-    <ClInclude Include="PipelineState_DebugSphere.h">
-      <Filter>ヘッダー ファイル\Draw\PipelineState</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PS_Simple.hlsl">
@@ -503,12 +485,6 @@
       <Filter>リソース ファイル\VertexShader</Filter>
     </FxCompile>
     <FxCompile Include="PS_Splash.hlsl">
-      <Filter>リソース ファイル\PixelShader</Filter>
-    </FxCompile>
-    <FxCompile Include="VS_Sphere.hlsl">
-      <Filter>リソース ファイル\VertexShader</Filter>
-    </FxCompile>
-    <FxCompile Include="PS_Sphere.hlsl">
       <Filter>リソース ファイル\PixelShader</Filter>
     </FxCompile>
   </ItemGroup>

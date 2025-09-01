@@ -148,7 +148,6 @@
     <ClCompile Include="BaseScene.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ConstantBuffer.cpp" />
-    <ClCompile Include="Debug_Sphere.cpp" />
     <ClCompile Include="DescriptorHeap.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
@@ -166,7 +165,6 @@
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="ParticleSystem_Splash.cpp" />
     <ClCompile Include="PipelineState.cpp" />
-    <ClCompile Include="PipelineState_DebugSphere.cpp" />
     <ClCompile Include="PipelineState_Goal.cpp" />
     <ClCompile Include="PipelineState_Player.cpp" />
     <ClCompile Include="PipelineState_SkyDomeMesh.cpp" />
@@ -176,7 +174,6 @@
     <ClCompile Include="PlayerController.cpp" />
     <ClCompile Include="ResultScene.cpp" />
     <ClCompile Include="RootSignature.cpp" />
-    <ClCompile Include="RootSignature_DebugSphere.cpp" />
     <ClCompile Include="RootSignature_Goal.cpp" />
     <ClCompile Include="RootSignature_Player.cpp" />
     <ClCompile Include="RootSignature_SkyDomeMesh.cpp" />
@@ -213,7 +210,6 @@
     <ClInclude Include="BaseScene.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ConstantBuffer.h" />
-    <ClInclude Include="Debug_Sphere.h" />
     <ClInclude Include="DescriptorHeap.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
@@ -231,7 +227,6 @@
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="ParticleSystem_Splash.h" />
     <ClInclude Include="PipelineState.h" />
-    <ClInclude Include="PipelineState_DebugSphere.h" />
     <ClInclude Include="PipelineState_Goal.h" />
     <ClInclude Include="PipelineState_Player.h" />
     <ClInclude Include="PipelineState_SkyDomeMesh.h" />
@@ -242,7 +237,6 @@
     <ClInclude Include="PrototypeManager.h" />
     <ClInclude Include="ResultScene.h" />
     <ClInclude Include="RootSignature.h" />
-    <ClInclude Include="RootSignature_DebugSphere.h" />
     <ClInclude Include="RootSignature_Goal.h" />
     <ClInclude Include="RootSignature_Player.h" />
     <ClInclude Include="RootSignature_SkyDomeMesh.h" />
@@ -299,16 +293,6 @@
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PS_Main</EntryPointName>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="PS_Sphere.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PS_Main</EntryPointName>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
-      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PS_Main</EntryPointName>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
-    </FxCompile>
     <FxCompile Include="PS_Splash.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
@@ -345,16 +329,6 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">VS_Main</EntryPointName>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
-    </FxCompile>
-    <FxCompile Include="VS_Sphere.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
-      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">VS_Main</EntryPointName>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
-      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">VS_Main</EntryPointName>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="VS_Splash.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
