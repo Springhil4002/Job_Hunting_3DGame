@@ -205,4 +205,7 @@ void Debug_Sphere::Update_CameraMatrix()
     XMFLOAT3 camPos;
     XMStoreFloat3(&camPos, camPosVec);
     ptr->cameraPos = camPos;
+
+    // “§–¾“xÝ’è
+	ptr->alpha = 0.5f;
 }

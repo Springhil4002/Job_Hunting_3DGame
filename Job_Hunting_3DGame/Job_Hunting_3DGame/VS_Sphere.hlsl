@@ -5,7 +5,7 @@ cbuffer Transform : register(b0)
     float4x4 proj;
     float time;
     float3 cameraPos;
-    float pad1;
+    float alpha;
 };
 
 struct VS_IN
@@ -20,8 +20,9 @@ struct VS_IN
 struct VS_OUT
 {
     float4 svpos : SV_POSITION; // 変換された座標
-    float4 color : COLOR; // 変換された色
-    float2 uv : TEXCOORD; // UV  
+    float4 color : COLOR;       // 変換された色
+    float2 uv : TEXCOORD;       // UV 
+    float alpha : ALPHA;        // 透明度
 };
 
 VS_OUT VS_Main(VS_IN vin)
@@ -33,9 +34,10 @@ VS_OUT VS_Main(VS_IN vin)
     float4 viewPos = mul(view, worldPos); // ビュー座標に変換
     float4 projPos = mul(proj, viewPos); // 投影変換
     
-    vout.svpos = projPos; // 投影変換された座標をピクセルシェーダーに渡す
+    vout.svpos = projPos;   // 投影変換された座標をピクセルシェーダーに渡す
     vout.color = vin.color; // 頂点カラーをそのままピクセルシェーダーに渡す
-    vout.uv = vin.uv; // UVを入力から渡す
+    vout.uv = vin.uv;   // UVを入力から渡す
+    vout.alpha = alpha; // 定数バッファから透明度を渡す
     
     return vout;
 }
