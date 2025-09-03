@@ -14,9 +14,11 @@
 #include "Texture2D.h"
 #include "TextureManager.h"
 #include "Camera.h"
+#include "Debug_Sphere.h"
 
 class Goal : public Object
 {
+private:
 	// 頂点バッファ
 	VertexBuffer* m_pVertexBuffer;
 	// インデックスバッファ
@@ -41,6 +43,8 @@ class Goal : public Object
 	std::vector<VertexBuffer*> m_pVertexBuffers;
 	// メッシュの数分のインデックスバッファ
 	std::vector<IndexBuffer*> m_pIndexBuffers;
+	// 当たり判定用デバッグ球体
+	std::shared_ptr<Debug_Sphere> m_Sphere;
 public:
 	// ワールド行列更新操作用
 	DirectX::XMMATRIX m_worldMatrix;
@@ -63,8 +67,24 @@ public:
 	void Draw() override;
 	/// @brief 終了処理
 	void Uninit() override;
+	/// @brief ゴールオブジェクトの初期化処理
+	/// @param _camera カメラ
+	/// @return 初期化成功の成否
+	bool Init_PropGoal(Camera* _camera);
+	/// @brief 球体オブジェクトの初期化処理
+	/// @param _camera カメラ
+	/// @return 初期化成功の成否
+	bool Init_PropSphere(Camera* _camera);
 	/// @brief ワールド行列の更新
 	void Update_Transform();
 	/// @brief ビュー・プロジェクションの更新
 	void Update_CameraMatrix();
+
+	// デバッグ用:ImGui描画関数
+	void Draw_ImGui();
+	void ImGui_Sphere();
+
+	/// @brief 当たり判定用の球体の取得
+	/// @return 当たり判定用の球体のポインタ
+	Debug_Sphere* GetSphere() const { return m_Sphere.get(); }
 };

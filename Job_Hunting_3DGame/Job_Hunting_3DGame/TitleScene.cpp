@@ -11,17 +11,20 @@ Object* TitleScene::CreateObj(const std::string& _objectID)
 
 void TitleScene::Init(Camera* _camera,HWND _hwnd)
 {
-	camera = _camera;
-	hwnd = _hwnd;
-
 	printf("シーン名：TitleScene\n");
 
+	camera = _camera;
+	camera->SetPos(XMVectorSet(0.0f, 2.5f, 0.0f, 1.0f));
+	camera->SetTarget(XMVectorSet(0.0f, -15.0f, 50.0f, 0.0f));
+	camera->SetUp(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
+	hwnd = _hwnd;
+	
+	// プロトタイプ登録
 	prototypeManager->AddPrototype("Sky", new SkyDomeMesh);
 	prototypeManager->AddPrototype("Player", new Player);
 	prototypeManager->AddPrototype("WaterMesh", new WaterMesh);
 	prototypeManager->AddPrototype("Goal", new Goal);
-	prototypeManager->AddPrototype("Sphere", new Debug_Sphere);
-	
+
 	XMVECTOR camPos = camera->GetPos();
 	XMFLOAT3 pos;
 	XMStoreFloat3(&pos, camPos);
@@ -51,14 +54,6 @@ void TitleScene::Init(Camera* _camera,HWND _hwnd)
 	goal->m_tags.AddTag("Goal");
 	objectInstance.insert(goal);
 
-	Debug_Sphere* sphere = static_cast<Debug_Sphere*>(CreateObj("Sphere"));
-	sphere->Init(camera);
-	sphere->SetPos(XMVectorSet(0.0f, 3.0f, 50.0f, 0.0f));
-	sphere->SetRota(XMVectorZero());
-	sphere->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
-	sphere->m_tags.AddTag("Debug_Sphere");
-	objectInstance.insert(sphere);
-
 	WaterMesh* waterMesh = static_cast<WaterMesh*>(CreateObj("WaterMesh"));
 	waterMesh->Init(camera);
 	waterMesh->SetPos(XMVectorZero());
@@ -76,10 +71,10 @@ void TitleScene::Init(Camera* _camera,HWND _hwnd)
 
 void TitleScene::Update(float _deltaTime)
 {
-	Update_Input();
+	//Update_Input();
 	game->Update(_deltaTime);
 
-	//playerCtrl->Update(_deltaTime);
+	playerCtrl->Update(_deltaTime);
 
 	for (auto& obj : objectInstance)
 	{

@@ -33,6 +33,10 @@ private:
 	DescriptorHandle* m_pTexHandle;
 	// カメラ
 	Camera* m_camera;
+	// 透明度
+	float m_alpha = 0.5f;
+	// 球体の半径
+	float m_radius = 5.0f;
 public:
 	// ワールド行列更新操作用
 	DirectX::XMMATRIX m_worldMatrix;
@@ -66,5 +70,12 @@ public:
 	/// @param _slices 分割数
 	/// @param _radius 半径
 	void Create_Sphere(float _stacks, float _slices, float _radius);
+	
+	/// @brief 各種ゲッター・セッター
+	float GetAlpha() const { return m_alpha; }
+	float GetRadius() const { return m_radius; }
+
+	void SetAlpha(float _alpha) { m_alpha = _alpha; }
+	void SetRadius(float _radius) { m_radius = _radius; }
 };
 

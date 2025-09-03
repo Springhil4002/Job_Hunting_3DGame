@@ -5,7 +5,7 @@
 #include "SkyDomeMesh.h"
 #include "Player.h"
 #include "Goal.h"
-#include "Debug_Sphere.h"
+//#include "Debug_Sphere.h"
 
 class PrototypeManager
 {

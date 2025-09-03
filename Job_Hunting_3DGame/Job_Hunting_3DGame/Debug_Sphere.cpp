@@ -11,7 +11,7 @@ bool Debug_Sphere::Init(Camera* _camera)
 {
 	m_camera = _camera;
 
-	Create_Sphere(32, 64, 5.0f);
+    Create_Sphere(32, 64, m_radius);
 
     // 頂点バッファ生成
     auto vbSize = sizeof(Vertex) * vertices.size();
@@ -207,5 +207,5 @@ void Debug_Sphere::Update_CameraMatrix()
     ptr->cameraPos = camPos;
 
     // 透明度設定
-	ptr->alpha = 0.5f;
+	ptr->alpha = m_alpha;
 }

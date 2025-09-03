@@ -1,4 +1,5 @@
 #include "Goal.h"
+#include "System/ImGui/imgui.h"
 
 using namespace DirectX;
 
@@ -8,6 +9,73 @@ Object* Goal::clone() const
 }
 
 bool Goal::Init(Camera* _camera)
+{
+	Init_PropGoal(_camera);
+	Init_PropSphere(_camera);
+	return true;
+}
+
+void Goal::Update()
+{
+	Update_Transform();
+	Update_CameraMatrix();
+	if (m_Sphere)
+	{
+		XMVECTOR posGoal = GetPos();
+
+		XMVECTOR offset=XMVectorSet(0.0f,3.0f,0.0f,0.0f);
+		m_Sphere->SetPos(posGoal + offset);
+		m_Sphere->Update();
+	}
+}
+
+void Goal::Draw()
+{
+	// 現在のフレーム番号を取得
+	auto currentIndex = g_DrawBase->CurrentBackBufferIndex();
+	// コマンドリスト
+	auto commandList = g_DrawBase->CommandList();
+	// ディスクリプタヒープ
+	auto materialHeap = m_pDescriptorHeap->GetHeap();
+
+	//　メッシュの数だけインデックス分の描画を行う
+	for (size_t i = 0; i < m_meshes.size(); i++)
+	{
+		// メッシュに対応する頂点バッファ
+		auto vbView = m_pVertexBuffers[i]->View();
+		// メッシュに対応する頂点の順番バッファ
+		auto ibView = m_pIndexBuffers[i]->View();
+
+		commandList->SetGraphicsRootSignature(m_pRootSignature->Get());
+		commandList->SetPipelineState(m_pPipelineState->Get());
+		commandList->SetGraphicsRootConstantBufferView(
+			0, m_pConstantBuffer[currentIndex]->GetAddress());
+
+		commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		commandList->IASetVertexBuffers(0, 1, &vbView);
+		commandList->IASetIndexBuffer(&ibView);
+
+		// 使用するディスクリプタヒープをセット
+		commandList->SetDescriptorHeaps(1, &materialHeap);
+		// テクスチャをセット
+		commandList->SetGraphicsRootDescriptorTable(1, m_pTexHandle->handleGPU);
+		// インデックスの数分描画
+		commandList->DrawIndexedInstanced(m_meshes[i].Indices.size(), 1, 0, 0, 0);
+	}
+
+	if(m_Sphere)
+	{
+		m_Sphere->Draw();
+	}
+
+	Draw_ImGui();
+}
+
+void Goal::Uninit()
+{
+}
+
+bool Goal::Init_PropGoal(Camera* _camera)
 {
 	m_pModelFile = L"Assets/Goal/GoalGate.fbx";
 	m_camera = _camera;
@@ -126,49 +194,18 @@ bool Goal::Init(Camera* _camera)
 	return true;
 }
 
-void Goal::Update()
+bool Goal::Init_PropSphere(Camera* _camera)
 {
-	Update_Transform();
-	Update_CameraMatrix();
-}
-
-void Goal::Draw()
-{
-	// 現在のフレーム番号を取得
-	auto currentIndex = g_DrawBase->CurrentBackBufferIndex();
-	// コマンドリスト
-	auto commandList = g_DrawBase->CommandList();
-	// ディスクリプタヒープ
-	auto materialHeap = m_pDescriptorHeap->GetHeap();
-
-	//　メッシュの数だけインデックス分の描画を行う
-	for (size_t i = 0; i < m_meshes.size(); i++)
+	m_Sphere = std::make_shared<Debug_Sphere>();
+	if(!m_Sphere->Init(_camera))
 	{
-		// メッシュに対応する頂点バッファ
-		auto vbView = m_pVertexBuffers[i]->View();
-		// メッシュに対応する頂点の順番バッファ
-		auto ibView = m_pIndexBuffers[i]->View();
-
-		commandList->SetGraphicsRootSignature(m_pRootSignature->Get());
-		commandList->SetPipelineState(m_pPipelineState->Get());
-		commandList->SetGraphicsRootConstantBufferView(
-			0, m_pConstantBuffer[currentIndex]->GetAddress());
-
-		commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		commandList->IASetVertexBuffers(0, 1, &vbView);
-		commandList->IASetIndexBuffer(&ibView);
-
-		// 使用するディスクリプタヒープをセット
-		commandList->SetDescriptorHeaps(1, &materialHeap);
-		// テクスチャをセット
-		commandList->SetGraphicsRootDescriptorTable(1, m_pTexHandle->handleGPU);
-		// インデックスの数分描画
-		commandList->DrawIndexedInstanced(m_meshes[i].Indices.size(), 1, 0, 0, 0);
+		return false;
 	}
-}
-
-void Goal::Uninit()
-{
+	m_Sphere->SetPos(XMVectorSet(0.0f, 25.0f, 50.0f, 0.0f));
+	m_Sphere->SetRota(XMVectorZero());
+	m_Sphere->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	m_tags.AddTag("Debug_Sphere");
+	return true;
 }
 
 void Goal::Update_Transform()
@@ -197,4 +234,26 @@ void Goal::Update_CameraMatrix()
 	XMFLOAT3 camPos;
 	XMStoreFloat3(&camPos, camPosVec);
 	ptr->cameraPos = camPos;
+}
+
+void Goal::Draw_ImGui()
+{
+	ImGui_Sphere();
+}
+
+void Goal::ImGui_Sphere()
+{
+	if (m_Sphere)
+	{
+		ImGui::Begin("Goal_Sphere");
+		if (ImGui::CollapsingHeader("Goal_Sphere", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			float alpha = m_Sphere->GetAlpha();
+			if (ImGui::SliderFloat("Alpha", &alpha, 0.0f, 1.0f))
+			{
+				m_Sphere->SetAlpha(alpha);	
+			}
+		}
+		ImGui::End();
+	}
 }

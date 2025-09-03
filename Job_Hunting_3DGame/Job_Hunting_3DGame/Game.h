@@ -20,4 +20,6 @@ public:
 	/// @brief ゴールフラグの取得する関数
 	/// @return ゴールフラグ
 	bool GetGoalFlag() const { return goalFlag; }
+
+
 };

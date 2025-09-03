@@ -14,21 +14,11 @@ void GameScene::Init(Camera* _camera,HWND _hwnd)
 	camera = _camera;
 	hwnd = _hwnd;
 	printf("ƒV[ƒ“–¼FGameScene\n");
-
-	prototypeManager->AddPrototype("3DModel", new Model3D);
-
-	Model3D* model = static_cast<Model3D*>(CreateObj("3DModel"));
-	model->Init(camera);
-	model->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
-	model->SetRota(XMVectorZero());
-	model->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
-	model->m_tags.AddTag("Alicia");
-	objectInstance.insert(model);
 }
 
 void GameScene::Update(float _deltaTime)
 {
-	Update_Input();
+	//Update_Input();
 
 	for (auto& obj : objectInstance)
 	{
