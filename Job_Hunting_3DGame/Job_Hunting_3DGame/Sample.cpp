@@ -13,6 +13,8 @@
 #include "Texture2D.h"
 
 #include <filesystem>
+
+#include "Debug_New.h"
 /// @brief 拡張子を置き換える関数
 /// @param _origin ファイルパス
 /// @param _ext 拡張子

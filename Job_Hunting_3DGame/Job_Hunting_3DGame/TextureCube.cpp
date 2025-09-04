@@ -1,7 +1,7 @@
 #include "TextureCube.h"
 #include "DrawBase.h"
 #include <DirectXTex.h>
-
+#include "Debug_New.h"
 #pragma comment(lib, "DirectXTex.lib")
 
 // マルチバイト文字列をワイド文字列に変換

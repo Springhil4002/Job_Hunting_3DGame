@@ -10,6 +10,8 @@
 class DrawBase
 {
 public:
+	~DrawBase();
+
 	/// @brief ダブルバッファリングするので2
 	enum { FRAME_BUFFER_COUNT = 2 }; 
 

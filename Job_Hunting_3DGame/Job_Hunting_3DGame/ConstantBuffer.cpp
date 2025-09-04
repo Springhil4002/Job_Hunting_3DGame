@@ -1,5 +1,6 @@
 #include "ConstantBuffer.h"
 #include "DrawBase.h"
+#include "Debug_New.h"
 
 ConstantBuffer::ConstantBuffer(size_t _size)
 {

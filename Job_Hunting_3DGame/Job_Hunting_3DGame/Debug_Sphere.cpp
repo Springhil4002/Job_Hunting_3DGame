@@ -1,10 +1,14 @@
 #include "Debug_Sphere.h"
+#include "Debug_New.h"
 
 using namespace DirectX;
 
-Object* Debug_Sphere::clone() const
+std::unique_ptr<Object> Debug_Sphere::clone() const
 {
-	return new Debug_Sphere(*this);
+    auto newObj = std::make_unique<Debug_Sphere>();
+	newObj->m_alpha = m_alpha;
+    newObj->m_radius = m_radius;
+    return newObj;
 }
 
 bool Debug_Sphere::Init(Camera* _camera)
@@ -16,7 +20,7 @@ bool Debug_Sphere::Init(Camera* _camera)
     // 頂点バッファ生成
     auto vbSize = sizeof(Vertex) * vertices.size();
     auto vbStride = sizeof(Vertex);
-    m_pVertexBuffer = new VertexBuffer(vbSize, vbStride, vertices.data());
+    m_pVertexBuffer = std::make_unique<VertexBuffer>(vbSize, vbStride, vertices.data());
     if (!m_pVertexBuffer->IsValid())
     {
         printf("Sphere:頂点バッファ生成失敗\n");
@@ -25,7 +29,7 @@ bool Debug_Sphere::Init(Camera* _camera)
 
 	// インデックスバッファ生成
     auto ibSize = sizeof(uint32_t) * indices.size();
-    m_pIndexBuffer = new IndexBuffer(ibSize, indices.data());
+    m_pIndexBuffer = std::make_unique<IndexBuffer>(ibSize, indices.data());
     if (!m_pIndexBuffer->IsValid())
     {
         printf("Sphere:インデックスバッファ生成失敗\n");
@@ -35,7 +39,7 @@ bool Debug_Sphere::Init(Camera* _camera)
 	// コンスタントバッファ生成
     for (size_t i = 0; i < DrawBase::FRAME_BUFFER_COUNT; ++i)
     {
-        m_pConstantBuffer[i] = new ConstantBuffer(sizeof(Matrix));
+        m_pConstantBuffer[i] = std::make_unique<ConstantBuffer>(sizeof(Matrix));
         if (!m_pConstantBuffer[i]->IsValid())
         {
             printf("Sphere:コンスタントバッファ生成失敗\n");
@@ -50,17 +54,17 @@ bool Debug_Sphere::Init(Camera* _camera)
     }
 
     // ディスクリプタヒープ
-    m_pDescriptorHeap = new DescriptorHeap();
+    m_pDescriptorHeap = std::make_unique<DescriptorHeap>();
 
     // ルートシグネチャ生成
-    m_pRootSignature = new RootSignature_DebugSphere();
+    m_pRootSignature = std::make_unique<RootSignature_DebugSphere>();
     if (!m_pRootSignature->IsValid())
     {
         printf("Sphere:ルートシグネチャ生成失敗\n");
         return false;
     }
 
-	m_pPipelineState = new PipelineState_DebugSphere();
+	m_pPipelineState = std::make_unique<PipelineState_DebugSphere>();
 	m_pPipelineState->SetInputLayout(Vertex::InputLayout);
 	m_pPipelineState->SetRootSignature(m_pRootSignature->Get());
 #ifdef _DEBUG
@@ -118,6 +122,15 @@ void Debug_Sphere::Draw()
 
 void Debug_Sphere::Uninit()
 {
+    m_camera = nullptr;
+    m_pVertexBuffer.reset();
+    m_pIndexBuffer.reset();
+    for (auto& cb : m_pConstantBuffer)
+        cb.reset();
+    m_pDescriptorHeap.reset();
+    m_pRootSignature.reset();
+    m_pPipelineState.reset();
+    m_pTexHandle.reset();
 }
 
 void Debug_Sphere::Create_Sphere(float _stacks, float _slices, float _radius)

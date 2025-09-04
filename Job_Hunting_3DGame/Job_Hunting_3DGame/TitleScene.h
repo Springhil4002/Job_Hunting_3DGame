@@ -12,8 +12,8 @@ class TitleScene : public BaseScene
 private:
 	HWND hwnd;
 	Camera* camera;
-	Game* game;
-	PlayerController* playerCtrl;	
+	std::unique_ptr<Game> game;
+	std::unique_ptr<PlayerController> playerCtrl;	
 public:
 	/// @brief コンストラクタ
 	TitleScene() = default;
@@ -48,5 +48,4 @@ public:
 	void ImGui_Goal();
 	void ImGui_WaterMesh();
 	void ImGui_Timer();
-	//void ImGUi_DebugSphere();
 };

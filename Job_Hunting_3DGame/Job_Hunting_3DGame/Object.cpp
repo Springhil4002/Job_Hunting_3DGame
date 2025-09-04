@@ -1,4 +1,5 @@
 #include "Object.h"
+#include "Debug_New.h"
 
 DirectX::XMVECTOR Object::GetPos() const 
 {

@@ -20,36 +20,35 @@ class Model3D : public Object
 {
 private:
 	// 頂点バッファ
-	VertexBuffer* m_pVertexBuffer;
+	std::unique_ptr<VertexBuffer> m_pVertexBuffer;
 	// インデックスバッファ
-	IndexBuffer* m_pIndexBuffer;
+	std::unique_ptr<IndexBuffer> m_pIndexBuffer;
 	// コンスタントバッファ
-	ConstantBuffer* m_pConstantBuffer[DrawBase::FRAME_BUFFER_COUNT];
+	std::unique_ptr<ConstantBuffer > m_pConstantBuffer[DrawBase::FRAME_BUFFER_COUNT];
 	// ディスクリプタヒープ
-	DescriptorHeap* m_pDescriptorHeap;
+	std::unique_ptr<DescriptorHeap> m_pDescriptorHeap;
 	// ルートシグネチャ
-	RootSignature* m_pRootSignature;
+	std::unique_ptr<RootSignature> m_pRootSignature;
 	// パイプラインステート
-	PipelineState* m_pPipelineState;
+	std::unique_ptr<PipelineState> m_pPipelineState;
 	// カメラ
 	Camera* m_camera;
-
 	// 3Dモデルファイルパス
 	const wchar_t* m_pModelFile = L"";
 	// メッシュ配列
 	std::vector<Mesh> m_meshes;
 	// メッシュの数分の頂点バッファ
-	std::vector<VertexBuffer*> m_pVertexBuffers;	
+	std::vector<std::unique_ptr<VertexBuffer>> m_pVertexBuffers;	
 	// メッシュの数分のインデックスバッファ
-	std::vector<IndexBuffer*> m_pIndexBuffers;		
+	std::vector<std::unique_ptr<IndexBuffer>> m_pIndexBuffers;		
 	// テクスチャ用のハンドル
-	std::vector<DescriptorHandle*> m_pMaterialHandles;
+	std::vector<std::shared_ptr<DescriptorHandle>> m_pMaterialHandles;
 public:
 	Model3D() = default;
 	~Model3D() = default;
 
 	// クローンメソッド
-	Object* clone() const override;
+	std::unique_ptr<Object> clone() const override;
 
 	/// @brief 初期化処理
 	/// @return 初期化処理の成否を返します

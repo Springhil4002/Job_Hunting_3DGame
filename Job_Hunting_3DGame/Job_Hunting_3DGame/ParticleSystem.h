@@ -47,6 +47,8 @@ public:
 	virtual void Update(float deltaTime) = 0;
 	/// @brief •`‰æˆ—
 	virtual void Draw() = 0;
+	/// @brief I—¹ˆ—
+	virtual void Uninit() = 0;
 
 	std::vector<Particle>& GetParticles() { return m_Particles; }
 	int GetMaxParticles() { return m_MaxParticles; }

@@ -19,24 +19,25 @@ class WaterMesh : public Object
 {
 private:
 	// 頂点バッファ
-	VertexBuffer* m_pVertexBuffer;
+	std::unique_ptr<VertexBuffer> m_pVertexBuffer;
 	// インデックスバッファ
-	IndexBuffer* m_pIndexBuffer;
+	std::unique_ptr<IndexBuffer> m_pIndexBuffer;
 	// コンスタントバッファ
-	ConstantBuffer* m_pConstantBuffer[DrawBase::FRAME_BUFFER_COUNT];
+	std::unique_ptr<ConstantBuffer> m_pConstantBuffer[DrawBase::FRAME_BUFFER_COUNT];
 	// 波用定数バッファとパラメータ
-	ConstantBuffer* m_pWaveBuffer;
+	std::unique_ptr<ConstantBuffer> m_pWaveBuffer;
 	GerstnerParams m_waveParams{};
 	// ライト用コンスタントバッファ
-	ConstantBuffer* m_pLightBuffer;
+	std::unique_ptr<ConstantBuffer> m_pLightBuffer;
 	// ディスクリプタヒープ
-	DescriptorHeap* m_pDescriptorHeap;
+	std::unique_ptr<DescriptorHeap> m_pDescriptorHeap;
 	// ルートシグネチャ
-	RootSignature_WaterMesh* m_pRootSignature;
+	std::unique_ptr<RootSignature_WaterMesh> m_pRootSignature;
 	// パイプラインステート
-	PipelineState_WaterMesh* m_pPipelineState;
+	std::unique_ptr<PipelineState_WaterMesh> m_pPipelineState;
 	// ディスクリプタハンドル
-	DescriptorHandle* m_pSkyCubeTexHandle;
+	// (水面メッシュ側では所有しないためdeleteしないこと)
+	std::shared_ptr<DescriptorHandle> m_pSkyCubeTexHandle;
 	// カメラ
 	Camera* m_Camera;
 	// 時間
@@ -52,8 +53,6 @@ private:
 	// グリッドサイズ
 	int m_GridSize = 512;
 public:
-	// 共通テクスチャハンドル
-	static DescriptorHandle* s_pSharedTexHandle;
 	// ワールド行列更新操作用
 	DirectX::XMMATRIX m_worldMatrix;
 	/// @brief コンストラクタ
@@ -62,7 +61,7 @@ public:
 	~WaterMesh() = default;
 	
 	// クローンメソッド
-	Object* clone() const override;
+	std::unique_ptr<Object> clone() const override;
 	/// @brief 水面メッシュ生成関数
 	Mesh CreateGridMesh();
 
@@ -83,8 +82,6 @@ public:
 	void Update_Transform();
 	/// @brief ビュー・プロジェクションの更新
 	void Update_CameraMatrix();
-	/// @brief 波形更新関数
-	void Update_WaterWave(float _waveTime);
 	/// @brief ライト更新
 	void Update_Light();
 	/// @brief ランダムな振幅を取得する関数
@@ -100,9 +97,9 @@ public:
 	float GetWaveHeight(float _x, float _z, float _time);
 
 	// 各種ゲッター・セッター
-	int GetGridX() { return m_GridX; }
-	int GetGridZ() { return m_GridZ; }
-	int GetGridSize() { return m_GridSize; }
+	int GetGridX() const { return m_GridX; }
+	int GetGridZ() const { return m_GridZ; }
+	int GetGridSize() const { return m_GridSize; }
 
 	void SetGridX(int _gridX) { m_GridX = _gridX; }
 	void SetGridZ(int _gridZ) { m_GridZ = _gridZ; }

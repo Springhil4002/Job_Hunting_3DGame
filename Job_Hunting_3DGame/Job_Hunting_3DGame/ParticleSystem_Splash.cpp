@@ -1,4 +1,5 @@
 #include "ParticleSystem_Splash.h"
+#include "Debug_New.h"
 
 using namespace DirectX;
 
@@ -108,6 +109,19 @@ void ParticleSystem_Splash::Draw()
 	cmdList->DrawIndexedInstanced(6, m_ActiveInstanceCount, 0, 0, 0);
 }
 
+void ParticleSystem_Splash::Uninit()
+{
+	m_Camera = nullptr;
+	m_pVertexBuffer.reset();
+	m_pIndexBuffer.reset();
+	for (auto& cb : m_pConstantBuffer)
+		cb.reset();
+	m_pDescriptorHeap.reset();
+	m_pRootSignature.reset();
+	m_pPipelineState.reset();
+	m_pTexHandle.reset();
+}
+
 Mesh ParticleSystem_Splash::CreateQuad()
 {
 	Mesh mesh;
@@ -174,7 +188,7 @@ bool ParticleSystem_Splash::Init_Prop(Camera* _camera)
 	auto vertexSize = sizeof(VertexInstance) * std::size(mesh.Vertices);
 	auto vertexStride = sizeof(VertexInstance);
 
-	m_pVertexBuffer = new VertexBuffer(vertexSize, vertexStride, mesh.Vertices.data());
+	m_pVertexBuffer = std::make_unique<VertexBuffer>(vertexSize, vertexStride, mesh.Vertices.data());
 	if (!m_pVertexBuffer->IsValid())
 	{
 		printf("水しぶきパーティクル:頂点バッファ生成失敗\n");
@@ -182,7 +196,7 @@ bool ParticleSystem_Splash::Init_Prop(Camera* _camera)
 	}
 
 	auto indexSize = sizeof(uint32_t) * std::size(mesh.Indices);
-	m_pIndexBuffer = new IndexBuffer(indexSize, mesh.Indices.data());
+	m_pIndexBuffer = std::make_unique<IndexBuffer>(indexSize, mesh.Indices.data());
 	if (!m_pIndexBuffer->IsValid())
 	{
 		printf("水しぶきパーティクル:インデックスバッファ生成失敗\n");
@@ -191,7 +205,7 @@ bool ParticleSystem_Splash::Init_Prop(Camera* _camera)
 
 	for (size_t i = 0; i < DrawBase::FRAME_BUFFER_COUNT; ++i)
 	{
-		m_pConstantBuffer[i] = new ConstantBuffer(sizeof(Matrix));
+		m_pConstantBuffer[i] = std::make_unique<ConstantBuffer>(sizeof(Matrix));
 		if (!m_pConstantBuffer[i]->IsValid())
 		{
 			printf("水しぶきパーティクル:コンスタントバッファ生成失敗\n");
@@ -211,7 +225,7 @@ bool ParticleSystem_Splash::Init_Prop(Camera* _camera)
 	}
 
 	// ディスクリプタヒープ
-	m_pDescriptorHeap = new DescriptorHeap();
+	m_pDescriptorHeap = std::make_unique<DescriptorHeap>();
 
 	auto particleTex = TextureManager::Instance().LoadTexture(L"Assets/Texture/Particle_Splash.png");
 	if (!particleTex)
@@ -221,14 +235,14 @@ bool ParticleSystem_Splash::Init_Prop(Camera* _camera)
 	}
 	m_pTexHandle = m_pDescriptorHeap->Register(particleTex.get());
 
-	m_pRootSignature = new RootSignature_Splash();
+	m_pRootSignature = std::make_unique<RootSignature_Splash>();
 	if (!m_pRootSignature->IsValid())
 	{
 		printf("水しぶきパーティクル:ルートシグネチャ生成失敗\n");
 		return false;
 	}
 
-	m_pPipelineState = new PipelineState_Splash();
+	m_pPipelineState = std::make_unique<PipelineState_Splash>();
 	m_pPipelineState->SetInputLayout(VertexInstance::InputLayout);
 	m_pPipelineState->SetRootSignature(m_pRootSignature->Get());
 #ifdef _DEBUG

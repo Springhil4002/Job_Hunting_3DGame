@@ -19,19 +19,19 @@ class Player : public Object
 {
 private:
 	// 頂点バッファ
-	VertexBuffer* m_pVertexBuffer;
+	std::unique_ptr<VertexBuffer> m_pVertexBuffer;
 	// インデックスバッファ
-	IndexBuffer* m_pIndexBuffer;
+	std::unique_ptr<IndexBuffer> m_pIndexBuffer;
 	// コンスタントバッファ
-	ConstantBuffer* m_pConstantBuffer[DrawBase::FRAME_BUFFER_COUNT];
+	std::unique_ptr<ConstantBuffer> m_pConstantBuffer[DrawBase::FRAME_BUFFER_COUNT];
 	// ディスクリプタヒープ
-	DescriptorHeap* m_pDescriptorHeap;
+	std::unique_ptr<DescriptorHeap> m_pDescriptorHeap;
 	// ルートシグネチャ
-	RootSignature_Player* m_pRootSignature;
+	std::unique_ptr<RootSignature_Player> m_pRootSignature;
 	// パイプラインステート
-	PipelineState_Player* m_pPipelineState;
+	std::unique_ptr<PipelineState_Player> m_pPipelineState;
 	// ディスクリプタハンドル
-	DescriptorHandle* m_pTexHandle;
+	std::shared_ptr<DescriptorHandle> m_pTexHandle;
 	// カメラ
 	Camera* m_camera;
 	// 3Dモデルファイルパス
@@ -39,11 +39,9 @@ private:
 	// メッシュ配列
 	std::vector<Mesh> m_meshes;
 	// メッシュの数分の頂点バッファ
-	std::vector<VertexBuffer*> m_pVertexBuffers;
+	std::vector<std::unique_ptr<VertexBuffer>> m_pVertexBuffers;
 	// メッシュの数分のインデックスバッファ
-	std::vector<IndexBuffer*> m_pIndexBuffers;
-	// テクスチャ用のハンドル
-	std::vector<DescriptorHandle*> m_pMaterialHandles;
+	std::vector<std::unique_ptr<IndexBuffer>> m_pIndexBuffers;
 public:
 	// ワールド行列更新操作用
 	DirectX::XMMATRIX m_worldMatrix;
@@ -54,7 +52,7 @@ public:
 	~Player() = default;
 
 	// クローンメソッド
-	Object* clone() const override;
+	std::unique_ptr<Object> clone() const override;
 
 	/// @brief 初期化処理
 	/// @return 初期化処理の成否を返します

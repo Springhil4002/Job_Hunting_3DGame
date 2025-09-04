@@ -1,12 +1,20 @@
 #include "TitleScene.h"
 #include "SceneManager.h"
 #include "System/ImGui/imgui.h"
+#include "Debug_New.h"
 
 using namespace DirectX;
 
 Object* TitleScene::CreateObj(const std::string& _objectID)
 {
-	return prototypeManager->Create(_objectID);
+	auto obj = prototypeManager->Create(_objectID);
+	if (obj)
+	{
+		// 所有権をシーン内管理vector配列に映す
+		objectInstance.push_back(std::move(obj));
+		return objectInstance.back().get();
+	}
+	return nullptr;
 }
 
 void TitleScene::Init(Camera* _camera,HWND _hwnd)
@@ -20,52 +28,48 @@ void TitleScene::Init(Camera* _camera,HWND _hwnd)
 	hwnd = _hwnd;
 	
 	// プロトタイプ登録
-	prototypeManager->AddPrototype("Sky", new SkyDomeMesh);
-	prototypeManager->AddPrototype("Player", new Player);
-	prototypeManager->AddPrototype("WaterMesh", new WaterMesh);
-	prototypeManager->AddPrototype("Goal", new Goal);
+	prototypeManager->AddPrototype("Sky", std::make_unique<SkyDomeMesh>());
+	prototypeManager->AddPrototype("Player", std::make_unique<Player>());
+	prototypeManager->AddPrototype("WaterMesh", std::make_unique<WaterMesh>());
+	prototypeManager->AddPrototype("Goal", std::make_unique<Goal>());
 
 	XMVECTOR camPos = camera->GetPos();
 	XMFLOAT3 pos;
 	XMStoreFloat3(&pos, camPos);
 	pos.y -= 100.0f;
 
-	SkyDomeMesh* sky = static_cast<SkyDomeMesh*>(CreateObj("Sky"));
+	SkyDomeMesh* sky = dynamic_cast<SkyDomeMesh*>(CreateObj("Sky"));
 	sky->Init(camera);
 	sky->SetPos(XMLoadFloat3(&pos));
 	sky->SetRota(XMVectorZero());
 	sky->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
 	sky->m_tags.AddTag("SkyDome");
-	objectInstance.insert(sky);
 
-	Player* player = static_cast<Player*>(CreateObj("Player"));
+	Player* player = dynamic_cast<Player*>(CreateObj("Player"));
 	player->Init(camera);
 	player->SetPos(XMVectorSet(0.0f, 1.5f, 0.0f, 0.0f));
 	player->SetRota(XMVectorZero());
 	player->SetScale(XMVectorSet(0.01f, 0.01f, 0.01f, 0.0f));
 	player->m_tags.AddTag("Player");
-	objectInstance.insert(player);
 
-	Goal* goal = static_cast<Goal*>(CreateObj("Goal"));
+	Goal* goal = dynamic_cast<Goal*>(CreateObj("Goal"));
 	goal->Init(camera);
 	goal->SetPos(XMVectorSet(0.0f, -1.0f, 50.0f, 0.0f));
 	goal->SetRota(XMVectorZero());
 	goal->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
 	goal->m_tags.AddTag("Goal");
-	objectInstance.insert(goal);
 
-	WaterMesh* waterMesh = static_cast<WaterMesh*>(CreateObj("WaterMesh"));
+	WaterMesh* waterMesh = dynamic_cast<WaterMesh*>(CreateObj("WaterMesh"));
 	waterMesh->Init(camera);
 	waterMesh->SetPos(XMVectorZero());
 	waterMesh->SetRota(XMVectorZero());
 	waterMesh->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
 	waterMesh->m_tags.AddTag("WaterMesh");
-	objectInstance.insert(waterMesh);
 
-	playerCtrl = new PlayerController();
+	playerCtrl = std::make_unique<PlayerController>();
 	playerCtrl->Init(player, waterMesh, camera, &BaseScene::input);
 
-	game = new Game();
+	game = std::make_unique<Game>();
 	game->Init(player, goal);
 }
 
@@ -99,10 +103,15 @@ void TitleScene::Draw()
 
 void TitleScene::Uninit()
 {
+	playerCtrl->Uninit();
+	playerCtrl.reset();
+	game.reset();
+
 	for (auto& obj : objectInstance)
 	{
 		obj->Uninit();
 	}
+	objectInstance.clear();
 }
 
 void TitleScene::Update_Input()
@@ -246,7 +255,7 @@ void TitleScene::ImGui_Goal()
 			// ゴールを検索
 			if (obj->m_tags.SearchTag("Goal"))
 			{
-				goal = static_cast<Goal*>(obj);
+				goal = dynamic_cast<Goal*>(obj.get());
 				break;
 			}
 		}
@@ -285,7 +294,7 @@ void TitleScene::ImGui_WaterMesh()
 			// 水面メッシュを検索
 			if (obj->m_tags.SearchTag("WaterMesh"))
 			{
-				waterMesh = static_cast<WaterMesh*>(obj);
+				waterMesh = dynamic_cast<WaterMesh*>(obj.get());
 				break;
 			}
 		}

@@ -1,4 +1,5 @@
 #include "ParticleEmitter.h"
+#include "Debug_New.h"
 
 using namespace DirectX;
 

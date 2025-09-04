@@ -31,19 +31,19 @@ private:
 	int m_ActiveInstanceCount;					// ワンフレームで描画するインスタンス数
 
 	// 頂点バッファ
-	VertexBuffer* m_pVertexBuffer;
+	std::unique_ptr<VertexBuffer> m_pVertexBuffer;
 	// インデックスバッファ
-	IndexBuffer* m_pIndexBuffer;
+	std::unique_ptr<IndexBuffer> m_pIndexBuffer;
 	// コンスタントバッファ
-	ConstantBuffer* m_pConstantBuffer[DrawBase::FRAME_BUFFER_COUNT];
+	std::unique_ptr<ConstantBuffer> m_pConstantBuffer[DrawBase::FRAME_BUFFER_COUNT];
 	// ディスクリプタヒープ
-	DescriptorHeap* m_pDescriptorHeap;
+	std::unique_ptr<DescriptorHeap> m_pDescriptorHeap;
 	// ルートシグネチャ
-	RootSignature_Splash* m_pRootSignature;
+	std::unique_ptr<RootSignature_Splash> m_pRootSignature;
 	// パイプラインステート
-	PipelineState_Splash* m_pPipelineState;
+	std::unique_ptr<PipelineState_Splash> m_pPipelineState;
 	// ディスクリプタハンドル
-	DescriptorHandle* m_pTexHandle;
+	std::shared_ptr<DescriptorHandle> m_pTexHandle;
 	/// @brief 四角形メッシュ生成関数
 	/// @return 四角形メッシュ。
 	Mesh CreateQuad();
@@ -61,4 +61,5 @@ public:
 	bool Init(Camera* _camera) override;
 	void Update(float _deltaTime) override;
 	void Draw() override;
+	void Uninit() override;
 };

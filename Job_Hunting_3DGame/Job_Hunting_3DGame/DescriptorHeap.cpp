@@ -3,6 +3,7 @@
 #include "TextureCube.h"
 #include "DrawBase.h"
 #include <d3dx12.h>
+#include "Debug_New.h"
 
 const UINT HANDLE_MAX = 512;
 
@@ -41,12 +42,18 @@ DescriptorHeap::DescriptorHeap()
 	m_IsValid = true;
 }
 
+DescriptorHeap::~DescriptorHeap()
+{
+	// 登録されたハンドルを解放
+	m_pHandles.clear();
+}
+
 ID3D12DescriptorHeap* DescriptorHeap::GetHeap()
 {
 	return m_pHeap.Get();
 }
 
-DescriptorHandle* DescriptorHeap::Register(Texture2D* _texture)
+std::shared_ptr<DescriptorHandle> DescriptorHeap::Register(Texture2D* _texture)
 {
 	if (!_texture) {
 		OutputDebugStringA("Error: null テクスチャを Register に渡しました。\n");
@@ -71,7 +78,7 @@ DescriptorHandle* DescriptorHeap::Register(Texture2D* _texture)
 	handleGPU.ptr += m_IncrementSize * count; 
 
 	// ディスクリプタハンドルを生成
-	DescriptorHandle* pHandle = new DescriptorHandle();
+	auto pHandle = std::make_shared<DescriptorHandle>();
 	// CPU・GPUの登録したハンドルをメンバ変数に代入
 	pHandle->handleCPU = handleCPU;
 	pHandle->handleGPU = handleGPU;
@@ -91,7 +98,7 @@ DescriptorHandle* DescriptorHeap::Register(Texture2D* _texture)
 	return pHandle;	
 }
 
-DescriptorHandle* DescriptorHeap::Register(TextureCube* _texture)
+std::shared_ptr<DescriptorHandle> DescriptorHeap::Register(TextureCube* _texture)
 {
 	if (!_texture)
 	{
@@ -111,7 +118,7 @@ DescriptorHandle* DescriptorHeap::Register(TextureCube* _texture)
 	auto handleGPU = m_pHeap->GetGPUDescriptorHandleForHeapStart();
 	handleGPU.ptr += m_IncrementSize * count;
 
-	DescriptorHandle* pHandle = new DescriptorHandle();
+	auto pHandle = std::make_shared<DescriptorHandle>();
 	pHandle->handleCPU = handleCPU;
 	pHandle->handleGPU = handleGPU;
 

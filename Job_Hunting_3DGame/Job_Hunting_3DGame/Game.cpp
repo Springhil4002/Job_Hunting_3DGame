@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "Debug_New.h"
 
 using namespace DirectX;
 
@@ -10,7 +11,7 @@ bool Game::Init(Player* _player, Goal* _goal)
 	if (!goal) return false;
 	goalFlag = false;
 	
-	printf("Game:‰Šú‰»¬Œ÷\n");
+	printf("Game:‰Šú‰»ˆ—‚É¬Œ÷\n");
 	return true;
 }
 

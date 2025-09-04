@@ -5,33 +5,33 @@
 #include "SkyDomeMesh.h"
 #include "Player.h"
 #include "Goal.h"
-//#include "Debug_Sphere.h"
 
 class PrototypeManager
 {
 private:
-	std::unordered_map<std::string, Object*> prototypes;
+	std::unordered_map<std::string, std::unique_ptr<Object>> prototypes;
 public:
+	~PrototypeManager() = default;
+
 	/// @brief 新規プロトタイプ追加関数
 	/// @param _key プロトタイプの識別用文字列
 	/// @param _prototype 追加するプロトタイプの型
-	void AddPrototype(const std::string& _key, Object* _prototype)
+	void AddPrototype(const std::string& _key, std::unique_ptr<Object> _prototype)
 	{
-		prototypes[_key] = _prototype;
+		prototypes[_key] = std::move(_prototype);
 	}
 
 	/// @brief 特定のプロトタイプのクローン作成処理
 	/// @param _objectID 作成したいクローンの型
-	/// @return 作成したクローンの型を返します
-	Object* Create(const std::string& _objectID)
+	/// @return 作成したクローンを返します
+	std::unique_ptr<Object> Create(const std::string& _objectID)
 	{
-		// 該当するプロトタイプの登録をチェック
-		if (prototypes.find(_objectID) != prototypes.end())
+		auto it = prototypes.find(_objectID);
+		if (it != prototypes.end())
 		{
-			// クローン生成
-			return prototypes[_objectID]->clone();
+			// clone()でunique_ptrを返す
+			return it->second->clone();
 		}
-		// 該当するプロトタイプがない
 		return nullptr;
 	}
 };

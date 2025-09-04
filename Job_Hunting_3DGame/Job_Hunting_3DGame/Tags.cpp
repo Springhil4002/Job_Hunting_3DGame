@@ -1,4 +1,5 @@
 #include "Tags.h"
+#include "Debug_New.h"
 
 std::set<std::string>::const_iterator Tags::begin() const
 {

@@ -1,11 +1,14 @@
 #include "Goal.h"
 #include "System/ImGui/imgui.h"
+#include "Debug_New.h"
 
 using namespace DirectX;
 
-Object* Goal::clone() const
+std::unique_ptr<Object> Goal::clone() const
 {
-	return new Goal(*this);
+	auto newObj = std::make_unique<Goal>();
+	newObj->m_Sphere = m_Sphere;
+	return newObj;
 }
 
 bool Goal::Init(Camera* _camera)
@@ -57,8 +60,11 @@ void Goal::Draw()
 
 		// 使用するディスクリプタヒープをセット
 		commandList->SetDescriptorHeaps(1, &materialHeap);
-		// テクスチャをセット
-		commandList->SetGraphicsRootDescriptorTable(1, m_pTexHandle->handleGPU);
+		
+		// テクスチャハンドルのnullチェック
+		if(m_pTexHandle)
+			// テクスチャをセット
+			commandList->SetGraphicsRootDescriptorTable(1, m_pTexHandle->handleGPU);
 		// インデックスの数分描画
 		commandList->DrawIndexedInstanced(m_meshes[i].Indices.size(), 1, 0, 0, 0);
 	}
@@ -73,6 +79,19 @@ void Goal::Draw()
 
 void Goal::Uninit()
 {
+	m_camera = nullptr;
+	m_pVertexBuffers.clear();
+	m_pIndexBuffers.clear();
+	for (auto& cb : m_pConstantBuffer)
+		cb.reset();
+	m_pDescriptorHeap.reset();
+	m_pRootSignature.reset();
+	m_pPipelineState.reset();
+	m_pTexHandle.reset();
+	m_meshes.clear();
+	m_pVertexBuffers.clear();
+	m_pIndexBuffers.clear();
+	m_Sphere.reset();	
 }
 
 bool Goal::Init_PropGoal(Camera* _camera)
@@ -103,13 +122,13 @@ bool Goal::Init_PropGoal(Camera* _camera)
 		auto size = sizeof(Vertex) * m_meshes[i].Vertices.size();
 		auto stride = sizeof(Vertex);
 		auto vertices = m_meshes[i].Vertices.data();
-		auto pVB = new VertexBuffer(size, stride, vertices);
+		auto pVB = std::make_unique<VertexBuffer>(size, stride, vertices);
 		if (!pVB->IsValid())
 		{
 			printf("Goal:頂点バッファの生成に失敗\n");
 			return false;
 		}
-		m_pVertexBuffers.push_back(pVB);
+		m_pVertexBuffers.push_back(std::move(pVB));
 	}
 
 	// メッシュの数だけインデックスバッファを用意する
@@ -118,19 +137,19 @@ bool Goal::Init_PropGoal(Camera* _camera)
 	{
 		auto size = sizeof(uint32_t) * m_meshes[i].Indices.size();
 		auto indices = m_meshes[i].Indices.data();
-		auto pIB = new IndexBuffer(size, indices);
+		auto pIB = std::make_unique<IndexBuffer>(size, indices);
 
 		if (!pIB->IsValid())
 		{
 			printf("Goal:インデックスバッファの生成に失敗\n");
 			return false;
 		}
-		m_pIndexBuffers.push_back(pIB);
+		m_pIndexBuffers.push_back(std::move(pIB));
 	}
 
 	for (size_t i = 0; i < DrawBase::FRAME_BUFFER_COUNT; ++i)
 	{
-		m_pConstantBuffer[i] = new ConstantBuffer(sizeof(Matrix));
+		m_pConstantBuffer[i] = std::make_unique<ConstantBuffer>(sizeof(Matrix));
 		if (!m_pConstantBuffer[i]->IsValid())
 		{
 			printf("Goal:コンスタントバッファ生成失敗\n");
@@ -145,7 +164,7 @@ bool Goal::Init_PropGoal(Camera* _camera)
 	}
 
 	// ディスクリプタヒープの生成
-	m_pDescriptorHeap = new DescriptorHeap();
+	m_pDescriptorHeap = std::make_unique<DescriptorHeap>();
 
 	auto tex = TextureManager::Instance().LoadTexture(L"Assets/Texture/Color_Red.png");
 	if (!tex)
@@ -155,7 +174,7 @@ bool Goal::Init_PropGoal(Camera* _camera)
 	}
 	m_pTexHandle = m_pDescriptorHeap->Register(tex.get());
 
-	m_pRootSignature = new RootSignature_Goal();
+	m_pRootSignature = std::make_unique<RootSignature_Goal>();
 	if (!m_pRootSignature->IsValid())
 	{
 		printf("Goal:ルートシグネチャの生成に失敗\n");
@@ -163,7 +182,7 @@ bool Goal::Init_PropGoal(Camera* _camera)
 	}
 
 	// パイプラインステートのインスタンス生成
-	m_pPipelineState = new PipelineState_Goal();
+	m_pPipelineState = std::make_unique<PipelineState_Goal>();
 	// 頂点レイアウトの設定
 	m_pPipelineState->SetInputLayout(Vertex::InputLayout);
 	// ルートシグネチャの設定

@@ -12,24 +12,22 @@ protected:
 	// シーンのインスタンス
 	static BaseScene* sceneInstance;	
 	// オブジェクトを管理するインスタンス
-	std::set<Object*> objectInstance;
-public:
+	std::vector<std::unique_ptr<Object>> objectInstance;
 	// 入力系インスタンス
 	static Input input;
-	
 	// オブジェクト生成に関するインスタンス
-	PrototypeManager* prototypeManager = new PrototypeManager;
-
+	std::unique_ptr<PrototypeManager> prototypeManager;
+public:
 	/// @brief コンストラクタ
 	BaseScene() {
-		delete sceneInstance;
 		sceneInstance = this;
+		prototypeManager = std::make_unique<PrototypeManager>();
 	}
 
 	/// @brief デストラクタ
 	virtual ~BaseScene() {
 		sceneInstance = nullptr;
-		delete prototypeManager;
+		objectInstance.clear();
 	}
 
 	/// @brief 初期化処理
@@ -55,9 +53,9 @@ public:
 	/// @return 現在のシーンインスタンスを返します
 	static BaseScene* GetInstance();
 
-	/// @brief 現時点の存在している全てのオブジェクトを取得する関数
-	/// @return 現時点の存在している全てのオブジェクトを返します
-	std::set<Object*>* GetObjects();
+	/// @brief シーン内のオブジェクトの全取得関数
+	/// @return シーン内で追加した全体のオブジェクトを返します
+	std::vector<std::unique_ptr<Object>>& GetAllObjects();
 
 	/// @brief 特定の型をもつオブジェクトを取得する関数
 	/// @tparam T 取得したい型
@@ -72,11 +70,10 @@ public:
 		for (auto& obj : objectInstance)
 		{
 			// 型一致なら配列に追加
-			if (T* castedObj = dynamic_cast<T*>(obj)) {
-				objects.push_back(castedObj);
+			if (T* obj = dynamic_cast<T*>(obj.get())) {
+				objects.push_back(obj);
 			}
 		}
 		return objects;
 	}
 };
-

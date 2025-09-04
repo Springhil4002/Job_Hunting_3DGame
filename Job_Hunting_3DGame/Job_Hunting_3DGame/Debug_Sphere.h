@@ -18,19 +18,19 @@ class Debug_Sphere : public Object
 {
 private:
 	// 頂点バッファ
-	VertexBuffer* m_pVertexBuffer;
+	std::unique_ptr<VertexBuffer> m_pVertexBuffer;
 	// インデックスバッファ
-	IndexBuffer* m_pIndexBuffer;
+	std::unique_ptr<IndexBuffer> m_pIndexBuffer;
 	// コンスタントバッファ
-	ConstantBuffer* m_pConstantBuffer[DrawBase::FRAME_BUFFER_COUNT];
+	std::unique_ptr<ConstantBuffer> m_pConstantBuffer[DrawBase::FRAME_BUFFER_COUNT];
 	// ディスクリプタヒープ
-	DescriptorHeap* m_pDescriptorHeap;
+	std::unique_ptr<DescriptorHeap> m_pDescriptorHeap;
 	// ルートシグネチャ
-	RootSignature_DebugSphere* m_pRootSignature;
+	std::unique_ptr<RootSignature_DebugSphere> m_pRootSignature;
 	// パイプラインステート
-	PipelineState_DebugSphere* m_pPipelineState;
+	std::unique_ptr<PipelineState_DebugSphere> m_pPipelineState;
 	// ディスクリプタハンドル
-	DescriptorHandle* m_pTexHandle;
+	std::shared_ptr<DescriptorHandle> m_pTexHandle;
 	// カメラ
 	Camera* m_camera;
 	// 透明度
@@ -49,7 +49,7 @@ public:
 	~Debug_Sphere() = default;
 
 	// クローンメソッド
-	Object* clone() const override;
+	std::unique_ptr<Object> clone() const override;
 
 	/// @brief 初期化処理
 	/// @return 初期化処理の成否を返します

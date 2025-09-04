@@ -1,8 +1,8 @@
 #pragma once
 #include <math.h>
+#include <memory>
 #include <DirectXMath.h>
 #include <unordered_map>
-#include <string>
 #include "System/CommonTypes.h"
 #include "Tags.h"
 
@@ -17,11 +17,11 @@ public:
 	Tags m_tags;
 
 	Object() = default;
-	~Object() = default;
+	virtual ~Object() = default;
 
 	/// @brief オブジェクトクローン関数
 	/// @return オブジェクトのポインタを返します
-	virtual Object* clone() const = 0;	
+	virtual std::unique_ptr<Object> clone() const = 0;	
 
 	/// @brief 初期化処理
 	virtual bool Init() { return true; };

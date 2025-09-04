@@ -1,6 +1,7 @@
 #include "RootSignature_SkyDomeMesh.h"
 #include "DrawBase.h"
 #include <d3dx12.h>
+#include "Debug_New.h"
 
 RootSignature_SkyDomeMesh::RootSignature_SkyDomeMesh()
 {

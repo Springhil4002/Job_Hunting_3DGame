@@ -21,6 +21,7 @@ private:
 	DirectX::XMVECTOR m_RightVec		= DirectX::XMVectorZero();	// 右向きベクトル(左右回転用)
 	DirectX::XMVECTOR m_UpVec			= DirectX::XMVectorZero();	// 上方向は固定
 	DirectX::XMVECTOR m_CamOffset		= DirectX::XMVectorZero();	// カメラオフセット
+	DirectX::XMVECTOR m_InitCamOffset   = DirectX::XMVectorZero();	// 初期カメラオフセット
 	DirectX::XMVECTOR m_LastPlayerPos	= DirectX::XMVectorZero();	// 前フレームプレイヤー位置
 	DirectX::XMVECTOR m_Velocity		= DirectX::XMVectorZero();	// 現在の移動速度ベクトル
 	DirectX::XMVECTOR m_VelocityY		= DirectX::XMVectorZero();	// 縦方向の速度(重力用)		
@@ -36,13 +37,6 @@ private:
 	float m_PlayerOffsetY;	// プレイヤーの高さオフセット
 	float m_FollowSpeed;	// カメラの追従速度	
 
-	/// @brief メンバ変数の初期化
-	/// @param _player プレイヤー
-	/// @param _waterMesh 水面メッシュ
-	/// @param _camera カメラ
-	/// @param _input 入力系統
-	/// @return 初期化の成否
-	bool Init_Prop(Player* _player, WaterMesh* _waterMesh, Camera* _camera, Input* _input);
 	/// @brief パラメータの初期化
 	void Init_Param();
 	/// @brief 入力処理
@@ -73,6 +67,8 @@ public:
 	void Update(float _deltaTime);
 	/// @brief 描画処理
 	void Draw();
+	/// @brief 終了処理
+	void Uninit();
 
 	// 各種ゲッター・セッター関数 
 	DirectX::XMVECTOR GetPosition() const { return m_Position; }

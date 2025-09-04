@@ -1,10 +1,12 @@
 #include "Player.h"
+#include "Debug_New.h"
 
 using namespace DirectX;
 
-Object* Player::clone() const
+std::unique_ptr<Object> Player::clone() const
 {
-	return new Player(*this);
+	auto newObj = std::make_unique<Player>();
+	return newObj;
 }
 
 bool Player::Init(Camera* _camera)
@@ -35,13 +37,13 @@ bool Player::Init(Camera* _camera)
 		auto size = sizeof(Vertex) * m_meshes[i].Vertices.size();
 		auto stride = sizeof(Vertex);
 		auto vertices = m_meshes[i].Vertices.data();
-		auto pVB = new VertexBuffer(size, stride, vertices);
+		auto pVB = std::make_unique<VertexBuffer>(size, stride, vertices);
 		if (!pVB->IsValid())
 		{
 			printf("Player:頂点バッファの生成に失敗\n");
 			return false;
 		}
-		m_pVertexBuffers.push_back(pVB);
+		m_pVertexBuffers.push_back(std::move(pVB));
 	}
 
 	// メッシュの数だけインデックスバッファを用意する
@@ -50,19 +52,19 @@ bool Player::Init(Camera* _camera)
 	{
 		auto size = sizeof(uint32_t) * m_meshes[i].Indices.size();
 		auto indices = m_meshes[i].Indices.data();
-		auto pIB = new IndexBuffer(size, indices);
+		auto pIB = std::make_unique<IndexBuffer>(size, indices);
 
 		if (!pIB->IsValid())
 		{
 			printf("Player:インデックスバッファの生成に失敗\n");
 			return false;
 		}
-		m_pIndexBuffers.push_back(pIB);
+		m_pIndexBuffers.push_back(std::move(pIB));
 	}
 
 	for (size_t i = 0; i < DrawBase::FRAME_BUFFER_COUNT; ++i)
 	{
-		m_pConstantBuffer[i] = new ConstantBuffer(sizeof(Matrix));
+		m_pConstantBuffer[i] = std::make_unique<ConstantBuffer>(sizeof(Matrix));
 		if (!m_pConstantBuffer[i]->IsValid())
 		{
 			printf("Player:コンスタントバッファ生成失敗\n");
@@ -77,7 +79,7 @@ bool Player::Init(Camera* _camera)
 	}
 
 	// ディスクリプタヒープの生成
-	m_pDescriptorHeap = new DescriptorHeap();
+	m_pDescriptorHeap = std::make_unique<DescriptorHeap>();
 
 	auto tex = TextureManager::Instance().LoadTexture(L"Assets/Texture/Player.png");
 	if (!tex)
@@ -87,7 +89,7 @@ bool Player::Init(Camera* _camera)
 	}
 	m_pTexHandle = m_pDescriptorHeap->Register(tex.get());
 
-	m_pRootSignature = new RootSignature_Player();
+	m_pRootSignature = std::make_unique<RootSignature_Player>();
 	if (!m_pRootSignature->IsValid())
 	{
 		printf("Player:ルートシグネチャの生成に失敗\n");
@@ -95,7 +97,7 @@ bool Player::Init(Camera* _camera)
 	}
 
 	// パイプラインステートのインスタンス生成
-	m_pPipelineState = new PipelineState_Player();
+	m_pPipelineState = std::make_unique<PipelineState_Player>();
 	// 頂点レイアウトの設定
 	m_pPipelineState->SetInputLayout(Vertex::InputLayout);
 	// ルートシグネチャの設定
@@ -167,6 +169,18 @@ void Player::Draw()
 }
 void Player::Uninit()
 {
+	m_camera = nullptr;
+	m_pVertexBuffer.reset();
+	m_pIndexBuffer.reset();
+	for(auto& cb : m_pConstantBuffer)
+		cb.reset();
+	m_pDescriptorHeap.reset();
+	m_pRootSignature.reset();
+	m_pPipelineState.reset();
+	m_pTexHandle.reset();
+	m_meshes.clear();
+	m_pVertexBuffers.clear();
+	m_pIndexBuffers.clear();
 }
 
 void Player::Update_Transform()

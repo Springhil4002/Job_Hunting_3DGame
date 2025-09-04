@@ -1,12 +1,19 @@
 #include "WaterMesh.h"
+#include "Debug_New.h"
 
 using namespace DirectX;
-// 共通テクスチャハンドル
-DescriptorHandle* WaterMesh::s_pSharedTexHandle = nullptr;
 
-Object* WaterMesh::clone() const
+std::unique_ptr<Object> WaterMesh::clone() const
 {
-	return new WaterMesh(*this);
+	// 初回プロトタイプで生成時はInit()が呼ばれないため、
+	// 使用するときはInit()を必ず呼び出すこと
+	auto newObj = std::make_unique<WaterMesh>();
+	newObj->g_Time = g_Time;
+	newObj->m_WaveTime = m_WaveTime;
+	newObj->m_GridX = m_GridX;
+	newObj->m_GridZ = m_GridZ;
+	newObj->m_GridSize = m_GridSize;
+	return newObj;
 }
 
 Mesh WaterMesh::CreateGridMesh()
@@ -69,7 +76,7 @@ bool WaterMesh::Init(Camera* _camera)
 	auto mesh = CreateGridMesh();
 	auto vertexSize = sizeof(Vertex) * std::size(mesh.Vertices);
 	auto vertexStride = sizeof(Vertex);
-	m_pVertexBuffer = new VertexBuffer(vertexSize, vertexStride, mesh.Vertices.data());
+	m_pVertexBuffer = std::make_unique<VertexBuffer>(vertexSize, vertexStride, mesh.Vertices.data());
 	if (!m_pVertexBuffer->IsValid())
 	{
 		printf("水面メッシュ:頂点バッファ生成失敗\n");
@@ -77,7 +84,7 @@ bool WaterMesh::Init(Camera* _camera)
 	}
 
 	auto indexSize = sizeof(uint32_t) * std::size(mesh.Indices);
-	m_pIndexBuffer = new IndexBuffer(indexSize, mesh.Indices.data());
+	m_pIndexBuffer = std::make_unique<IndexBuffer>(indexSize, mesh.Indices.data());
 	if (!m_pIndexBuffer->IsValid())
 	{
 		printf("水面メッシュ:インデックスバッファ生成失敗\n");
@@ -86,7 +93,7 @@ bool WaterMesh::Init(Camera* _camera)
 
 	for (size_t i = 0; i < DrawBase::FRAME_BUFFER_COUNT; ++i)
 	{
-		m_pConstantBuffer[i] = new ConstantBuffer(sizeof(Matrix));
+		m_pConstantBuffer[i] = std::make_unique<ConstantBuffer>(sizeof(Matrix));
 		if (!m_pConstantBuffer[i]->IsValid())
 		{
 			printf("水面メッシュ:コンスタントバッファ生成失敗\n");
@@ -105,7 +112,7 @@ bool WaterMesh::Init(Camera* _camera)
 		ptr->cameraPos = XMFLOAT3(camPos.x, camPos.y, camPos.z);
 	}
 
-	m_pWaveBuffer = new ConstantBuffer(sizeof(GerstnerParams));
+	m_pWaveBuffer = std::make_unique<ConstantBuffer>(sizeof(GerstnerParams));
 	if (!m_pWaveBuffer->IsValid())
 	{
 		printf("水面メッシュ:波用コンスタントバッファ生成失敗\n");
@@ -136,7 +143,7 @@ bool WaterMesh::Init(Camera* _camera)
 	// バッファにコピー
 	std::memcpy(m_pWaveBuffer->GetPtr(), &m_waveParams, sizeof(GerstnerParams));
 
-	m_pLightBuffer = new ConstantBuffer(sizeof(LightPalams));
+	m_pLightBuffer = std::make_unique<ConstantBuffer>(sizeof(LightPalams));
 	if (!m_pLightBuffer->IsValid())
 	{
 		printf("水面メッシュ:ライト用コンスタントバッファ生成失敗\n");
@@ -152,7 +159,7 @@ bool WaterMesh::Init(Camera* _camera)
 	XMFLOAT3 lightDir;
 	XMStoreFloat3(&lightDir, lightDirVec);
 
-	LightPalams lightParams;
+	LightPalams lightParams = {};
 	lightParams.lightDir = lightDir;
 	lightParams.lightColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -160,7 +167,7 @@ bool WaterMesh::Init(Camera* _camera)
 	std::memcpy(m_pLightBuffer->GetPtr(), &lightParams, sizeof(LightPalams));
 
 	// ディスクリプタヒープ
-	m_pDescriptorHeap = new DescriptorHeap();
+	m_pDescriptorHeap = std::make_unique<DescriptorHeap>();
 
 	auto cubeTex = TextureManager::Instance().LoadCubeMap(L"Assets/Texture/SkyDome.dds");
 	if (!cubeTex)
@@ -170,14 +177,14 @@ bool WaterMesh::Init(Camera* _camera)
 	}
 	m_pSkyCubeTexHandle = m_pDescriptorHeap->Register(cubeTex.get());
 
-	m_pRootSignature = new RootSignature_WaterMesh();
+	m_pRootSignature = std::make_unique<RootSignature_WaterMesh>();
 	if (!m_pRootSignature->IsValid())
 	{
 		printf("水面メッシュ:ルートシグネチャ生成失敗\n");
 		return false;
 	}
-	
-	m_pPipelineState = new PipelineState_WaterMesh();
+
+	m_pPipelineState = std::make_unique<PipelineState_WaterMesh>();
 	m_pPipelineState->SetInputLayout(Vertex::InputLayout);
 	m_pPipelineState->SetRootSignature(m_pRootSignature->Get());
 #ifdef _DEBUG
@@ -203,7 +210,6 @@ void WaterMesh::Update()
 	// 時間更新
 	g_Time += 0.016f;	
 	m_WaveTime += 0.016f;
-	Update_WaterWave(m_WaveTime);
 	Update_Transform();
 	Update_CameraMatrix();
 	Update_Light();
@@ -245,6 +251,17 @@ void WaterMesh::Draw()
 
 void WaterMesh::Uninit()
 {
+	m_Camera = nullptr;
+	m_pVertexBuffer.reset();
+	m_pIndexBuffer.reset();
+	for (auto& cb : m_pConstantBuffer)
+		cb.reset();
+	m_pWaveBuffer.reset();
+	m_pLightBuffer.reset();
+	m_pDescriptorHeap.reset();
+	m_pRootSignature.reset();
+	m_pPipelineState.reset();
+	m_pSkyCubeTexHandle.reset();
 }
 
 void WaterMesh::Update_GridSize(int _newGridSize)
@@ -254,15 +271,13 @@ void WaterMesh::Update_GridSize(int _newGridSize)
 	// メッシュ再生成
 	auto mesh = CreateGridMesh();
 	// 頂点バッファ再生成
-	delete m_pVertexBuffer;
-	m_pVertexBuffer = new VertexBuffer(
+	m_pVertexBuffer = std::make_unique<VertexBuffer>(
 		sizeof(Vertex) * mesh.Vertices.size(),
 		sizeof(Vertex),
 		mesh.Vertices.data()
 	);
 	// インデックスバッファ再生成
-	delete m_pIndexBuffer;
-	m_pIndexBuffer = new IndexBuffer(
+	m_pIndexBuffer = std::make_unique<IndexBuffer>(
 		sizeof(uint32_t) * mesh.Indices.size(),
 		mesh.Indices.data()
 	);
@@ -297,23 +312,6 @@ void WaterMesh::Update_CameraMatrix()
 	XMFLOAT3 camPos;
 	XMStoreFloat3(&camPos, camPosVec);
 	ptr->cameraPos = camPos;
-}
-
-void WaterMesh::Update_WaterWave(float _waveTime)
-{
-	if (m_WaveTime >= 3.0f)
-	{
-		for (int i = 0; i < 4; ++i)
-		{
-			float amp = GetRandomAmplitude(0.1f, 1.0f);
-			m_waveParams.amplitude[i] = { amp,0,0,0 };
-		}
-	}
-
-	// バッファに変更内容を反映
-	std::memcpy(m_pWaveBuffer->GetPtr(), &m_waveParams, sizeof(GerstnerParams));
-	// 時間のリセット
-	m_WaveTime = 0.0f;
 }
 
 void WaterMesh::Update_Light()

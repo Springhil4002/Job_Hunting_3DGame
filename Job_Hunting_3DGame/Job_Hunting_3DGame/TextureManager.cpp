@@ -1,4 +1,5 @@
 #include "TextureManager.h"
+#include "Debug_New.h"
 
 TextureManager& TextureManager::Instance()
 {

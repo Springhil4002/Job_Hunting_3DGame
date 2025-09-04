@@ -5,6 +5,7 @@
 #include <assimp/postprocess.h>
 #include <d3dx12.h>
 #include <filesystem>
+#include "Debug_New.h"
 
 namespace fs = std::filesystem;
 

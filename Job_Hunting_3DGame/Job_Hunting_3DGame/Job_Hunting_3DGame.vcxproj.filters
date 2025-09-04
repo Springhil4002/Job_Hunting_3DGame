@@ -141,9 +141,6 @@
     <ClCompile Include="IndexBuffer.cpp">
       <Filter>ソース ファイル\Buffer</Filter>
     </ClCompile>
-    <ClCompile Include="AssimpLoader.cpp">
-      <Filter>ソース ファイル\Obj</Filter>
-    </ClCompile>
     <ClCompile Include="DescriptorHeap.cpp">
       <Filter>ソース ファイル\Resource</Filter>
     </ClCompile>
@@ -288,6 +285,12 @@
     <ClCompile Include="PipelineState_DebugSphere.cpp">
       <Filter>ソース ファイル\Draw\PipelineState</Filter>
     </ClCompile>
+    <ClCompile Include="AssimpLoader.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneFactory.cpp">
+      <Filter>System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h">
@@ -307,9 +310,6 @@
     </ClInclude>
     <ClInclude Include="IndexBuffer.h">
       <Filter>ヘッダー ファイル\Buffer</Filter>
-    </ClInclude>
-    <ClInclude Include="AssimpLoader.h">
-      <Filter>ヘッダー ファイル\Obj</Filter>
     </ClInclude>
     <ClInclude Include="DescriptorHeap.h">
       <Filter>ヘッダー ファイル\Resource</Filter>
@@ -354,9 +354,6 @@
       <Filter>ヘッダー ファイル\Scene</Filter>
     </ClInclude>
     <ClInclude Include="SceneFactory.h">
-      <Filter>System</Filter>
-    </ClInclude>
-    <ClInclude Include="Enum_Scene.h">
       <Filter>System</Filter>
     </ClInclude>
     <ClInclude Include="System\Noncopyable.h">
@@ -478,6 +475,12 @@
     </ClInclude>
     <ClInclude Include="PipelineState_DebugSphere.h">
       <Filter>ヘッダー ファイル\Draw\PipelineState</Filter>
+    </ClInclude>
+    <ClInclude Include="AssimpLoader.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug_New.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

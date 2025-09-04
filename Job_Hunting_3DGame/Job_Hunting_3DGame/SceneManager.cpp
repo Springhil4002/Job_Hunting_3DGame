@@ -1,16 +1,19 @@
 #include "SceneManager.h"
+#include "Debug_New.h"
 
-bool SceneManager::change = false;
-BaseScene* SceneManager::currentScene = nullptr;
+std::unique_ptr<BaseScene> SceneManager::currentScene = nullptr;
 SceneFactory SceneManager::sceneFactory;
-std::set<Object*> SceneManager::createObjects;
-std::set<Object*> SceneManager::deleteObjects;
 
-void SceneManager::ChangeScene(SCENE_ID _scene_ID,Camera* _camera,HWND _hwnd)
+void SceneManager::ChangeScene(SCENE_ID _scene_ID, Camera* _camera, HWND _hwnd)
 {
 	ClearConsole();
-	currentScene = sceneFactory.CreateScene(_scene_ID, _camera, _hwnd);
-	change = true;
+	if (currentScene)
+	{
+		currentScene->Uninit();
+		currentScene.reset();
+	}
+	// 新しいシーンを作成
+	currentScene.reset(sceneFactory.CreateScene(_scene_ID, _camera, _hwnd));
 }
 
 void SceneManager::ClearConsole()
@@ -22,100 +25,51 @@ void SceneManager::ClearConsole()
 	COORD homeCoords = { 0,0 };
 
 	if (hConsole == INVALID_HANDLE_VALUE) return;
-
-	// 現在のコンソールのバッファ情報を取得
 	if (!GetConsoleScreenBufferInfo(hConsole, &csbi)) return;
 	cellCount = csbi.dwSize.X * csbi.dwSize.Y;
 
 	// 空白でコンソールバッファを上書き
-	if ((!FillConsoleOutputCharacter(hConsole, (TCHAR)' ', cellCount, homeCoords, &count))) return;
-
+	FillConsoleOutputCharacter(hConsole, (TCHAR)' ', cellCount, homeCoords, &count);
 	// 属性情報のリセット
-	if (!FillConsoleOutputAttribute(hConsole, csbi.wAttributes, cellCount, homeCoords, &count)) return;
-
+	FillConsoleOutputAttribute(hConsole, csbi.wAttributes, cellCount, homeCoords, &count);
 	// カーソル位置を左上に戻す
 	SetConsoleCursorPosition(hConsole, homeCoords);
 }
 
 void SceneManager::Init()
 {
-	if (currentScene)
-	{
+	if (currentScene) 
+		// 現在のシーンの初期化
 		currentScene->Init();
-	}
 }
 
 void SceneManager::Update(float _deltaTime)
 {
-	if (change)
+	if (currentScene)
 	{
-		change = false;
-	}
-
-	// オブジェクトの生成・初期化処理
-	Create();
-
-	// 入力処理
-	currentScene->Input();
-	// 更新処理
-	currentScene->Update(_deltaTime);
-
-	// オブジェクトの削除・終了処理
-	Delete();
-
-	if (change == true)
-	{
-		currentScene->Uninit();
+		// 現在のシーンの入力処理
+		currentScene->Input();
+		// 現在のシーンの更新処理
+		currentScene->Update(_deltaTime);
 	}
 }
 
 void SceneManager::Draw()
 {
-	//現在のシーンの描画
-	currentScene->Draw();
+	if(currentScene) 
+	// 現在のシーンの描画処理
+	   currentScene->Draw();
 }
 
 void SceneManager::Uninit()
 {
-	if (currentScene != nullptr)
-	{
-		delete currentScene;
-	}
-}
-
-void SceneManager::Create()
-{
-	if (!createObjects.empty())
-	{
-		auto buf = createObjects;
-		for (auto& obj : buf)
-		{
-			obj->Init();
-			currentScene->GetObjects()->insert(obj);
-			createObjects.erase(obj);
-		}
-	}
-}
-
-void SceneManager::Delete()
-{
-	if (!deleteObjects.empty())
-	{
-		auto buf = deleteObjects;
-		for (auto& obj : buf)
-		{
-			obj->Uninit();
-			currentScene->GetObjects()->erase(obj);
-			deleteObjects.erase(obj);
-			delete obj;
-		}
-	}
+	// 現在のシーンの自動解放
+	currentScene.reset();
 }
 
 void SceneManager::Draw_ImGui()
 {
 	if (currentScene)
-	{
+	// 現在のシーンのGUI描画
 		currentScene->Draw_ImGui();
-	}
 }

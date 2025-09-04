@@ -1,6 +1,7 @@
 #include "RootSignature.h"
 #include "DrawBase.h"
 #include <d3dx12.h>
+#include "Debug_New.h"
 
 RootSignature::RootSignature()
 {	

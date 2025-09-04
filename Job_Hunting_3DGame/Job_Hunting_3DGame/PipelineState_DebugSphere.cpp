@@ -2,6 +2,7 @@
 #include "DrawBase.h"
 #include <d3dx12.h>
 #include <d3dcompiler.h>
+#include "Debug_New.h"
 
 #pragma comment(lib,"d3dcompiler.lib")
 
@@ -48,12 +49,11 @@ void PipelineState_DebugSphere::SetInputLayout(D3D12_INPUT_LAYOUT_DESC layout)
 {
 	if (layout.pInputElementDescs == nullptr || layout.NumElements == 0)
 	{
-		printf("PipelineState_DebugSphere: InputLayout が無効です (pInputElementDescs=%p, NumElements=%u)\n",
-			layout.pInputElementDescs, layout.NumElements);
+		printf("PipelineState_DebugSphere: InputLayout が無効です (pInputElementDescs=%p, NumElements=%u)\n",layout.pInputElementDescs, layout.NumElements);
 	}
 	else
 	{
-		printf("PipelineState_DebugSphere: InputLayout 設定成功 (NumElements=%u)\n", layout.NumElements);
+		//printf("PipelineState_DebugSphere: InputLayout 設定成功 (NumElements=%u)\n", layout.NumElements);
 	}
 	desc.InputLayout = layout;
 }
@@ -66,7 +66,7 @@ void PipelineState_DebugSphere::SetRootSignature(ID3D12RootSignature* rootSignat
 	}
 	else
 	{
-		printf("PipelineState_DebugSphere: ルートシグネチャ設定成功 (%p)\n", rootSignature);
+		//printf("PipelineState_DebugSphere: ルートシグネチャ設定成功 (%p)\n", rootSignature);
 	}
 
 	desc.pRootSignature = rootSignature;
@@ -113,7 +113,7 @@ void PipelineState_DebugSphere::Create()
 		return;
 	}
 
-	printf("PSO_Sphere: パイプラインステートの生成に成功 (%p)\n", m_pPipelineState.Get());
+	//printf("PSO_Sphere: パイプラインステートの生成に成功 (%p)\n", m_pPipelineState.Get());
 	m_IsValid = true;
 }
 

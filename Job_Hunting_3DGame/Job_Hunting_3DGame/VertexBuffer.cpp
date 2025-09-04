@@ -1,6 +1,7 @@
 #include <d3dx12.h>
 #include "VertexBuffer.h"
 #include "DrawBase.h"
+#include "Debug_New.h"
 
 VertexBuffer::VertexBuffer(size_t _size, size_t _stride, const void* _pInitData)
 {

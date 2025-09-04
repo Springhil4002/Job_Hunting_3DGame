@@ -1,10 +1,19 @@
 #include "PlayerController.h"
+#include "Debug_New.h"
 
 using namespace DirectX;
 
-bool PlayerController::Init(Player* _player, WaterMesh* _waterMesh, Camera* _camera, Input* _input)
+bool PlayerController::Init(
+	Player* _player, WaterMesh* _waterMesh,
+	Camera* _camera, Input* _input)
 {
-	Init_Prop(_player, _waterMesh, _camera, _input);
+	if (!_player || !_waterMesh || !_camera || !_input) 
+		return false;
+	m_Player = _player;
+	m_WaterMesh = _waterMesh;
+	m_Camera = _camera;
+	m_Input = _input;
+		
 	Init_Param();
 	return true;
 }
@@ -25,22 +34,34 @@ void PlayerController::Draw()
 	}
 }
 
-bool PlayerController::Init_Prop(Player* _player, WaterMesh* _waterMesh, Camera* _camera, Input* _input)
+void PlayerController::Uninit()
 {
-	m_Player = _player;
-	if (!m_Player) return false;
-	m_WaterMesh = _waterMesh;
-	if (!m_WaterMesh) return false;
-	m_Camera = _camera;
-	if (!m_Camera) return false;
-	m_Input = _input;
-	if (!m_Input) return false;
+	// エミッタの終了処理
+	if (m_Emitter_Splash)
+		m_Emitter_Splash.reset();
 
-	return true;
+	// ポインタクリア
+	m_Player = nullptr;
+	m_WaterMesh = nullptr;
+	m_Camera = nullptr;
+	m_Input = nullptr;
+
+	// ベクトル初期化
+	m_Position = XMVectorZero();
+	m_Rotation = XMVectorZero();
+	m_ForwardVec = XMVectorZero();
+	m_RightVec = XMVectorZero();
+	m_UpVec = XMVectorZero();
+	m_CamOffset = XMVectorZero();
+	m_LastPlayerPos = XMVectorZero();
+	m_Velocity = XMVectorZero();
+	m_VelocityY = XMVectorZero();
 }
 
 void PlayerController::Init_Param()
 {
+	if (!m_Player || !m_Camera) return;
+
 	m_Position = m_Player->GetPos();
 	m_Rotation = m_Player->GetRota();
 
@@ -48,6 +69,7 @@ void PlayerController::Init_Param()
 	m_RightVec = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
 	m_UpVec = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	m_CamOffset = XMVectorSubtract(m_Camera->GetPos(), m_Player->GetPos());
+	m_InitCamOffset = m_CamOffset;
 	m_LastPlayerPos = m_Position;
 
 	m_RotateSpeed = XMConvertToRadians(45.0f);	// 回転速度
@@ -75,10 +97,9 @@ void PlayerController::Update_Buoyancy(float _deltaTime)
 {
 	if (!m_WaterMesh) return;
 
-	XMVECTOR pos = m_Position;
-	float x = XMVectorGetX(pos);
-	float z = XMVectorGetZ(pos);
-	float y = XMVectorGetY(pos) - m_PlayerOffsetY;
+	float x = XMVectorGetX(m_Position);
+	float z = XMVectorGetZ(m_Position);
+	float y = XMVectorGetY(m_Position) - m_PlayerOffsetY;
 
 	// 水面の波の高さを取得
 	float waterHeight = m_WaterMesh->GetWaveHeight(x, z, _deltaTime);
@@ -89,7 +110,11 @@ void PlayerController::Update_Buoyancy(float _deltaTime)
 	{
 		float buoyancyForce = m_Buoyancy * depth;
 		float damping = m_WaterDamping * XMVectorGetY(m_VelocityY);
-		m_VelocityY += XMVectorSet(0, (buoyancyForce + m_Gravity - damping) * _deltaTime, 0, 0);
+		
+		float vy = XMVectorGetY(m_VelocityY);
+		vy += (buoyancyForce + m_Gravity - damping) * _deltaTime;
+		
+		m_VelocityY = XMVectorSet(0, vy, 0, 0);
 	}
 	else
 	{
@@ -97,7 +122,6 @@ void PlayerController::Update_Buoyancy(float _deltaTime)
 		m_VelocityY += XMVectorSet(0, m_Gravity * _deltaTime, 0, 0);
 	}
 
-	// Y軸移動を更新
 	m_Position += m_VelocityY * _deltaTime;
 }
 
@@ -129,7 +153,9 @@ void PlayerController::Update_Emitter(float _deltaTime)
 	if (!m_Emitter_Splash) return;
 
 	bool isMoving = false;
-	if (XMVectorGetX(XMVector3Length(m_Velocity)) > 0.1f || XMVectorGetZ(XMVector3Length(m_Velocity)) > 0.1f)
+
+	XMVECTOR horizontalVelocity = XMVectorSet(XMVectorGetX(m_Velocity), 0, XMVectorGetZ(m_Velocity), 0);
+	if (XMVectorGetX(XMVector3Length(horizontalVelocity))> 0.1f)
 	{
 		isMoving = true;
 	}
@@ -155,7 +181,7 @@ void PlayerController::Input_Rotate(float _deltaTime)
 	XMMATRIX rotMat = XMMatrixRotationY(XMVectorGetY(m_Rotation));
 	m_ForwardVec = XMVector3TransformNormal(XMVectorSet(0, 0, 1, 0), rotMat);
 	m_RightVec = XMVector3TransformNormal(XMVectorSet(1, 0, 0, 0), rotMat);
-	m_CamOffset = XMVector3TransformCoord(m_CamOffset, rotMat);
+	m_CamOffset = XMVector3TransformCoord(m_InitCamOffset, rotMat);
 }
 
 void PlayerController::Input_Move(float _deltaTime)
@@ -179,14 +205,20 @@ void PlayerController::Input_Move(float _deltaTime)
 	else
 	{
 		// 入力が無いときは減速
-		XMVECTOR fricVec = XMVector3Normalize(m_Velocity) * -1.0f;
 		float speed = XMVectorGetX(XMVector3Length(m_Velocity));
-		float friction = m_Friction * _deltaTime;
-
-		if (friction > speed)
-			m_Velocity = XMVectorZero();
+		if (speed > 0.0001f)
+		{
+			XMVECTOR fricVec = XMVector3Normalize(m_Velocity) * -1.0f;
+			float friction = m_Friction * _deltaTime;
+			if (friction > speed)
+				m_Velocity = XMVectorZero();
+			else
+				m_Velocity += fricVec * friction;
+		}
 		else
-			m_Velocity += fricVec * friction;
+		{
+			m_Velocity = XMVectorZero();
+		}
 	}
 
 	// 慣性旋回,速度ベクトルを補間しながら向きに合わせる

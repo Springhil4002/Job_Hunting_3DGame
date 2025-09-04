@@ -4,12 +4,22 @@
 #include <Windows.h>
 #include <DirectXTex.h>
 #include <d3dx12.h>
+#include "Debug_New.h"
 
 //-------------------------------------------------------------------
 // 自分が忘れないようすぐ見れるようにコメントを細かく書いてます
 //-------------------------------------------------------------------
 
 DrawBase* g_DrawBase;
+
+DrawBase::~DrawBase()
+{
+	if (m_fenceEvent)
+	{
+		CloseHandle(m_fenceEvent);
+		m_fenceEvent = nullptr;
+	}
+}
 
 bool DrawBase::Init(HWND _hwnd, UINT _windowWidth, UINT _windowHeight)
 {
@@ -76,7 +86,8 @@ bool DrawBase::CreateDevice()
 	hr = m_pDevice->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS5, &features5, sizeof(D3D12_FEATURE_DATA_D3D12_OPTIONS5));
 	if (FAILED(hr) || features5.RaytracingTier == D3D12_RAYTRACING_TIER_NOT_SUPPORTED)
 	{
-		int a;
+		printf("レイトレーシング非対応\n");
+		return false;
 	}
 
 	return SUCCEEDED(hr);
@@ -179,11 +190,11 @@ bool DrawBase::CreateCommandList()
 			D3D12_COMMAND_LIST_TYPE_DIRECT,
 			// COMポインタのメモリ管理を行い、新しいコマンドアロケーターのメモリを取得
 			IID_PPV_ARGS(m_pAllocator[i].ReleaseAndGetAddressOf()));
-	}
-
-	if (FAILED(hr))
-	{
-		return false;
+	
+		if (FAILED(hr))
+		{
+			return false;
+		}
 	}
 
 	// コマンドリストの生成
@@ -212,6 +223,12 @@ bool DrawBase::CreateCommandList()
 // フェンス:CPUとGPUの同期を行うためのもの、描画完了の判断をフェンスの値がインクリメントされたかで判断する
 bool DrawBase::CreateFence()
 {
+	if (m_fenceEvent)
+	{
+		CloseHandle(m_fenceEvent);
+		m_fenceEvent = nullptr;
+	}
+
 	// フェンス値の初期化
 	for (auto i = 0u; i < FRAME_BUFFER_COUNT; i++)
 	{

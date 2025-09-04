@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include "Debug_New.h"
 
 using namespace DirectX;
 

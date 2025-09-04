@@ -4,6 +4,7 @@
 #include "SceneManager.h"
 #include "ImGuiManager.h"
 #include "System/ImGui/imgui_impl_win32.h"
+#include "Debug_New.h"
 
 HINSTANCE g_hInst;
 HWND g_hWnd = NULL;
@@ -139,6 +140,12 @@ void MainLoop(const TCHAR* _appName)
 			g_DrawBase->EndRender();	// •`‰æI—¹ˆ—
 		}
 	}
+	sm->Uninit();
+	delete sm;
+	delete timer;
+	delete camera;
+	delete g_DrawBase;
+	g_DrawBase = nullptr;
 }
 
 void Application::Run(const TCHAR* _appName)

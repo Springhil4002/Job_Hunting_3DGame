@@ -1,10 +1,18 @@
 #include "ResultScene.h"
 #include "SceneManager.h"
 #include "System/ImGui/imgui.h"
+#include "Debug_New.h"
 
 Object* ResultScene::CreateObj(const std::string& _objectID)
 {
-	return prototypeManager->Create(_objectID);
+	auto obj = prototypeManager->Create(_objectID);
+	if (obj)
+	{
+		// 所有権をシーン内管理vector配列に映す
+		objectInstance.push_back(std::move(obj));
+		return objectInstance.back().get();
+	}
+	return nullptr;
 }
 
 void ResultScene::Init(Camera* _camera,HWND _hwnd)

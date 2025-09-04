@@ -18,19 +18,19 @@ class SkyDomeMesh : public Object
 {
 private:
 	// 頂点バッファ
-	VertexBuffer* m_pVertexBuffer;
+	std::unique_ptr<VertexBuffer> m_pVertexBuffer;
 	// インデックスバッファ
-	IndexBuffer* m_pIndexBuffer;
+	std::unique_ptr<IndexBuffer> m_pIndexBuffer;
 	// コンスタントバッファ
-	ConstantBuffer* m_pConstantBuffer[DrawBase::FRAME_BUFFER_COUNT];
+	std::unique_ptr<ConstantBuffer> m_pConstantBuffer[DrawBase::FRAME_BUFFER_COUNT];
 	// ディスクリプタヒープ
-	DescriptorHeap* m_pDescriptorHeap;
+	std::unique_ptr<DescriptorHeap> m_pDescriptorHeap;
 	// ルートシグネチャ
-	RootSignature_SkyDomeMesh* m_pRootSignature;
+	std::unique_ptr<RootSignature_SkyDomeMesh> m_pRootSignature;
 	// パイプラインステート
-	PipelineState_SkyDomeMesh* m_pPipelineState;
+	std::unique_ptr<PipelineState_SkyDomeMesh> m_pPipelineState;
 	// ディスクリプタハンドル
-	DescriptorHandle* m_pTexHandle;
+	std::shared_ptr<DescriptorHandle> m_pTexHandle;
 	// カメラ
 	Camera* m_camera;
 public:
@@ -41,7 +41,7 @@ public:
 
 	/// @brief クローン生成関数
 	/// @return クローンを返します
-	Object* clone() const override;
+	std::unique_ptr<Object> clone() const override;
 
 	/// @brief 初期化処理
 	/// @return 成否を返します

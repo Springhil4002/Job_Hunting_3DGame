@@ -1,5 +1,6 @@
 #include "ParticleEmitter_Splash.h"
 #include <algorithm>
+#include "Debug_New.h"
 
 using namespace DirectX;
 

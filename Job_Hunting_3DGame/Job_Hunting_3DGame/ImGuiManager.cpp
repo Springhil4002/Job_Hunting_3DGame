@@ -1,8 +1,12 @@
 #include "ImGuiManager.h"
 #include "DrawBase.h"
+#include "Debug_New.h"
 
 bool ImGuiManager::Init(HWND _hwnd, DrawBase* _drawBase)
 {
+	if (!_hwnd || !_drawBase) return false;
+	if (ImGui::GetCurrentContext()) ShutDown();	
+
 	m_pDrawBase = _drawBase;
 
 	// SRVÉqÅ[ÉvçÏê¨
@@ -71,4 +75,7 @@ void ImGuiManager::ShutDown()
 	ImGui_ImplDX12_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
+
+	m_pDrawBase = nullptr;
+	m_pSrvHeap.Reset();
 }

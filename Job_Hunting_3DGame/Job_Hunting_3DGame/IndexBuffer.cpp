@@ -1,6 +1,7 @@
 #include "IndexBuffer.h"
 #include <d3dx12.h>
 #include "DrawBase.h"
+#include "Debug_New.h"
 
 IndexBuffer::IndexBuffer(size_t _size, const uint32_t* _pInitData)
 {

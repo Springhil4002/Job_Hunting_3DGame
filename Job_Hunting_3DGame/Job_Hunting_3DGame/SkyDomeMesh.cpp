@@ -1,10 +1,12 @@
 #include "SkyDomeMesh.h"
+#include "Debug_New.h"
 
 using namespace DirectX;
 
-Object* SkyDomeMesh::clone() const
+std::unique_ptr<Object> SkyDomeMesh::clone() const
 {
-	return new SkyDomeMesh(*this);
+	auto newObj = std::make_unique<SkyDomeMesh>();
+	return newObj;
 }
 
 bool SkyDomeMesh::Init(Camera* _camera)
@@ -17,7 +19,7 @@ bool SkyDomeMesh::Init(Camera* _camera)
 	// 頂点バッファ生成
 	auto vbSize = sizeof(SkyVertex) * vertices.size();
 	auto vbStride = sizeof(SkyVertex);
-	m_pVertexBuffer = new VertexBuffer(vbSize, vbStride, vertices.data());
+	m_pVertexBuffer = std::make_unique<VertexBuffer>(vbSize, vbStride, vertices.data());
 	if (!m_pVertexBuffer->IsValid())
 	{
 		printf("スカイドーム:頂点バッファ生成失敗\n");
@@ -26,7 +28,7 @@ bool SkyDomeMesh::Init(Camera* _camera)
 
 	// インデックスバッファ生成
 	auto ibSize = sizeof(uint32_t) * indices.size();
-	m_pIndexBuffer = new IndexBuffer(ibSize, indices.data());
+	m_pIndexBuffer = std::make_unique<IndexBuffer>(ibSize, indices.data());
 	if (!m_pIndexBuffer->IsValid())
 	{
 		printf("スカイドーム:インデックスバッファ生成失敗\n");
@@ -36,7 +38,7 @@ bool SkyDomeMesh::Init(Camera* _camera)
 	// コンスタントバッファ生成
 	for (size_t i = 0; i < DrawBase::FRAME_BUFFER_COUNT; ++i)
 	{
-		m_pConstantBuffer[i] = new ConstantBuffer(sizeof(Matrix));
+		m_pConstantBuffer[i] = std::make_unique<ConstantBuffer>(sizeof(Matrix));
 		if (!m_pConstantBuffer[i]->IsValid())
 		{
 			printf("スカイドーム:コンスタントバッファ生成失敗\n");
@@ -56,7 +58,7 @@ bool SkyDomeMesh::Init(Camera* _camera)
 	}
 
 	// ディスクリプタヒープ
-	m_pDescriptorHeap = new DescriptorHeap();
+	m_pDescriptorHeap = std::make_unique<DescriptorHeap>();
 
 	// テクスチャの適用
 	if (m_pTexHandle == nullptr)
@@ -66,7 +68,7 @@ bool SkyDomeMesh::Init(Camera* _camera)
 	}
 	
 	// ルートシグネチャ生成
-	m_pRootSignature = new RootSignature_SkyDomeMesh();
+	m_pRootSignature = std::make_unique<RootSignature_SkyDomeMesh>();
 	if (!m_pRootSignature->IsValid())
 	{
 		printf("スカイドーム:ルートシグネチャ生成失敗\n");
@@ -74,7 +76,7 @@ bool SkyDomeMesh::Init(Camera* _camera)
 	}
 
 	// パイプラインステート生成
-	m_pPipelineState = new PipelineState_SkyDomeMesh();
+	m_pPipelineState = std::make_unique<PipelineState_SkyDomeMesh>();
 	m_pPipelineState->SetInputLayout(SkyVertex::InputLayout);
 	m_pPipelineState->SetRootSignature(m_pRootSignature->Get());
 #ifdef _DEBUG
@@ -134,6 +136,15 @@ void SkyDomeMesh::Draw()
 
 void SkyDomeMesh::Uninit()
 {
+	m_camera = nullptr;
+	m_pVertexBuffer.reset();
+	m_pIndexBuffer.reset();
+	for (auto& cb : m_pConstantBuffer)
+		cb.reset();
+	m_pDescriptorHeap.reset();
+	m_pRootSignature.reset();
+	m_pPipelineState.reset();
+	m_pTexHandle.reset();
 }
 
 void SkyDomeMesh::CreateMesh(int _slices, int _stacks, float _radius)

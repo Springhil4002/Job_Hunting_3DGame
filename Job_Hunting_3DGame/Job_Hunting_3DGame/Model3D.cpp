@@ -1,4 +1,5 @@
 #include "Model3D.h"
+#include "Debug_New.h"
 
 std::wstring Model3D::ReplaceExtension(const std::wstring& _origin, const char* _ext)
 {
@@ -7,9 +8,10 @@ std::wstring Model3D::ReplaceExtension(const std::wstring& _origin, const char* 
 	return path.replace_extension(_ext).wstring();
 }
 
-Object* Model3D::clone() const
+std::unique_ptr<Object> Model3D::clone() const
 {
-	return new Model3D(*this);
+	auto newObj = std::make_unique<Model3D>();
+	return newObj;
 }
 
 bool Model3D::Init(Camera* _camera)
@@ -41,13 +43,13 @@ bool Model3D::Init(Camera* _camera)
 		auto size = sizeof(Vertex) * m_meshes[i].Vertices.size();
 		auto stride = sizeof(Vertex);
 		auto vertices = m_meshes[i].Vertices.data();
-		auto pVB = new VertexBuffer(size, stride, vertices);
+		auto pVB = std::make_unique<VertexBuffer>(size, stride, vertices);
 		if (!pVB->IsValid())
 		{
 			printf("頂点バッファの生成に失敗\n");
 			return false;
 		}
-		m_pVertexBuffers.push_back(pVB);
+		m_pVertexBuffers.push_back(std::move(pVB));
 	}
 
 	// メッシュの数だけインデックスバッファを用意する
@@ -56,19 +58,19 @@ bool Model3D::Init(Camera* _camera)
 	{
 		auto size = sizeof(uint32_t) * m_meshes[i].Indices.size();
 		auto indices = m_meshes[i].Indices.data();
-		auto pIB = new IndexBuffer(size, indices);
+		auto pIB = std::make_unique<IndexBuffer>(size, indices);
 
 		if (!pIB->IsValid())
 		{
 			printf("インデックスバッファの生成に失敗\n");
 			return false;
 		}
-		m_pIndexBuffers.push_back(pIB);
+		m_pIndexBuffers.push_back(std::move(pIB));
 	}
 
 	for (size_t i = 0; i < DrawBase::FRAME_BUFFER_COUNT; ++i)
 	{
-		m_pConstantBuffer[i] = new ConstantBuffer(sizeof(Matrix));
+		m_pConstantBuffer[i] = std::make_unique<ConstantBuffer>(sizeof(Matrix));
 		if (!m_pConstantBuffer[i]->IsValid()) 
 		{
 			printf("コンスタントバッファ生成失敗\n");
@@ -83,7 +85,7 @@ bool Model3D::Init(Camera* _camera)
 	}
 
 	// ディスクリプタヒープの生成
-	m_pDescriptorHeap = new DescriptorHeap();
+	m_pDescriptorHeap = std::make_unique<DescriptorHeap>();
 
 	// マテリアルの読み込み
 	m_pMaterialHandles.clear();
@@ -107,7 +109,7 @@ bool Model3D::Init(Camera* _camera)
 		m_pMaterialHandles.push_back(handle);
 	}
 
-	m_pRootSignature = new RootSignature();
+	m_pRootSignature = std::make_unique<RootSignature>();
 	if (!m_pRootSignature->IsValid())
 	{
 		printf("ルートシグネチャの生成に失敗\n");
@@ -115,7 +117,7 @@ bool Model3D::Init(Camera* _camera)
 	}
 
 	// パイプラインステートのインスタンス生成
-	m_pPipelineState = new PipelineState();
+	m_pPipelineState = std::make_unique<PipelineState>();
 	// 頂点レイアウトの設定
 	m_pPipelineState->SetInputLayout(Vertex::InputLayout);
 	// ルートシグネチャの設定
@@ -203,5 +205,16 @@ void Model3D::Draw()
 
 void Model3D::Uninit()
 {
-
+	m_camera = nullptr;
+	m_pVertexBuffer.reset();
+	m_pIndexBuffer.reset();
+	for (auto& cb : m_pConstantBuffer)
+		cb.reset();
+	m_pDescriptorHeap.reset();
+	m_pRootSignature.reset();
+	m_pPipelineState.reset();
+	m_meshes.clear();
+	m_pVertexBuffers.clear();
+	m_pIndexBuffers.clear();
+	m_pMaterialHandles.clear();
 }
