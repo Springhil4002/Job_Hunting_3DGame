@@ -15,6 +15,7 @@
 #include "TextureManager.h"
 #include "Camera.h"
 #include "Debug_Sphere.h"
+#include "ModelManager.h"
 
 class Goal : public Object
 {
@@ -35,14 +36,10 @@ private:
 	std::shared_ptr<DescriptorHandle> m_pTexHandle;
 	// カメラ
 	Camera* m_camera;
-	// 3Dモデルファイルパス
-	const wchar_t* m_pModelFile = L"";
-	// メッシュ配列
+	// モデルデータ配列
 	std::vector<Mesh> m_meshes;
-	// メッシュの数分の頂点バッファ
-	std::vector<std::unique_ptr<VertexBuffer>> m_pVertexBuffers;
-	// メッシュの数分のインデックスバッファ
-	std::vector<std::unique_ptr<IndexBuffer>> m_pIndexBuffers;
+	std::vector<std::shared_ptr<VertexBuffer>> m_pVertexBuffers;
+	std::vector<std::shared_ptr<IndexBuffer>> m_pIndexBuffers;
 	// 当たり判定用デバッグ球体
 	std::shared_ptr<Debug_Sphere> m_Sphere;
 public:

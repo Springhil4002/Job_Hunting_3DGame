@@ -9,19 +9,15 @@
 #include "RootSignature_Player.h"
 #include "PipelineState_Player.h"
 #include "IndexBuffer.h"
-#include "AssimpLoader.h"
 #include "DescriptorHeap.h"
 #include "Texture2D.h"
 #include "TextureManager.h"
 #include "Camera.h"
+#include "ModelManager.h"
 
 class Player : public Object
 {
 private:
-	// 頂点バッファ
-	std::unique_ptr<VertexBuffer> m_pVertexBuffer;
-	// インデックスバッファ
-	std::unique_ptr<IndexBuffer> m_pIndexBuffer;
 	// コンスタントバッファ
 	std::unique_ptr<ConstantBuffer> m_pConstantBuffer[DrawBase::FRAME_BUFFER_COUNT];
 	// ディスクリプタヒープ
@@ -34,14 +30,10 @@ private:
 	std::shared_ptr<DescriptorHandle> m_pTexHandle;
 	// カメラ
 	Camera* m_camera;
-	// 3Dモデルファイルパス
-	const wchar_t* m_pModelFile = L"";
-	// メッシュ配列
+	// モデルデータ配列
 	std::vector<Mesh> m_meshes;
-	// メッシュの数分の頂点バッファ
-	std::vector<std::unique_ptr<VertexBuffer>> m_pVertexBuffers;
-	// メッシュの数分のインデックスバッファ
-	std::vector<std::unique_ptr<IndexBuffer>> m_pIndexBuffers;
+	std::vector<std::shared_ptr<VertexBuffer>> m_pVertexBuffers;
+	std::vector<std::shared_ptr<IndexBuffer>> m_pIndexBuffers;
 public:
 	// ワールド行列更新操作用
 	DirectX::XMMATRIX m_worldMatrix;

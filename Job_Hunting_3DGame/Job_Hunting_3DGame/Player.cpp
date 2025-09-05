@@ -11,56 +11,17 @@ std::unique_ptr<Object> Player::clone() const
 
 bool Player::Init(Camera* _camera)
 {
-	m_pModelFile = L"Assets/Player/Player.FBX";
 	m_camera = _camera;
-	// インポートに必要なパラメータ設定
-	ImportSettings importSetting = {
-		m_pModelFile,
-		m_meshes,
-		false,
-		false
-	};
 
-	// モデルローダー
-	AssimpLoader loader;
-
-	// モデルをロード
-	if (!loader.Load(importSetting))
+	auto modelData = ModelManager::GetInstance().GetModel(L"Assets/Player/Player.FBX");
+	if (!modelData)
 	{
+		printf("Player:モデル読み込み失敗\n");
 		return false;
 	}
-
-	// メッシュの数だけ頂点バッファを用意する
-	m_pVertexBuffers.reserve(m_meshes.size());
-	for (size_t i = 0; i < m_meshes.size(); i++)
-	{
-		auto size = sizeof(Vertex) * m_meshes[i].Vertices.size();
-		auto stride = sizeof(Vertex);
-		auto vertices = m_meshes[i].Vertices.data();
-		auto pVB = std::make_unique<VertexBuffer>(size, stride, vertices);
-		if (!pVB->IsValid())
-		{
-			printf("Player:頂点バッファの生成に失敗\n");
-			return false;
-		}
-		m_pVertexBuffers.push_back(std::move(pVB));
-	}
-
-	// メッシュの数だけインデックスバッファを用意する
-	m_pIndexBuffers.reserve(m_meshes.size());
-	for (size_t i = 0; i < m_meshes.size(); i++)
-	{
-		auto size = sizeof(uint32_t) * m_meshes[i].Indices.size();
-		auto indices = m_meshes[i].Indices.data();
-		auto pIB = std::make_unique<IndexBuffer>(size, indices);
-
-		if (!pIB->IsValid())
-		{
-			printf("Player:インデックスバッファの生成に失敗\n");
-			return false;
-		}
-		m_pIndexBuffers.push_back(std::move(pIB));
-	}
+	m_meshes = modelData->meshes;
+	m_pVertexBuffers = modelData->vertexBuffers;
+	m_pIndexBuffers = modelData->indexBuffers;
 
 	for (size_t i = 0; i < DrawBase::FRAME_BUFFER_COUNT; ++i)
 	{
@@ -170,17 +131,12 @@ void Player::Draw()
 void Player::Uninit()
 {
 	m_camera = nullptr;
-	m_pVertexBuffer.reset();
-	m_pIndexBuffer.reset();
 	for(auto& cb : m_pConstantBuffer)
 		cb.reset();
 	m_pDescriptorHeap.reset();
 	m_pRootSignature.reset();
 	m_pPipelineState.reset();
 	m_pTexHandle.reset();
-	m_meshes.clear();
-	m_pVertexBuffers.clear();
-	m_pIndexBuffers.clear();
 }
 
 void Player::Update_Transform()
