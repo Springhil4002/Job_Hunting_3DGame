@@ -8,6 +8,11 @@ ParticleSystem_Splash::ParticleSystem_Splash(Camera* _camera)
 	Init(_camera);
 }
 
+ParticleSystem_Splash::~ParticleSystem_Splash()
+{
+	Uninit();
+}
+
 bool ParticleSystem_Splash::Init(Camera* _camera)
 {
 	if (!Init_Prop(_camera)) return false;

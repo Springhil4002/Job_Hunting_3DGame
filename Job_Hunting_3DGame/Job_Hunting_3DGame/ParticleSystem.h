@@ -41,6 +41,7 @@ protected:
 	std::vector<Particle> m_Particles;	// パーティクルの管理配列
 	int m_MaxParticles;				// パーティクルの上限数
 public:
+	virtual ~ParticleSystem() = default;
 	/// @brief 初期化処理
 	virtual bool Init(Camera* _camera) = 0;
 	/// @brief 更新処理

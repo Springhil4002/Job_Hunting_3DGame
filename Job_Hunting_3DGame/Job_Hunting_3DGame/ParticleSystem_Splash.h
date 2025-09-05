@@ -58,6 +58,7 @@ private:
 	bool Init_Param();
 public:
 	ParticleSystem_Splash(Camera* _camera);
+	~ParticleSystem_Splash();
 	bool Init(Camera* _camera) override;
 	void Update(float _deltaTime) override;
 	void Draw() override;
