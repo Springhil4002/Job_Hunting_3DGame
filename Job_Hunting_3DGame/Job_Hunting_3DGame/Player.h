@@ -7,7 +7,7 @@
 #include "VertexBuffer.h"
 #include "ConstantBuffer.h"
 #include "RootSignature_Player.h"
-#include "PipelineState_Player.h"
+#include "PipelineState_Manager.h"
 #include "IndexBuffer.h"
 #include "DescriptorHeap.h"
 #include "Texture2D.h"
@@ -25,11 +25,11 @@ private:
 	// ルートシグネチャ
 	std::unique_ptr<RootSignature_Player> m_pRootSignature;
 	// パイプラインステート
-	std::unique_ptr<PipelineState_Player> m_pPipelineState;
+	PipelineState_General* m_pPipelineState;
 	// ディスクリプタハンドル
 	std::shared_ptr<DescriptorHandle> m_pTexHandle;
 	// カメラ
-	Camera* m_camera;
+	Camera* m_camera = nullptr;
 	// モデルデータ配列
 	std::vector<Mesh> m_meshes;
 	std::vector<std::shared_ptr<VertexBuffer>> m_pVertexBuffers;

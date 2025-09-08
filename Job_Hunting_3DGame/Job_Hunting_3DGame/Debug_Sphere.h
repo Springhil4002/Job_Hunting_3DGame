@@ -7,7 +7,7 @@
 #include "VertexBuffer.h"
 #include "ConstantBuffer.h"
 #include "RootSignature_DebugSphere.h"
-#include "PipelineState_DebugSphere.h"
+#include "PipelineState_Manager.h"
 #include "IndexBuffer.h"
 #include "DescriptorHeap.h"
 #include "Texture2D.h"
@@ -28,11 +28,11 @@ private:
 	// ルートシグネチャ
 	std::unique_ptr<RootSignature_DebugSphere> m_pRootSignature;
 	// パイプラインステート
-	std::unique_ptr<PipelineState_DebugSphere> m_pPipelineState;
+	PipelineState_DebugSphere* m_pPipelineState;
 	// ディスクリプタハンドル
 	std::shared_ptr<DescriptorHandle> m_pTexHandle;
 	// カメラ
-	Camera* m_camera;
+	Camera* m_camera = nullptr;
 	// 透明度
 	float m_alpha = 0.5f;
 	// 球体の半径

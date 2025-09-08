@@ -8,7 +8,7 @@
 #include "IndexBuffer.h"
 #include "ConstantBuffer.h"
 #include "RootSignature_SkyDomeMesh.h"
-#include "PipelineState_SkyDomeMesh.h"
+#include "PipelineState_Manager.h"
 #include "DescriptorHeap.h"
 #include "Texture2D.h"
 #include "TextureManager.h"
@@ -28,7 +28,7 @@ private:
 	// ルートシグネチャ
 	std::unique_ptr<RootSignature_SkyDomeMesh> m_pRootSignature;
 	// パイプラインステート
-	std::unique_ptr<PipelineState_SkyDomeMesh> m_pPipelineState;
+	PipelineState_SkyDomeMesh* m_pPipelineState;
 	// ディスクリプタハンドル
 	std::shared_ptr<DescriptorHandle> m_pTexHandle;
 	// カメラ

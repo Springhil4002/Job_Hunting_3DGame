@@ -166,13 +166,10 @@
     <ClCompile Include="ParticleEmitter_Splash.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="ParticleSystem_Splash.cpp" />
-    <ClCompile Include="PipelineState.cpp" />
     <ClCompile Include="PipelineState_DebugSphere.cpp" />
-    <ClCompile Include="PipelineState_Goal.cpp" />
-    <ClCompile Include="PipelineState_Player.cpp" />
+    <ClCompile Include="PipelineState_General.cpp" />
     <ClCompile Include="PipelineState_SkyDomeMesh.cpp" />
     <ClCompile Include="PipelineState_Splash.cpp" />
-    <ClCompile Include="PipelineState_WaterMesh.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerController.cpp" />
     <ClCompile Include="ResultScene.cpp" />
@@ -183,10 +180,6 @@
     <ClCompile Include="RootSignature_SkyDomeMesh.cpp" />
     <ClCompile Include="RootSignature_Splash.cpp" />
     <ClCompile Include="RootSignature_WaterMesh.cpp" />
-    <ClCompile Include="Sample.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="SceneFactory.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SkyDomeMesh.cpp" />
@@ -233,13 +226,11 @@
     <ClInclude Include="ParticleEmitter_Splash.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="ParticleSystem_Splash.h" />
-    <ClInclude Include="PipelineState.h" />
     <ClInclude Include="PipelineState_DebugSphere.h" />
-    <ClInclude Include="PipelineState_Goal.h" />
-    <ClInclude Include="PipelineState_Player.h" />
+    <ClInclude Include="PipelineState_General.h" />
+    <ClInclude Include="PipelineState_Manager.h" />
     <ClInclude Include="PipelineState_SkyDomeMesh.h" />
     <ClInclude Include="PipelineState_Splash.h" />
-    <ClInclude Include="PipelineState_WaterMesh.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerController.h" />
     <ClInclude Include="PrototypeManager.h" />
@@ -251,10 +242,6 @@
     <ClInclude Include="RootSignature_SkyDomeMesh.h" />
     <ClInclude Include="RootSignature_Splash.h" />
     <ClInclude Include="RootSignature_WaterMesh.h" />
-    <ClInclude Include="Sample.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="SkyDomeMesh.h" />
     <ClInclude Include="System\CommonTypes.h" />

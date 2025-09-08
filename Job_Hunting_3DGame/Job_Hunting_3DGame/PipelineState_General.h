@@ -3,7 +3,7 @@
 #include <d3dx12.h>
 #include <string>
 
-class PipelineState_WaterMesh
+class PipelineState_General
 {
 private:
 	// 生成に成否のフラグ
@@ -17,8 +17,8 @@ private:
 	// ピクセルシェーダー
 	ComPtr<ID3DBlob> m_pPSBlob;
 public:
-	/// @brief コンストラクタである程度の設定をする
-	PipelineState_WaterMesh();
+	/// @brief コンストラクタ
+	PipelineState_General();
 	/// @brief 生成の成否を返す処理
 	/// @return　生成の成否を返します 
 	bool IsValid() const;
@@ -40,4 +40,3 @@ public:
 	/// @return パイプラインステートのポインタ
 	ID3D12PipelineState* Get();
 };
-

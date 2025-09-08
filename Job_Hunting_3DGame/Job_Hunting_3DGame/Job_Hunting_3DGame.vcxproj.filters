@@ -79,12 +79,6 @@
     <Filter Include="ヘッダー ファイル\Draw\ImGui">
       <UniqueIdentifier>{9cda4ae0-69c1-4b89-a316-288f883b7ef1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\Obj\Player">
-      <UniqueIdentifier>{d99c5978-3297-4d29-a58d-541de2241019}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Obj\Player">
-      <UniqueIdentifier>{a2624871-fdbd-4dba-a4a5-ccb5f1857534}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ヘッダー ファイル\Particle">
       <UniqueIdentifier>{5495cba6-3fc0-45a6-9179-d57b23002995}</UniqueIdentifier>
     </Filter>
@@ -118,6 +112,18 @@
     <Filter Include="ヘッダー ファイル\Draw\PipelineState">
       <UniqueIdentifier>{d33fd7f1-cbf2-454f-8be6-8a230821efdc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Obj\GameObj">
+      <UniqueIdentifier>{d99c5978-3297-4d29-a58d-541de2241019}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Obj\GameObj">
+      <UniqueIdentifier>{a2624871-fdbd-4dba-a4a5-ccb5f1857534}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Obj\GameObj\Player">
+      <UniqueIdentifier>{20f171ad-dfe0-433b-b65f-526ab82a5896}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Obj\GameObj\Player">
+      <UniqueIdentifier>{abb56008-cea2-4f5d-bbef-2b5f2c906571}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp">
@@ -125,9 +131,6 @@
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>ソース ファイル\Main</Filter>
-    </ClCompile>
-    <ClCompile Include="Sample.cpp">
-      <Filter>ソース ファイル\Obj</Filter>
     </ClCompile>
     <ClCompile Include="DrawBase.cpp">
       <Filter>ソース ファイル\Draw</Filter>
@@ -153,12 +156,6 @@
     <ClCompile Include="System\SharedStruct.cpp">
       <Filter>System</Filter>
     </ClCompile>
-    <ClCompile Include="Object.cpp">
-      <Filter>ソース ファイル\Obj</Filter>
-    </ClCompile>
-    <ClCompile Include="Model3D.cpp">
-      <Filter>ソース ファイル\Obj</Filter>
-    </ClCompile>
     <ClCompile Include="System\Input.cpp">
       <Filter>System</Filter>
     </ClCompile>
@@ -180,26 +177,14 @@
     <ClCompile Include="Camera.cpp">
       <Filter>ソース ファイル\Draw</Filter>
     </ClCompile>
-    <ClCompile Include="WaterMesh.cpp">
-      <Filter>ソース ファイル\Obj</Filter>
-    </ClCompile>
     <ClCompile Include="RootSignature.cpp">
       <Filter>ソース ファイル\Draw\RootSignature</Filter>
     </ClCompile>
     <ClCompile Include="RootSignature_WaterMesh.cpp">
       <Filter>ソース ファイル\Draw\RootSignature</Filter>
     </ClCompile>
-    <ClCompile Include="PipelineState.cpp">
-      <Filter>ソース ファイル\Draw\PipelineState</Filter>
-    </ClCompile>
-    <ClCompile Include="PipelineState_WaterMesh.cpp">
-      <Filter>ソース ファイル\Draw\PipelineState</Filter>
-    </ClCompile>
     <ClCompile Include="TextureManager.cpp">
       <Filter>ソース ファイル\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="SkyDomeMesh.cpp">
-      <Filter>ソース ファイル\Obj</Filter>
     </ClCompile>
     <ClCompile Include="RootSignature_SkyDomeMesh.cpp">
       <Filter>ソース ファイル\Draw\RootSignature</Filter>
@@ -212,9 +197,6 @@
     </ClCompile>
     <ClCompile Include="RootSignature_Player.cpp">
       <Filter>ソース ファイル\Draw\RootSignature</Filter>
-    </ClCompile>
-    <ClCompile Include="PipelineState_Player.cpp">
-      <Filter>ソース ファイル\Draw\PipelineState</Filter>
     </ClCompile>
     <ClCompile Include="System\ImGui\imgui.cpp">
       <Filter>System\ImGui</Filter>
@@ -237,12 +219,6 @@
     <ClCompile Include="ImGuiManager.cpp">
       <Filter>ソース ファイル\Draw\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>ソース ファイル\Obj\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerController.cpp">
-      <Filter>ソース ファイル\Obj\Player</Filter>
-    </ClCompile>
     <ClCompile Include="Timer.cpp">
       <Filter>System</Filter>
     </ClCompile>
@@ -262,12 +238,6 @@
       <Filter>ソース ファイル\Draw\RootSignature</Filter>
     </ClCompile>
     <ClCompile Include="PipelineState_Splash.cpp">
-      <Filter>ソース ファイル\Draw\PipelineState</Filter>
-    </ClCompile>
-    <ClCompile Include="Goal.cpp">
-      <Filter>ソース ファイル\Obj</Filter>
-    </ClCompile>
-    <ClCompile Include="PipelineState_Goal.cpp">
       <Filter>ソース ファイル\Draw\PipelineState</Filter>
     </ClCompile>
     <ClCompile Include="RootSignature_Goal.cpp">
@@ -291,6 +261,33 @@
     <ClCompile Include="SceneFactory.cpp">
       <Filter>System</Filter>
     </ClCompile>
+    <ClCompile Include="PipelineState_General.cpp">
+      <Filter>ソース ファイル\Draw\PipelineState</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelManager.cpp">
+      <Filter>ソース ファイル\Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>ソース ファイル\Obj\GameObj\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerController.cpp">
+      <Filter>ソース ファイル\Obj\GameObj\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>ソース ファイル\Obj\GameObj</Filter>
+    </ClCompile>
+    <ClCompile Include="WaterMesh.cpp">
+      <Filter>ソース ファイル\Obj\GameObj</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyDomeMesh.cpp">
+      <Filter>ソース ファイル\Obj\GameObj</Filter>
+    </ClCompile>
+    <ClCompile Include="Model3D.cpp">
+      <Filter>ソース ファイル\Obj\GameObj</Filter>
+    </ClCompile>
+    <ClCompile Include="Goal.cpp">
+      <Filter>ソース ファイル\Obj\GameObj</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h">
@@ -298,9 +295,6 @@
     </ClInclude>
     <ClInclude Include="DrawBase.h">
       <Filter>ヘッダー ファイル\Draw</Filter>
-    </ClInclude>
-    <ClInclude Include="Sample.h">
-      <Filter>ヘッダー ファイル\Obj</Filter>
     </ClInclude>
     <ClInclude Include="VertexBuffer.h">
       <Filter>ヘッダー ファイル\Buffer</Filter>
@@ -332,12 +326,6 @@
     <ClInclude Include="PrototypeManager.h">
       <Filter>System</Filter>
     </ClInclude>
-    <ClInclude Include="Object.h">
-      <Filter>ヘッダー ファイル\Obj</Filter>
-    </ClInclude>
-    <ClInclude Include="Model3D.h">
-      <Filter>ヘッダー ファイル\Obj</Filter>
-    </ClInclude>
     <ClInclude Include="System\Input.h">
       <Filter>System</Filter>
     </ClInclude>
@@ -365,26 +353,14 @@
     <ClInclude Include="Camera.h">
       <Filter>ヘッダー ファイル\Draw</Filter>
     </ClInclude>
-    <ClInclude Include="WaterMesh.h">
-      <Filter>ヘッダー ファイル\Obj</Filter>
-    </ClInclude>
     <ClInclude Include="RootSignature.h">
       <Filter>ヘッダー ファイル\Draw\RootSignature</Filter>
     </ClInclude>
     <ClInclude Include="RootSignature_WaterMesh.h">
       <Filter>ヘッダー ファイル\Draw\RootSignature</Filter>
     </ClInclude>
-    <ClInclude Include="PipelineState.h">
-      <Filter>ヘッダー ファイル\Draw\PipelineState</Filter>
-    </ClInclude>
-    <ClInclude Include="PipelineState_WaterMesh.h">
-      <Filter>ヘッダー ファイル\Draw\PipelineState</Filter>
-    </ClInclude>
     <ClInclude Include="TextureManager.h">
       <Filter>ヘッダー ファイル\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="SkyDomeMesh.h">
-      <Filter>ヘッダー ファイル\Obj</Filter>
     </ClInclude>
     <ClInclude Include="PipelineState_SkyDomeMesh.h">
       <Filter>ヘッダー ファイル\Draw\PipelineState</Filter>
@@ -397,9 +373,6 @@
     </ClInclude>
     <ClInclude Include="RootSignature_Player.h">
       <Filter>ヘッダー ファイル\Draw\RootSignature</Filter>
-    </ClInclude>
-    <ClInclude Include="PipelineState_Player.h">
-      <Filter>ヘッダー ファイル\Draw\PipelineState</Filter>
     </ClInclude>
     <ClInclude Include="System\ImGui\imconfig.h">
       <Filter>System\ImGui</Filter>
@@ -428,12 +401,6 @@
     <ClInclude Include="ImGuiManager.h">
       <Filter>ヘッダー ファイル\Draw\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>ヘッダー ファイル\Obj\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerController.h">
-      <Filter>ヘッダー ファイル\Obj\Player</Filter>
-    </ClInclude>
     <ClInclude Include="Timer.h">
       <Filter>System</Filter>
     </ClInclude>
@@ -453,12 +420,6 @@
       <Filter>ヘッダー ファイル\Draw\RootSignature</Filter>
     </ClInclude>
     <ClInclude Include="PipelineState_Splash.h">
-      <Filter>ヘッダー ファイル\Draw\PipelineState</Filter>
-    </ClInclude>
-    <ClInclude Include="Goal.h">
-      <Filter>ヘッダー ファイル\Obj</Filter>
-    </ClInclude>
-    <ClInclude Include="PipelineState_Goal.h">
       <Filter>ヘッダー ファイル\Draw\PipelineState</Filter>
     </ClInclude>
     <ClInclude Include="RootSignature_Goal.h">
@@ -481,6 +442,36 @@
     </ClInclude>
     <ClInclude Include="Debug_New.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="PipelineState_General.h">
+      <Filter>ヘッダー ファイル\Draw\PipelineState</Filter>
+    </ClInclude>
+    <ClInclude Include="PipelineState_Manager.h">
+      <Filter>ヘッダー ファイル\Draw\PipelineState</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>ヘッダー ファイル\Obj\GameObj\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerController.h">
+      <Filter>ヘッダー ファイル\Obj\GameObj\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Goal.h">
+      <Filter>ヘッダー ファイル\Obj\GameObj</Filter>
+    </ClInclude>
+    <ClInclude Include="Model3D.h">
+      <Filter>ヘッダー ファイル\Obj\GameObj</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>ヘッダー ファイル\Obj\GameObj</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyDomeMesh.h">
+      <Filter>ヘッダー ファイル\Obj\GameObj</Filter>
+    </ClInclude>
+    <ClInclude Include="WaterMesh.h">
+      <Filter>ヘッダー ファイル\Obj\GameObj</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelManager.h">
+      <Filter>ヘッダー ファイル\Obj</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

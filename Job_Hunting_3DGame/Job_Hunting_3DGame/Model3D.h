@@ -7,7 +7,7 @@
 #include "VertexBuffer.h"
 #include "ConstantBuffer.h"
 #include "RootSignature.h"
-#include "PipelineState.h"
+#include "PipelineState_Manager.h"
 #include "IndexBuffer.h"
 #include "AssimpLoader.h"
 #include "DescriptorHeap.h"
@@ -30,7 +30,7 @@ private:
 	// ルートシグネチャ
 	std::unique_ptr<RootSignature> m_pRootSignature;
 	// パイプラインステート
-	std::unique_ptr<PipelineState> m_pPipelineState;
+	PipelineState_General* m_pPipelineState;
 	// カメラ
 	Camera* m_camera;
 	// 3Dモデルファイルパス

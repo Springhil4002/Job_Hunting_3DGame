@@ -22,7 +22,7 @@ bool SkyDomeMesh::Init(Camera* _camera)
 	m_pVertexBuffer = std::make_unique<VertexBuffer>(vbSize, vbStride, vertices.data());
 	if (!m_pVertexBuffer->IsValid())
 	{
-		printf("スカイドーム:頂点バッファ生成失敗\n");
+		printf("SkyDomeMesh:頂点バッファ生成失敗\n");
 		return false;
 	}
 
@@ -31,7 +31,7 @@ bool SkyDomeMesh::Init(Camera* _camera)
 	m_pIndexBuffer = std::make_unique<IndexBuffer>(ibSize, indices.data());
 	if (!m_pIndexBuffer->IsValid())
 	{
-		printf("スカイドーム:インデックスバッファ生成失敗\n");
+		printf("SkyDomeMesh:インデックスバッファ生成失敗\n");
 		return false;
 	}
 
@@ -41,7 +41,7 @@ bool SkyDomeMesh::Init(Camera* _camera)
 		m_pConstantBuffer[i] = std::make_unique<ConstantBuffer>(sizeof(Matrix));
 		if (!m_pConstantBuffer[i]->IsValid())
 		{
-			printf("スカイドーム:コンスタントバッファ生成失敗\n");
+			printf("SkyDomeMesh:コンスタントバッファ生成失敗\n");
 			return false;
 		}
 
@@ -71,25 +71,29 @@ bool SkyDomeMesh::Init(Camera* _camera)
 	m_pRootSignature = std::make_unique<RootSignature_SkyDomeMesh>();
 	if (!m_pRootSignature->IsValid())
 	{
-		printf("スカイドーム:ルートシグネチャ生成失敗\n");
+		printf("SkyDomeMesh:ルートシグネチャ生成失敗\n");
 		return false;
 	}
 
 	// パイプラインステート生成
-	m_pPipelineState = std::make_unique<PipelineState_SkyDomeMesh>();
-	m_pPipelineState->SetInputLayout(SkyVertex::InputLayout);
-	m_pPipelineState->SetRootSignature(m_pRootSignature->Get());
-#ifdef _DEBUG
-	m_pPipelineState->SetVS(L"../x64/Debug/VS_SkyDomeMesh.cso");
-	m_pPipelineState->SetPS(L"../x64/Debug/PS_SkyDomeMesh.cso");
-#else
-	m_pPipelineState->SetVS(L"../x64/Release/VS_SkyDomeMesh.cso");
-	m_pPipelineState->SetPS(L"../x64/Release/PS_SkyDomeMesh.cso");
-#endif 
-	m_pPipelineState->Create();
+	m_pPipelineState = PipelineState_Manager::GetInstance().GetPSO_SkyDomeMesh("SkyDomeMesh");
 	if (!m_pPipelineState->IsValid())
 	{
-		printf("スカイドーム:パイプラインステートの生成に失敗\n");
+		m_pPipelineState->SetInputLayout(SkyVertex::InputLayout);
+		m_pPipelineState->SetRootSignature(m_pRootSignature->Get());
+#ifdef _DEBUG
+		m_pPipelineState->SetVS(L"../x64/Debug/VS_SkyDomeMesh.cso");
+		m_pPipelineState->SetPS(L"../x64/Debug/PS_SkyDomeMesh.cso");
+#else
+		m_pPipelineState->SetVS(L"../x64/Release/VS_SkyDomeMesh.cso");
+		m_pPipelineState->SetPS(L"../x64/Release/PS_SkyDomeMesh.cso");
+#endif 
+		m_pPipelineState->Create();
+	}
+
+	if (!m_pPipelineState->IsValid())
+	{
+		printf("SkyDomeMesh:パイプラインステートの生成に失敗\n");
 		return false;
 	}
 
@@ -143,7 +147,6 @@ void SkyDomeMesh::Uninit()
 		cb.reset();
 	m_pDescriptorHeap.reset();
 	m_pRootSignature.reset();
-	m_pPipelineState.reset();
 	m_pTexHandle.reset();
 }
 

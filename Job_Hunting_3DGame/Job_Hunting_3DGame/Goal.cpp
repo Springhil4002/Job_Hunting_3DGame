@@ -74,7 +74,7 @@ void Goal::Draw()
 		m_Sphere->Draw();
 	}
 
-	Draw_ImGui();
+	//Draw_ImGui();
 }
 
 void Goal::Uninit()
@@ -84,7 +84,6 @@ void Goal::Uninit()
 		cb.reset();
 	m_pDescriptorHeap.reset();
 	m_pRootSignature.reset();
-	m_pPipelineState.reset();
 	m_pTexHandle.reset();
 	m_Sphere.reset();	
 }
@@ -139,33 +138,32 @@ bool Goal::Init_PropGoal(Camera* _camera)
 		return false;
 	}
 
-	// パイプラインステートのインスタンス生成
-	m_pPipelineState = std::make_unique<PipelineState_Goal>();
-	// 頂点レイアウトの設定
-	m_pPipelineState->SetInputLayout(Vertex::InputLayout);
-	// ルートシグネチャの設定
-	m_pPipelineState->SetRootSignature(m_pRootSignature->Get());
-
+	// マネージャー経由でパイプラインステートを取得
+	m_pPipelineState = PipelineState_Manager::GetInstance().GetPSO_General("Goal");
+	if (!m_pPipelineState->IsValid())
+	{
+		// 頂点レイアウトの設定
+		m_pPipelineState->SetInputLayout(Vertex::InputLayout);
+		// ルートシグネチャの設定
+		m_pPipelineState->SetRootSignature(m_pRootSignature->Get());
+		// VS/PSの設定
 #ifdef _DEBUG	// DEBUG
-	// VSを設定
-	m_pPipelineState->SetVS(L"../x64/Debug/VS_Simple.cso");
-	// PSを設定
-	m_pPipelineState->SetPS(L"../x64/Debug/PS_Simple.cso");
+		m_pPipelineState->SetVS(L"../x64/Debug/VS_Simple.cso");
+		m_pPipelineState->SetPS(L"../x64/Debug/PS_Simple.cso");
 #else			// Release
-	// VSを設定
-	m_pPipelineState->SetVS(L"../x64/Release/VS_Simple.cso");
-	// PSを設定
-	m_pPipelineState->SetPS(L"../x64/Release/PS_Simple.cso");
+		m_pPipelineState->SetVS(L"../x64/Release/VS_Simple.cso");
+		m_pPipelineState->SetPS(L"../x64/Release/PS_Simple.cso");
 #endif 
-
-	// パイプラインステート作成
-	m_pPipelineState->Create();
+		// パイプラインステート作成
+		m_pPipelineState->Create();
+	}
 
 	if (!m_pPipelineState->IsValid())
 	{
 		printf("Goal:パイプラインステートの生成に失敗\n");
 		return false;
 	}
+
 
 	printf("Goal:初期化処理に成功\n");
 	return true;

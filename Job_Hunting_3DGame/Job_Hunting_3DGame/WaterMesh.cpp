@@ -79,7 +79,7 @@ bool WaterMesh::Init(Camera* _camera)
 	m_pVertexBuffer = std::make_unique<VertexBuffer>(vertexSize, vertexStride, mesh.Vertices.data());
 	if (!m_pVertexBuffer->IsValid())
 	{
-		printf("水面メッシュ:頂点バッファ生成失敗\n");
+		printf("WaterMesh:頂点バッファ生成失敗\n");
 		return false;
 	}
 
@@ -87,7 +87,7 @@ bool WaterMesh::Init(Camera* _camera)
 	m_pIndexBuffer = std::make_unique<IndexBuffer>(indexSize, mesh.Indices.data());
 	if (!m_pIndexBuffer->IsValid())
 	{
-		printf("水面メッシュ:インデックスバッファ生成失敗\n");
+		printf("WaterMesh:インデックスバッファ生成失敗\n");
 		return false;
 	}
 
@@ -96,7 +96,7 @@ bool WaterMesh::Init(Camera* _camera)
 		m_pConstantBuffer[i] = std::make_unique<ConstantBuffer>(sizeof(Matrix));
 		if (!m_pConstantBuffer[i]->IsValid())
 		{
-			printf("水面メッシュ:コンスタントバッファ生成失敗\n");
+			printf("WaterMesh:コンスタントバッファ生成失敗\n");
 			return false;
 		}
 
@@ -115,7 +115,7 @@ bool WaterMesh::Init(Camera* _camera)
 	m_pWaveBuffer = std::make_unique<ConstantBuffer>(sizeof(GerstnerParams));
 	if (!m_pWaveBuffer->IsValid())
 	{
-		printf("水面メッシュ:波用コンスタントバッファ生成失敗\n");
+		printf("WaterMesh:波用コンスタントバッファ生成失敗\n");
 		return false;
 	}
 
@@ -146,7 +146,7 @@ bool WaterMesh::Init(Camera* _camera)
 	m_pLightBuffer = std::make_unique<ConstantBuffer>(sizeof(LightPalams));
 	if (!m_pLightBuffer->IsValid())
 	{
-		printf("水面メッシュ:ライト用コンスタントバッファ生成失敗\n");
+		printf("WaterMesh:ライト用コンスタントバッファ生成失敗\n");
 		return false;
 	}
 
@@ -172,7 +172,7 @@ bool WaterMesh::Init(Camera* _camera)
 	auto cubeTex = TextureManager::Instance().LoadCubeMap(L"Assets/Texture/SkyDome.dds");
 	if (!cubeTex)
 	{
-		printf("水面メッシュ:キューブマップ読み込み失敗\n");
+		printf("WaterMesh:キューブマップ読み込み失敗\n");
 		return false;
 	}
 	m_pSkyCubeTexHandle = m_pDescriptorHeap->Register(cubeTex.get());
@@ -180,24 +180,32 @@ bool WaterMesh::Init(Camera* _camera)
 	m_pRootSignature = std::make_unique<RootSignature_WaterMesh>();
 	if (!m_pRootSignature->IsValid())
 	{
-		printf("水面メッシュ:ルートシグネチャ生成失敗\n");
+		printf("WaterMesh:ルートシグネチャ生成失敗\n");
 		return false;
 	}
 
-	m_pPipelineState = std::make_unique<PipelineState_WaterMesh>();
-	m_pPipelineState->SetInputLayout(Vertex::InputLayout);
-	m_pPipelineState->SetRootSignature(m_pRootSignature->Get());
-#ifdef _DEBUG
-	m_pPipelineState->SetVS(L"../x64/Debug/VS_WaterMesh.cso");
-	m_pPipelineState->SetPS(L"../x64/Debug/PS_WaterMesh.cso");
-#else
-	m_pPipelineState->SetVS(L"../x64/Release/VS_WaterMesh.cso");
-	m_pPipelineState->SetPS(L"../x64/Release/PS_WaterMesh.cso");
+	// マネージャー経由でパイプラインステートを取得
+	m_pPipelineState = PipelineState_Manager::GetInstance().GetPSO_General("WaterMesh");
+	if(!m_pPipelineState->IsValid())
+	{
+		// 頂点レイアウトの設定
+		m_pPipelineState->SetInputLayout(Vertex::InputLayout);
+		// ルートシグネチャの設定
+		m_pPipelineState->SetRootSignature(m_pRootSignature->Get());
+		// VS/PSの設定
+#ifdef _DEBUG	// DEBUG
+		m_pPipelineState->SetVS(L"../x64/Debug/VS_WaterMesh.cso");
+		m_pPipelineState->SetPS(L"../x64/Debug/PS_WaterMesh.cso");
+#else			// Release
+		m_pPipelineState->SetVS(L"../x64/Release/VS_WaterMesh.cso");
+		m_pPipelineState->SetPS(L"../x64/Release/PS_WaterMesh.cso");
 #endif 
-	m_pPipelineState->Create();
+		// パイプラインステート作成
+		m_pPipelineState->Create();
+	}
 	if (!m_pPipelineState->IsValid())
 	{
-		printf("水面メッシュ:パイプラインステートの生成に失敗\n");
+		printf("WaterMesh:パイプラインステートの生成に失敗\n");
 		return false;
 	}
 
@@ -260,7 +268,6 @@ void WaterMesh::Uninit()
 	m_pLightBuffer.reset();
 	m_pDescriptorHeap.reset();
 	m_pRootSignature.reset();
-	m_pPipelineState.reset();
 	m_pSkyCubeTexHandle.reset();
 }
 

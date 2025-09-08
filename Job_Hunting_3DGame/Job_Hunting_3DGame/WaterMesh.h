@@ -9,7 +9,7 @@
 #include "IndexBuffer.h"
 #include "ConstantBuffer.h"
 #include "RootSignature_WaterMesh.h"
-#include "PipelineState_WaterMesh.h"
+#include "PipelineState_Manager.h"
 #include "DescriptorHeap.h"
 #include "Texture2D.h"
 #include "TextureManager.h"
@@ -34,7 +34,7 @@ private:
 	// ルートシグネチャ
 	std::unique_ptr<RootSignature_WaterMesh> m_pRootSignature;
 	// パイプラインステート
-	std::unique_ptr<PipelineState_WaterMesh> m_pPipelineState;
+	PipelineState_General* m_pPipelineState;
 	// ディスクリプタハンドル
 	// (水面メッシュ側では所有しないためdeleteしないこと)
 	std::shared_ptr<DescriptorHandle> m_pSkyCubeTexHandle;

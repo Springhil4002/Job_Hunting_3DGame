@@ -117,34 +117,31 @@ bool Model3D::Init(Camera* _camera)
 	}
 
 	// パイプラインステートのインスタンス生成
-	m_pPipelineState = std::make_unique<PipelineState>();
-	// 頂点レイアウトの設定
-	m_pPipelineState->SetInputLayout(Vertex::InputLayout);
-	// ルートシグネチャの設定
-	m_pPipelineState->SetRootSignature(m_pRootSignature->Get());
-
-#ifdef _DEBUG	// DEBUG
-	// VSを設定
-	m_pPipelineState->SetVS(L"../x64/Debug/VS_Simple.cso");
-	// PSを設定
-	m_pPipelineState->SetPS(L"../x64/Debug/PS_Simple.cso");
-#else			// Release
-	// VSを設定
-	m_pPipelineState->SetVS(L"../x64/Release/VS_Simple.cso");
-	// PSを設定
-	m_pPipelineState->SetPS(L"../x64/Release/PS_Simple.cso");
-#endif 
-
-	// パイプラインステート作成
-	m_pPipelineState->Create();
-
+	m_pPipelineState = PipelineState_Manager::GetInstance().GetPSO_General("Model3D");
 	if (!m_pPipelineState->IsValid())
 	{
-		printf("パイプラインステートの生成に失敗\n");
+		// 頂点レイアウトの設定
+		m_pPipelineState->SetInputLayout(Vertex::InputLayout);
+		// ルートシグネチャの設定
+		m_pPipelineState->SetRootSignature(m_pRootSignature->Get());
+		// VS/PSの設定
+#ifdef _DEBUG	// DEBUG
+		m_pPipelineState->SetVS(L"../x64/Debug/VS_Simple.cso");
+		m_pPipelineState->SetPS(L"../x64/Debug/PS_Simple.cso");
+#else			// Release
+		m_pPipelineState->SetVS(L"../x64/Release/VS_Simple.cso");
+		m_pPipelineState->SetPS(L"../x64/Release/PS_Simple.cso");
+#endif 
+		// パイプラインステート作成
+		m_pPipelineState->Create();
+	}
+	if (!m_pPipelineState->IsValid())
+	{
+		printf("Model3D:パイプラインステートの生成に失敗\n");
 		return false;
 	}
 
-	printf("モデル:Aliciaの初期化処理に成功\n");
+	printf("Model3Dの初期化処理に成功\n");
 	return true;
 }
 
@@ -212,7 +209,6 @@ void Model3D::Uninit()
 		cb.reset();
 	m_pDescriptorHeap.reset();
 	m_pRootSignature.reset();
-	m_pPipelineState.reset();
 	m_meshes.clear();
 	m_pVertexBuffers.clear();
 	m_pIndexBuffers.clear();
