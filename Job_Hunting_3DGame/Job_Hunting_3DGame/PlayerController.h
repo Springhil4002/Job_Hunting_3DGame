@@ -8,10 +8,10 @@
 class PlayerController
 {
 private:
-	Player* m_Player;
-	WaterMesh* m_WaterMesh;
-	Camera* m_Camera;
-	Input*	m_Input;
+	Player* m_Player = nullptr;
+	WaterMesh* m_WaterMesh = nullptr;
+	Camera* m_Camera = nullptr;
+	Input* m_Input = nullptr;
 	std::unique_ptr<ParticleEmitter_Splash> m_Emitter_Splash;
 
 	DirectX::XMVECTOR m_Position;	// ˆÊ’u

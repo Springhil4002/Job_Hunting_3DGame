@@ -105,6 +105,7 @@ void TitleScene::Uninit()
 {
 	playerCtrl->Uninit();
 	playerCtrl.reset();
+	game->Uninit();
 	game.reset();
 
 	for (auto& obj : objectInstance)
@@ -314,69 +315,40 @@ void TitleScene::ImGui_WaterMesh()
 
 void TitleScene::ImGui_Timer()
 {
+	if (!game) return;
 	ImGui::Begin("RaceTimer");
-
-	// SPACEキー入力で開始・停止
-	if (input.GetKeyTrigger(VK_SPACE))
+	
+	int countDown = game->GetCountDownRemaining();
+	if (countDown > 0)
 	{
-		if (!runningTimer)
-		{
-			// 計測開始
-			startTime = std::chrono::steady_clock::now();
-			runningTimer = true;
-		}
-		else
-		{
-			// 計測停止
-			elapsedTime += std::chrono::duration_cast<std::chrono::milliseconds>
-				(std::chrono::steady_clock::now() - startTime);
-			runningTimer = false;
-		}
-	}
-
-	// ImGui用で開始・停止
-	if (!runningTimer)
-	{
-		if (ImGui::Button("Timer Start"))
-		{
-			startTime = std::chrono::steady_clock::now();
-			runningTimer = true;
-		}
+		// カウントダウン表示
+		ImGui::SetWindowFontScale(5.0f);
+		ImVec2 windowSize = ImGui::GetWindowSize();
+		char buffer[8];
+		snprintf(buffer, sizeof(buffer), "%d", countDown);
+		ImVec2 textSize = ImGui::CalcTextSize(buffer);
+		ImGui::SetCursorPosX((windowSize.x - textSize.x) * 0.5f);
+		ImGui::Text("%s", buffer);
+		ImGui::SetWindowFontScale(1.0f);
 	}
 	else
 	{
-		if (ImGui::Button("Timer Stop"))
-		{
-			elapsedTime += std::chrono::duration_cast<std::chrono::milliseconds>
-				(std::chrono::steady_clock::now() - startTime);
-			runningTimer = false;
-		}
-	}
+		// レースタイマー表示
+		auto currentElapsed = game->GetElapsedTime();
 
-	// リセットボタン
-	if (ImGui::Button("Timer Reset"))
-	{
-		elapsedTime = std::chrono::milliseconds(0);
-		runningTimer = false;
-	}
+		int min = static_cast<int>(std::chrono::duration_cast
+			<std::chrono::minutes>(currentElapsed).count());
+		int sec = static_cast<int>(std::chrono::duration_cast
+			<std::chrono::seconds>(currentElapsed).count() % 60);
+		int cenSec = static_cast<int>((currentElapsed.count() % 1000) / 10);
 
-	// 現在の経過時間を計算
-	auto currentElapsed = elapsedTime;
-	if (runningTimer)
-	{
-		currentElapsed += std::chrono::duration_cast<std::chrono::milliseconds>
-			(std::chrono::steady_clock::now() - startTime);
-	}
-	
-	int min = static_cast<int>(std::chrono::duration_cast<std::chrono::minutes>(currentElapsed).count());
-	int sec = static_cast<int>(std::chrono::duration_cast<std::chrono::seconds>(currentElapsed).count() % 60);
-	int cenSec = static_cast<int>((currentElapsed.count() % 1000) / 10);
+		char buffer[16];
+		snprintf(buffer, sizeof(buffer), "%02d:%02d:%02d", min, sec, cenSec);
 
-	char buffer[16];
-	snprintf(buffer, sizeof(buffer), "%02d:%02d:%02d", min, sec, cenSec);
-	ImGui::SetWindowFontScale(3.0f);
-	ImGui::Text("Time:%s", buffer);
-	ImGui::SetWindowFontScale(1.0f);
+		ImGui::SetWindowFontScale(3.0f);
+		ImGui::Text("Time: %s", buffer);
+		ImGui::SetWindowFontScale(1.0f);
+	}
 
 	ImGui::End();
 }

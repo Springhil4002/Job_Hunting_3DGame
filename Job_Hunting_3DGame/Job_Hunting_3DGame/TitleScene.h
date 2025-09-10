@@ -3,10 +3,6 @@
 #include "PlayerController.h"
 #include "Game.h"
 
-static bool runningTimer = false;
-static std::chrono::steady_clock::time_point startTime;
-static std::chrono::milliseconds elapsedTime(0);
-
 class TitleScene : public BaseScene
 {
 private:
