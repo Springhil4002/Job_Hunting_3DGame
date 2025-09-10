@@ -3,12 +3,11 @@
 #include "DrawBase.h"
 #include "App.h"
 #include <d3dx12.h>
-#include <random>
 #include "System/SharedStruct.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "ConstantBuffer.h"
-#include "RootSignature_WaterMesh.h"
+#include "RootSignature_Manager.h"
 #include "PipelineState_Manager.h"
 #include "DescriptorHeap.h"
 #include "Texture2D.h"
@@ -32,29 +31,29 @@ private:
 	// ディスクリプタヒープ
 	std::unique_ptr<DescriptorHeap> m_pDescriptorHeap;
 	// ルートシグネチャ
-	std::unique_ptr<RootSignature_WaterMesh> m_pRootSignature;
+	std::shared_ptr<RootSignature> m_pRootSignature;
 	// パイプラインステート
-	PipelineState_General* m_pPipelineState;
+	PipelineState_General* m_pPipelineState = nullptr;
 	// ディスクリプタハンドル
 	// (水面メッシュ側では所有しないためdeleteしないこと)
 	std::shared_ptr<DescriptorHandle> m_pSkyCubeTexHandle;
 	// カメラ
-	Camera* m_Camera;
+	Camera* m_Camera = nullptr;
 	// 時間
 	float g_Time = 0.0f;
 	// 波の切り替え用変数
 	float m_WaveTime = 0.0f;
 	// 頂点数
-	UINT m_IndexCount;
+	UINT m_IndexCount = 0;
 	// Xマス
 	int m_GridX = 256;
 	// Zマス
 	int m_GridZ = 256;
 	// グリッドサイズ
-	int m_GridSize = 512;
+	float m_GridSize = 512.0f;
 public:
 	// ワールド行列更新操作用
-	DirectX::XMMATRIX m_worldMatrix;
+	DirectX::XMMATRIX m_worldMatrix = DirectX::XMMatrixIdentity();
 	/// @brief コンストラクタ
 	WaterMesh() = default;
 	/// @brief デストラクタ
@@ -77,18 +76,13 @@ public:
 	void Uninit()	override;
 	/// @brief グリッドサイズ更新
 	/// @param _newGridSize グリッドサイズ
-	void Update_GridSize(int _newGridSize);
+	void Update_GridSize(float _newGridSize);
 	/// @brief ワールド行列の更新
 	void Update_Transform();
 	/// @brief ビュー・プロジェクションの更新
 	void Update_CameraMatrix();
 	/// @brief ライト更新
 	void Update_Light();
-	/// @brief ランダムな振幅を取得する関数
-	/// @param _min 最低値
-	/// @param _max 最大値
-	/// @return ランダムな振幅値
-	float GetRandomAmplitude(float _min, float _max);
 	/// @brief 水面の波の高さを取得する関数
 	/// @param _x Xマス
 	/// @param _z Zマス
@@ -99,9 +93,9 @@ public:
 	// 各種ゲッター・セッター
 	int GetGridX() const { return m_GridX; }
 	int GetGridZ() const { return m_GridZ; }
-	int GetGridSize() const { return m_GridSize; }
+	float GetGridSize() const { return m_GridSize; }
 
 	void SetGridX(int _gridX) { m_GridX = _gridX; }
 	void SetGridZ(int _gridZ) { m_GridZ = _gridZ; }
-	void SetGridSize(int _gridSize) { m_GridSize = _gridSize; }
+	void SetGridSize(float _gridSize) { m_GridSize = _gridSize; }
 };

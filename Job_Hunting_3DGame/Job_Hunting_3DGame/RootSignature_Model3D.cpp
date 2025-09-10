@@ -1,9 +1,9 @@
-#include "RootSignature.h"
+#include "RootSignature_Model3D.h"
 #include "DrawBase.h"
 #include <d3dx12.h>
 #include "Debug_New.h"
 
-RootSignature::RootSignature()
+RootSignature_Model3D::RootSignature_Model3D()
 {	
 	// アプリケーションの入力アセンブラを使用する
 	auto flag = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
@@ -26,7 +26,7 @@ RootSignature::RootSignature()
 	// 初期化処理:シェーダーリソースビューを設定、一個渡す、t0にバインド
 	tableRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
 	// t1にシェーダーリソースを設定、全てのシェーダーから見えるようにする
-	rootParam[1].InitAsDescriptorTable(std::size(tableRange), tableRange, D3D12_SHADER_VISIBILITY_ALL);
+	rootParam[1].InitAsDescriptorTable(static_cast<UINT>(std::size(tableRange)), tableRange, D3D12_SHADER_VISIBILITY_ALL);
 
 	// スタティックサンプラーの設定
 	auto sampler = CD3DX12_STATIC_SAMPLER_DESC(0, D3D12_FILTER_MIN_MAG_MIP_LINEAR);
@@ -74,12 +74,12 @@ RootSignature::RootSignature()
 	m_IsValid = true;
 }
 
-bool RootSignature::IsValid() const
+bool RootSignature_Model3D::IsValid() const
 {
 	return m_IsValid;
 }
 
-ID3D12RootSignature* RootSignature::Get()
+ID3D12RootSignature* RootSignature_Model3D::Get()
 {
 	return m_pRootSignature.Get();
 }

@@ -4,20 +4,21 @@
 
 struct ID3D12RootSignature;
 
-class RootSignature_DebugSphere : public RootSignature
+class RootSignature_Model3D : public RootSignature
 {
+private:
 	// ルートシグネチャの生成に成功したかのフラグ
-	bool m_IsValid = false;
+	bool m_IsValid = false; 
 	// ルートシグネチャ
-	ComPtr<ID3D12RootSignature> m_pRootSignature = nullptr;
+	ComPtr<ID3D12RootSignature> m_pRootSignature = nullptr; 
 public:
 	// コンストラクタでルートシグネチャを生成
-	RootSignature_DebugSphere();
-	/// @brief	ルートシグネチャの生成に成否を取得する処理
+	RootSignature_Model3D();
+	/// @brief // ルートシグネチャの生成に成否を取得する処理
 	/// @return ルートシグネチャの生成成否を返す
 	bool IsValid() const override;
-	/// @brief	ルートシグネチャを取得する処理
-	/// @return ルートシグネチャを返す
+	/// @brief ルートシグネチャを取得する処理
+	/// @return // ルートシグネチャを返す
 	ID3D12RootSignature* Get() override;
 };
 

@@ -177,7 +177,7 @@
     <ClCompile Include="Camera.cpp">
       <Filter>ソース ファイル\Draw</Filter>
     </ClCompile>
-    <ClCompile Include="RootSignature.cpp">
+    <ClCompile Include="RootSignature_Model3D.cpp">
       <Filter>ソース ファイル\Draw\RootSignature</Filter>
     </ClCompile>
     <ClCompile Include="RootSignature_WaterMesh.cpp">
@@ -353,7 +353,7 @@
     <ClInclude Include="Camera.h">
       <Filter>ヘッダー ファイル\Draw</Filter>
     </ClInclude>
-    <ClInclude Include="RootSignature.h">
+    <ClInclude Include="RootSignature_Model3D.h">
       <Filter>ヘッダー ファイル\Draw\RootSignature</Filter>
     </ClInclude>
     <ClInclude Include="RootSignature_WaterMesh.h">
@@ -472,6 +472,12 @@
     </ClInclude>
     <ClInclude Include="ModelManager.h">
       <Filter>ヘッダー ファイル\Obj</Filter>
+    </ClInclude>
+    <ClInclude Include="RootSignature_Manager.h">
+      <Filter>ヘッダー ファイル\Draw\RootSignature</Filter>
+    </ClInclude>
+    <ClInclude Include="RootSignature.h">
+      <Filter>ヘッダー ファイル\Draw\RootSignature</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

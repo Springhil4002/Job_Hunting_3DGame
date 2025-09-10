@@ -73,8 +73,10 @@ bool TextureCube::LoadFromFile(const std::wstring& _path)
 	
 	auto prop = CD3DX12_HEAP_PROPERTIES(D3D12_CPU_PAGE_PROPERTY_WRITE_BACK,
 		D3D12_MEMORY_POOL_L0);
-	auto desc = CD3DX12_RESOURCE_DESC::Tex2D(meta.format, meta.width, meta.height,
-		static_cast<UINT16>(meta.arraySize), static_cast<UINT16>(meta.mipLevels));
+	auto desc = CD3DX12_RESOURCE_DESC::Tex2D(
+		meta.format, meta.width, meta.height,
+		static_cast<UINT16>(meta.arraySize), 
+		static_cast<UINT16>(meta.mipLevels));
 
 	// テクスチャリソースを生成
 	hr = g_DrawBase->Device()->CreateCommittedResource(
@@ -102,16 +104,19 @@ bool TextureCube::LoadFromFile(const std::wstring& _path)
 		return false;
 	}
 
-	for (size_t face = 0; face < meta.arraySize; ++face)
+	for (UINT face = 0; face < meta.arraySize; ++face)
 	{
-		size_t index = face * meta.mipLevels;
+		UINT index = face * static_cast<UINT>(meta.mipLevels);
 		const auto& img = imgs[index];
-
+		UINT rowPitch = static_cast<UINT>(img.rowPitch);
+		UINT slicePitch = static_cast<UINT>(img.slicePitch);
 		hr = m_pResource->WriteToSubresource(
-			static_cast<UINT>(face), nullptr,
+			face, 
+			nullptr,
 			img.pixels,
-			static_cast<UINT>(img.rowPitch),
-			static_cast<UINT>(img.slicePitch));
+			rowPitch,
+			slicePitch
+		);
 	}
 	return true;
 }
@@ -152,8 +157,10 @@ TextureCube* TextureCube::GetWhite()
 	// ピクセル全体に0xff(RGBA:ALL255)を設定
 	std::vector<unsigned char> data(4 * 4 * 4);
 	std::fill(data.begin(), data.end(), 0xff);
+	UINT byteSize = static_cast<UINT>(data.size());
 	// 作ったテクスチャをGPUにアップロード
-	auto hr = buff->WriteToSubresource(0, nullptr, data.data(), 4 * 4, data.size());
+	auto hr = buff->WriteToSubresource(0, nullptr, 
+		data.data(), 4 * 4, byteSize);
 	if (FAILED(hr))
 	{
 		return nullptr;

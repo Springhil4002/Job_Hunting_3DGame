@@ -26,16 +26,16 @@ private:
 	DirectX::XMVECTOR m_Velocity		= DirectX::XMVectorZero();	// 現在の移動速度ベクトル
 	DirectX::XMVECTOR m_VelocityY		= DirectX::XMVectorZero();	// 縦方向の速度(重力用)		
 
-	float m_RotateSpeed;	// 回転速度
-	float m_Acceleration;	// 加速度
-	float m_Friction;		// 摩擦力
-	float m_MaxSpeed;		// 最大速度
+	float m_RotateSpeed = 0.0f;		// 回転速度
+	float m_Acceleration = 0.0f;	// 加速度
+	float m_Friction = 0.0f;		// 摩擦力
+	float m_MaxSpeed = 0.0f;		// 最大速度
 
-	float m_Gravity;		// 重力
-	float m_Buoyancy;		// 浮力
-	float m_WaterDamping;	// 水中減衰
-	float m_PlayerOffsetY;	// プレイヤーの高さオフセット
-	float m_FollowSpeed;	// カメラの追従速度	
+	float m_Gravity = 0.0f;			// 重力
+	float m_Buoyancy = 0.0f;		// 浮力
+	float m_WaterDamping = 0.0f;	// 水中減衰
+	float m_PlayerOffsetY = 0.0f;	// プレイヤーの高さオフセット
+	float m_FollowSpeed = 0.0f;		// カメラの追従速度	
 
 	/// @brief パラメータの初期化
 	void Init_Param();

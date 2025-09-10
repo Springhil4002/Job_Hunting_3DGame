@@ -60,7 +60,7 @@ const XMMATRIX& Camera::GetProjMatrix() const
 	return m_proj;
 }
 
-const XMVECTOR& Camera::GetForward() const
+XMVECTOR Camera::GetForward() const
 {
 	return XMVector3Normalize(XMVectorSubtract(m_target, m_eye));
 }

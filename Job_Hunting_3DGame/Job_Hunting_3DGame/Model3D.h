@@ -6,7 +6,7 @@
 #include "System/SharedStruct.h"
 #include "VertexBuffer.h"
 #include "ConstantBuffer.h"
-#include "RootSignature.h"
+#include "RootSignature_Manager.h"
 #include "PipelineState_Manager.h"
 #include "IndexBuffer.h"
 #include "AssimpLoader.h"
@@ -28,11 +28,11 @@ private:
 	// ディスクリプタヒープ
 	std::unique_ptr<DescriptorHeap> m_pDescriptorHeap;
 	// ルートシグネチャ
-	std::unique_ptr<RootSignature> m_pRootSignature;
+	std::shared_ptr<RootSignature> m_pRootSignature;
 	// パイプラインステート
-	PipelineState_General* m_pPipelineState;
+	PipelineState_General* m_pPipelineState = nullptr;
 	// カメラ
-	Camera* m_camera;
+	Camera* m_camera = nullptr;
 	// 3Dモデルファイルパス
 	const wchar_t* m_pModelFile = L"";
 	// メッシュ配列

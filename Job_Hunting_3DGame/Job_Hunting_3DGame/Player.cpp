@@ -50,7 +50,10 @@ bool Player::Init(Camera* _camera)
 	}
 	m_pTexHandle = m_pDescriptorHeap->Register(tex.get());
 
-	m_pRootSignature = std::make_unique<RootSignature_Player>();
+	// マネージャー経由でルートシグネチャを取得
+	auto& rootManager = RootSignatureManager::GetInstance();
+	m_pRootSignature = rootManager.GetRoot(Root_Type::ROOT_TYPE_PLAYER);
+
 	if (!m_pRootSignature->IsValid())
 	{
 		printf("Player:ルートシグネチャの生成に失敗\n");
@@ -58,7 +61,8 @@ bool Player::Init(Camera* _camera)
 	}
 
 	// マネージャー経由でパイプラインステートを取得
-	m_pPipelineState = PipelineState_Manager::GetInstance().GetPSO_General("Player");
+	auto& psoManager = PipelineState_Manager::GetInstance();
+	m_pPipelineState = psoManager.GetPSO_General(PSO_Type::PSO_TYPE_PLAYER);
 	if (!m_pPipelineState->IsValid())
 	{
 		// 頂点レイアウトの設定
@@ -124,7 +128,8 @@ void Player::Draw()
 		// テクスチャをセット
 		commandList->SetGraphicsRootDescriptorTable(1, m_pTexHandle->handleGPU);
 		// インデックスの数分描画
-		commandList->DrawIndexedInstanced(m_meshes[i].Indices.size(), 1, 0, 0, 0);
+		commandList->DrawIndexedInstanced(static_cast<UINT>(m_meshes[i].Indices.size()), 
+			1, 0, 0, 0);
 	}
 }
 void Player::Uninit()

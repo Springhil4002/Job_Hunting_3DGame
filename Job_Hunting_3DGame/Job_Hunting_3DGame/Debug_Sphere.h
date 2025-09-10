@@ -6,7 +6,7 @@
 #include "System/SharedStruct.h"
 #include "VertexBuffer.h"
 #include "ConstantBuffer.h"
-#include "RootSignature_DebugSphere.h"
+#include "RootSignature_Manager.h"
 #include "PipelineState_Manager.h"
 #include "IndexBuffer.h"
 #include "DescriptorHeap.h"
@@ -26,9 +26,9 @@ private:
 	// ディスクリプタヒープ
 	std::unique_ptr<DescriptorHeap> m_pDescriptorHeap;
 	// ルートシグネチャ
-	std::unique_ptr<RootSignature_DebugSphere> m_pRootSignature;
+	std::shared_ptr<RootSignature> m_pRootSignature;
 	// パイプラインステート
-	PipelineState_DebugSphere* m_pPipelineState;
+	PipelineState_DebugSphere* m_pPipelineState = nullptr;
 	// ディスクリプタハンドル
 	std::shared_ptr<DescriptorHandle> m_pTexHandle;
 	// カメラ
@@ -39,7 +39,7 @@ private:
 	float m_radius = 5.0f;
 public:
 	// ワールド行列更新操作用
-	DirectX::XMMATRIX m_worldMatrix;
+	DirectX::XMMATRIX m_worldMatrix = DirectX::XMMatrixIdentity();
 	std::vector<Vertex> vertices;
 	std::vector<uint32_t> indices;
 
@@ -69,7 +69,7 @@ public:
 	/// @param _stacks スタック数
 	/// @param _slices 分割数
 	/// @param _radius 半径
-	void Create_Sphere(float _stacks, float _slices, float _radius);
+	void Create_Sphere(int _stacks, int _slices, float _radius);
 	
 	/// @brief 各種ゲッター・セッター
 	float GetAlpha() const { return m_alpha; }

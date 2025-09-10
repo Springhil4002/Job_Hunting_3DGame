@@ -301,8 +301,8 @@ void TitleScene::ImGui_WaterMesh()
 
 		if (waterMesh)
 		{
-			static int gridSize = waterMesh->GetGridSize();
-			ImGui::DragInt("GridSize", &gridSize, 2.0f, 64, 1024);
+			static float gridSize = waterMesh->GetGridSize();
+			ImGui::DragFloat("GridSize", &gridSize, 2.0f, 64.0f, 1024.0f);
 			if (ImGui::Button("Apply Grid Size"))
 			{
 				waterMesh->Update_GridSize(gridSize);

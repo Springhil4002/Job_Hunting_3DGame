@@ -68,7 +68,8 @@ bool SkyDomeMesh::Init(Camera* _camera)
 	}
 	
 	// ルートシグネチャ生成
-	m_pRootSignature = std::make_unique<RootSignature_SkyDomeMesh>();
+	auto& rootManager = RootSignatureManager::GetInstance();
+	m_pRootSignature = rootManager.GetRoot(Root_Type::ROOT_TYPE_SKYDOME);
 	if (!m_pRootSignature->IsValid())
 	{
 		printf("SkyDomeMesh:ルートシグネチャ生成失敗\n");
@@ -76,7 +77,8 @@ bool SkyDomeMesh::Init(Camera* _camera)
 	}
 
 	// パイプラインステート生成
-	m_pPipelineState = PipelineState_Manager::GetInstance().GetPSO_SkyDomeMesh("SkyDomeMesh");
+	auto& psoManager = PipelineState_Manager::GetInstance();
+	m_pPipelineState = psoManager.GetPSO_SkyDomeMesh(PSO_Type::PSO_TYPE_SKYDOME);
 	if (!m_pPipelineState->IsValid())
 	{
 		m_pPipelineState->SetInputLayout(SkyVertex::InputLayout);
@@ -146,7 +148,6 @@ void SkyDomeMesh::Uninit()
 	for (auto& cb : m_pConstantBuffer)
 		cb.reset();
 	m_pDescriptorHeap.reset();
-	m_pRootSignature.reset();
 	m_pTexHandle.reset();
 }
 

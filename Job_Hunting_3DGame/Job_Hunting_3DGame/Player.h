@@ -6,7 +6,7 @@
 #include "System/SharedStruct.h"
 #include "VertexBuffer.h"
 #include "ConstantBuffer.h"
-#include "RootSignature_Player.h"
+#include "RootSignature_Manager.h"
 #include "PipelineState_Manager.h"
 #include "IndexBuffer.h"
 #include "DescriptorHeap.h"
@@ -23,9 +23,9 @@ private:
 	// ディスクリプタヒープ
 	std::unique_ptr<DescriptorHeap> m_pDescriptorHeap;
 	// ルートシグネチャ
-	std::unique_ptr<RootSignature_Player> m_pRootSignature;
+	std::shared_ptr<RootSignature> m_pRootSignature;
 	// パイプラインステート
-	PipelineState_General* m_pPipelineState;
+	PipelineState_General* m_pPipelineState = nullptr;
 	// ディスクリプタハンドル
 	std::shared_ptr<DescriptorHandle> m_pTexHandle;
 	// カメラ
@@ -36,7 +36,7 @@ private:
 	std::vector<std::shared_ptr<IndexBuffer>> m_pIndexBuffers;
 public:
 	// ワールド行列更新操作用
-	DirectX::XMMATRIX m_worldMatrix;
+	DirectX::XMMATRIX m_worldMatrix = DirectX::XMMatrixIdentity();
 
 	// コンストラクタ
 	Player() = default;

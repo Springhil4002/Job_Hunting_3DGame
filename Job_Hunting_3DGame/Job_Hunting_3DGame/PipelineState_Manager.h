@@ -9,11 +9,13 @@
 
 enum class PSO_Type
 {
-	PSO_TYPE_GENERAL,
+	PSO_TYPE_PLAYER,
+	PSO_TYPE_GOAL,
+	PSO_TYPE_WATERMESH,
+	PSO_TYPE_MODEL3D,
 	PSO_TYPE_SPLASH,
 	PSO_TYPE_SPHERE,
 	PSO_TYPE_SKYDOME,
-	PSO_TYPE_WATERMESH
 };
 
 class PipelineState_Manager
@@ -35,6 +37,11 @@ private:
 	// スカイドーム用PSO
 	std::unordered_map<std::string, std::unique_ptr<PipelineState_SkyDomeMesh>> m_PSO_SkyDomeMesh;
 
+	/// @brief 名前でパイプラインステートを取得、無ければ生成するテンプレート関数
+	/// @tparam T 特定のPSOの型
+	/// @param _psoMap 特定のPSOマップ
+	/// @param _key 名前
+	/// @return 名前に対応しているPSO
 	template <typename T>
 	T* GetPSOCreate(std::unordered_map<std::string, std::unique_ptr<T>>& _psoMap, const std::string& _key)
 	{
@@ -62,19 +69,19 @@ public:
 		static PipelineState_Manager instance;
 		return instance;
 	}
-	/// @brief 全てPSOの生成がされてかチェックする関数
-	/// @param _key PSOの使用者の識別キー
-	/// @param _type PSOの種類
-	/// @return 生成の成否
-	bool IsPSOCreated(const std::string& _key, const PSO_Type _type)
+	
+	static std::string ToString(PSO_Type _type)
 	{
 		switch(_type)
 		{
-		case PSO_Type::PSO_TYPE_GENERAL: return m_PSO_General.count(_key) > 0;
-		case PSO_Type::PSO_TYPE_SPLASH: return m_PSO_Splash.count(_key) > 0;
-		case PSO_Type::PSO_TYPE_SPHERE: return m_PSO_DebugSphere.count(_key) > 0;
-		case PSO_Type::PSO_TYPE_SKYDOME: return m_PSO_SkyDomeMesh.count(_key) > 0;
-		default: return false;
+		case PSO_Type::PSO_TYPE_PLAYER:		return "Player";
+		case PSO_Type::PSO_TYPE_GOAL:		return "Goal";
+		case PSO_Type::PSO_TYPE_WATERMESH:	return "WaterMesh";
+		case PSO_Type::PSO_TYPE_MODEL3D:	return "Model3D";
+		case PSO_Type::PSO_TYPE_SPLASH:		return "Splash";
+		case PSO_Type::PSO_TYPE_SPHERE:		return "Sphere";
+		case PSO_Type::PSO_TYPE_SKYDOME:	return "SkyDome";
+		default: return "Unknown";
 		}
 	}
 	// 各種PSOの取得関数 
@@ -82,4 +89,9 @@ public:
 	PipelineState_Splash* GetPSO_Splash(const std::string& _key) { return GetPSOCreate(m_PSO_Splash, _key); }
 	PipelineState_DebugSphere* GetPSO_DebugSphere(const std::string& _key) { return GetPSOCreate(m_PSO_DebugSphere, _key); }
 	PipelineState_SkyDomeMesh* GetPSO_SkyDomeMesh(const std::string& _key) { return GetPSOCreate(m_PSO_SkyDomeMesh, _key); }
+	
+	PipelineState_General* GetPSO_General(PSO_Type _type) { return GetPSO_General(ToString(_type)); }
+	PipelineState_Splash* GetPSO_Splash(PSO_Type _type) { return GetPSO_Splash(ToString(_type)); }
+	PipelineState_DebugSphere* GetPSO_DebugSphere(PSO_Type _type) { return GetPSO_DebugSphere(ToString(_type)); }
+	PipelineState_SkyDomeMesh* GetPSO_SkyDomeMesh(PSO_Type _type) { return GetPSO_SkyDomeMesh(ToString(_type)); }
 };

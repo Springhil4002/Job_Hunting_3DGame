@@ -23,17 +23,22 @@ Mesh WaterMesh::CreateGridMesh()
 	mesh.Indices.reserve(m_GridX * m_GridZ * 6);
 
 	float halfSize = m_GridSize * 0.5f;
-	float stepX = m_GridSize / m_GridX;
-	float stepZ = m_GridSize / m_GridZ;
+	float fGridX = static_cast<float>(m_GridX);
+	float fGridZ = static_cast<float>(m_GridZ);
+	float stepX = m_GridSize / fGridX;
+	float stepZ = m_GridSize / fGridZ;
 	
 	for (int z = 0; z <= m_GridZ; ++z)
 	{
+		float fz = static_cast<float>(z);
 		for (int x = 0; x <= m_GridX; ++x)
 		{
-			float px = x * stepX - halfSize;
-			float pz = z * stepZ - halfSize;
-			float u = (float)x / m_GridX;
-			float v = (float)z / m_GridZ;
+			float fx = static_cast<float>(x);
+
+			float px = fx * stepX - halfSize;
+			float pz = fz * stepZ - halfSize;
+			float u = fx / fGridX;
+			float v = fz / fGridZ;
 
 			int index = z * (m_GridX + 1) + x;
 			mesh.Vertices[index] = {
@@ -177,7 +182,8 @@ bool WaterMesh::Init(Camera* _camera)
 	}
 	m_pSkyCubeTexHandle = m_pDescriptorHeap->Register(cubeTex.get());
 
-	m_pRootSignature = std::make_unique<RootSignature_WaterMesh>();
+	auto& rootManager = RootSignatureManager::GetInstance();
+	m_pRootSignature = rootManager.GetRoot(Root_Type::ROOT_TYPE_WATERMESH);
 	if (!m_pRootSignature->IsValid())
 	{
 		printf("WaterMesh:ルートシグネチャ生成失敗\n");
@@ -185,7 +191,8 @@ bool WaterMesh::Init(Camera* _camera)
 	}
 
 	// マネージャー経由でパイプラインステートを取得
-	m_pPipelineState = PipelineState_Manager::GetInstance().GetPSO_General("WaterMesh");
+	auto& psoManager = PipelineState_Manager::GetInstance();
+	m_pPipelineState = psoManager.GetPSO_General(PSO_Type::PSO_TYPE_WATERMESH);
 	if(!m_pPipelineState->IsValid())
 	{
 		// 頂点レイアウトの設定
@@ -267,11 +274,10 @@ void WaterMesh::Uninit()
 	m_pWaveBuffer.reset();
 	m_pLightBuffer.reset();
 	m_pDescriptorHeap.reset();
-	m_pRootSignature.reset();
 	m_pSkyCubeTexHandle.reset();
 }
 
-void WaterMesh::Update_GridSize(int _newGridSize)
+void WaterMesh::Update_GridSize(float _newGridSize)
 {
 	// サイズを更新
 	m_GridSize = _newGridSize;
@@ -338,14 +344,6 @@ void WaterMesh::Update_Light()
 
 	// 定数バッファに更新
 	std::memcpy(m_pLightBuffer->GetPtr(), &lightParams, sizeof(LightPalams));
-}
-
-float WaterMesh::GetRandomAmplitude(float _min, float _max)
-{
-	static std::random_device rd;
-	static std::mt19937 mt(rd());
-	std::uniform_real_distribution<float> dist(_min, _max);
-	return dist(mt);
 }
 
 float WaterMesh::GetWaveHeight(float _x, float _z, float _time)

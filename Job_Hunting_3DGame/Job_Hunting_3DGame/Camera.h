@@ -27,7 +27,7 @@ public:
 	const DirectX::XMVECTOR& GetUp() const;
 	const DirectX::XMMATRIX& GetViewMatrix() const;
 	const DirectX::XMMATRIX& GetProjMatrix() const;
-	const DirectX::XMVECTOR& GetForward() const;
+	DirectX::XMVECTOR GetForward() const;
 
 	void Translate(const DirectX::XMVECTOR& _offset);
 	void MoveForward(float _distance);

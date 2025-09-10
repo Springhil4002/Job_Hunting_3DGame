@@ -97,12 +97,13 @@ void PlayerController::Update_Buoyancy(float _deltaTime)
 {
 	if (!m_WaterMesh) return;
 
-	float x = XMVectorGetX(m_Position);
-	float z = XMVectorGetZ(m_Position);
+	float fx = static_cast<float>(XMVectorGetX(m_Position));
+	float fz = static_cast<float>(XMVectorGetZ(m_Position));
 	float y = XMVectorGetY(m_Position) - m_PlayerOffsetY;
+	
 
 	// êÖñ ÇÃîgÇÃçÇÇ≥ÇéÊìæ
-	float waterHeight = m_WaterMesh->GetWaveHeight(x, z, _deltaTime);
+	float waterHeight = m_WaterMesh->GetWaveHeight(fx, fz, _deltaTime);
 	float depth = waterHeight - y;
 
 	// êÖíÜÇ…Ç¢ÇÈÇ»ÇÁ

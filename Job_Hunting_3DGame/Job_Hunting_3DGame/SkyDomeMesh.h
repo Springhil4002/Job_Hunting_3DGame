@@ -7,7 +7,7 @@
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "ConstantBuffer.h"
-#include "RootSignature_SkyDomeMesh.h"
+#include "RootSignature_Manager.h"
 #include "PipelineState_Manager.h"
 #include "DescriptorHeap.h"
 #include "Texture2D.h"
@@ -26,16 +26,16 @@ private:
 	// ディスクリプタヒープ
 	std::unique_ptr<DescriptorHeap> m_pDescriptorHeap;
 	// ルートシグネチャ
-	std::unique_ptr<RootSignature_SkyDomeMesh> m_pRootSignature;
+	std::shared_ptr<RootSignature> m_pRootSignature;
 	// パイプラインステート
-	PipelineState_SkyDomeMesh* m_pPipelineState;
+	PipelineState_SkyDomeMesh* m_pPipelineState = nullptr;
 	// ディスクリプタハンドル
 	std::shared_ptr<DescriptorHandle> m_pTexHandle;
 	// カメラ
-	Camera* m_camera;
+	Camera* m_camera = nullptr;
 public:
 	// ワールド行列更新操作用
-	DirectX::XMMATRIX m_worldMatrix;
+	DirectX::XMMATRIX m_worldMatrix = DirectX::XMMatrixIdentity();
 	std::vector<SkyVertex> vertices;
 	std::vector<uint32_t> indices;
 

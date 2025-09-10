@@ -89,7 +89,7 @@ bool RootSignature_Splash::IsValid() const
 	return m_IsValid;
 }
 
-ID3D12RootSignature* RootSignature_Splash::Get() const
+ID3D12RootSignature* RootSignature_Splash::Get()
 {
 	return m_pRootSignature.Get();
 }

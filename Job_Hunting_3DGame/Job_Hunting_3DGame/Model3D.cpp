@@ -109,7 +109,8 @@ bool Model3D::Init(Camera* _camera)
 		m_pMaterialHandles.push_back(handle);
 	}
 
-	m_pRootSignature = std::make_unique<RootSignature>();
+	auto& rootManager = RootSignatureManager::GetInstance();
+	m_pRootSignature = rootManager.GetRoot(Root_Type::ROOT_TYPE_MODEL3D);
 	if (!m_pRootSignature->IsValid())
 	{
 		printf("ルートシグネチャの生成に失敗\n");
@@ -117,7 +118,8 @@ bool Model3D::Init(Camera* _camera)
 	}
 
 	// パイプラインステートのインスタンス生成
-	m_pPipelineState = PipelineState_Manager::GetInstance().GetPSO_General("Model3D");
+	auto& psoManager = PipelineState_Manager::GetInstance();
+	m_pPipelineState = psoManager.GetPSO_General(PSO_Type::PSO_TYPE_MODEL3D);
 	if (!m_pPipelineState->IsValid())
 	{
 		// 頂点レイアウトの設定
@@ -196,7 +198,8 @@ void Model3D::Draw()
 		commandList->SetGraphicsRootDescriptorTable(1, m_pMaterialHandles[i]->handleGPU);
 
 		// インデックスの数分描画
-		commandList->DrawIndexedInstanced(m_meshes[i].Indices.size(), 1, 0, 0, 0);
+		commandList->DrawIndexedInstanced(static_cast<UINT>(m_meshes[i].Indices.size()),
+			1, 0, 0, 0);
 	}
 }
 

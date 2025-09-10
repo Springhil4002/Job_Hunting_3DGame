@@ -1,3 +1,4 @@
+#define NOMINMAX
 #include "Texture2D.h"
 #include "DrawBase.h"
 #include <DirectXTex.h>
@@ -8,7 +9,7 @@
 inline std::wstring GetWideString(const std::string& _str)
 {
 	auto num1 = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED | MB_ERR_INVALID_CHARS, _str.c_str(), -1, nullptr, 0);
-
+	num1 = static_cast<size_t>(num1);
 	std::wstring wstr;
 	wstr.resize(num1);
 
@@ -73,8 +74,11 @@ bool Texture2D::LoadFromFile(const std::wstring& _path)
 	auto img = scratch.GetImage(0, 0, 0);
 	auto prop = CD3DX12_HEAP_PROPERTIES(D3D12_CPU_PAGE_PROPERTY_WRITE_BACK, 
 										D3D12_MEMORY_POOL_L0);
-	auto desc = CD3DX12_RESOURCE_DESC::Tex2D(meta.format, meta.width, meta.height,
-		static_cast<UINT16>(meta.arraySize), static_cast<UINT16>(meta.mipLevels));
+	auto desc = CD3DX12_RESOURCE_DESC::Tex2D(
+		meta.format, meta.width, meta.height,
+		static_cast<UINT16>(std::min(meta.arraySize, static_cast<size_t>(UINT16_MAX))),
+		static_cast<UINT16>(std::min(meta.mipLevels, static_cast<size_t>(UINT16_MAX)))
+	);
 	
 	// テクスチャリソースを生成
 	hr = g_DrawBase->Device()->CreateCommittedResource(
@@ -97,8 +101,8 @@ bool Texture2D::LoadFromFile(const std::wstring& _path)
 	hr = m_pResource->WriteToSubresource(0,
 		nullptr,
 		img->pixels,
-		static_cast<UINT>(img->rowPitch),
-		static_cast<UINT>(img->slicePitch)
+		static_cast<UINT>(std::min(img->rowPitch, static_cast<size_t>(UINT_MAX))),
+		static_cast<UINT>(std::min(img->slicePitch, static_cast<size_t>(UINT_MAX)))
 	);
 
 	// 失敗時エラー出力

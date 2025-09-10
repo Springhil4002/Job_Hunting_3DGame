@@ -57,14 +57,16 @@ bool Debug_Sphere::Init(Camera* _camera)
     m_pDescriptorHeap = std::make_unique<DescriptorHeap>();
 
     // ルートシグネチャ生成
-    m_pRootSignature = std::make_unique<RootSignature_DebugSphere>();
+    auto& rootManager = RootSignatureManager::GetInstance();
+    m_pRootSignature = rootManager.GetRoot(Root_Type::ROOT_TYPE_SPHERE);
     if (!m_pRootSignature->IsValid())
     {
         printf("Sphere:ルートシグネチャ生成失敗\n");
         return false;
     }
 
-    m_pPipelineState = PipelineState_Manager::GetInstance().GetPSO_DebugSphere("Sphere");
+    auto& psoManager = PipelineState_Manager::GetInstance();
+    m_pPipelineState = psoManager.GetPSO_DebugSphere(PSO_Type::PSO_TYPE_SPHERE);
     if (!m_pPipelineState->IsValid())
     {
         // 頂点レイアウトの設定
@@ -136,22 +138,21 @@ void Debug_Sphere::Uninit()
     for (auto& cb : m_pConstantBuffer)
         cb.reset();
     m_pDescriptorHeap.reset();
-    m_pRootSignature.reset();
     m_pTexHandle.reset();
 }
 
-void Debug_Sphere::Create_Sphere(float _stacks, float _slices, float _radius)
+void Debug_Sphere::Create_Sphere(int _stacks, int _slices, float _radius)
 {
     vertices.clear();
     indices.clear();
 
     for (int i = 0; i <= _stacks; i++) {
-        float phi = XM_PI * i / _stacks;
+        float phi = XM_PI * (static_cast<float>(i) / _stacks);
         float y = cosf(phi);
         float r = sinf(phi);
 
         for (int j = 0; j <= _slices; j++) {
-            float theta = XM_2PI * j / _slices;
+            float theta = XM_2PI * (static_cast<float>(j) / _slices);
             float x = r * cosf(theta);
             float z = r * sinf(theta);
 
@@ -166,10 +167,10 @@ void Debug_Sphere::Create_Sphere(float _stacks, float _slices, float _radius)
                 XMStoreFloat3(&tangent, t);
             }
 
-            float u = (float)j / _slices; // [0,1]
-            float v = (float)i / _stacks; // [0,1]
+            float u = static_cast<float>(j) / _slices;
+            float v = static_cast<float>(i) / _stacks;
 
-            XMFLOAT4 color = { 1, 1, 1, 1 };
+            XMFLOAT4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
 
             Vertex vertex = {};
 			vertex.position = pos;

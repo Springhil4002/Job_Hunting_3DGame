@@ -66,7 +66,8 @@ void Goal::Draw()
 			// テクスチャをセット
 			commandList->SetGraphicsRootDescriptorTable(1, m_pTexHandle->handleGPU);
 		// インデックスの数分描画
-		commandList->DrawIndexedInstanced(m_meshes[i].Indices.size(), 1, 0, 0, 0);
+		commandList->DrawIndexedInstanced(static_cast<UINT>(m_meshes[i].Indices.size()),
+			1, 0, 0, 0);
 	}
 
 	if(m_Sphere)
@@ -131,7 +132,8 @@ bool Goal::Init_PropGoal(Camera* _camera)
 	}
 	m_pTexHandle = m_pDescriptorHeap->Register(tex.get());
 
-	m_pRootSignature = std::make_unique<RootSignature_Goal>();
+	auto& rootManager = RootSignatureManager::GetInstance();
+	m_pRootSignature = rootManager.GetRoot(Root_Type::ROOT_TYPE_GOAL);
 	if (!m_pRootSignature->IsValid())
 	{
 		printf("Goal:ルートシグネチャの生成に失敗\n");
@@ -139,7 +141,8 @@ bool Goal::Init_PropGoal(Camera* _camera)
 	}
 
 	// マネージャー経由でパイプラインステートを取得
-	m_pPipelineState = PipelineState_Manager::GetInstance().GetPSO_General("Goal");
+	auto& psoManager = PipelineState_Manager::GetInstance();
+	m_pPipelineState = psoManager.GetPSO_General(PSO_Type::PSO_TYPE_GOAL);
 	if (!m_pPipelineState->IsValid())
 	{
 		// 頂点レイアウトの設定
