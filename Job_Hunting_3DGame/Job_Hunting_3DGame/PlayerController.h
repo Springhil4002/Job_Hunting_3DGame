@@ -14,8 +14,8 @@ private:
 	Input* m_Input = nullptr;
 	std::unique_ptr<ParticleEmitter_Splash> m_Emitter_Splash;
 
-	DirectX::XMVECTOR m_Position;	// 位置
-	DirectX::XMVECTOR m_Rotation;	// 回転
+	DirectX::XMVECTOR m_Position = DirectX::XMVectorZero();	// 位置
+	DirectX::XMVECTOR m_Rotation = DirectX::XMVectorZero();	// 回転
 
 	DirectX::XMVECTOR m_ForwardVec		= DirectX::XMVectorZero();	// 前方向ベクトル(移動用)
 	DirectX::XMVECTOR m_RightVec		= DirectX::XMVectorZero();	// 右向きベクトル(左右回転用)

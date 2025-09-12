@@ -133,15 +133,15 @@ bool TextureCube::Load(std::string& _path)
 	return LoadFromFile(wpath);
 }
 
-TextureCube* TextureCube::Get(std::string _path)
+std::shared_ptr<TextureCube> TextureCube::Get(std::string _path)
 {
 	auto wpath = GetWideString(_path);
 	return Get(wpath);
 }
 
-TextureCube* TextureCube::Get(std::wstring _path)
+std::shared_ptr<TextureCube> TextureCube::Get(std::wstring _path)
 {
-	auto tex = new TextureCube(_path);
+	auto tex = make_shared<TextureCube>(_path);
 	if (!tex->IsValid())
 	{
 		// 読み込み失敗なら白色テクスチャを返す
@@ -150,7 +150,7 @@ TextureCube* TextureCube::Get(std::wstring _path)
 	return tex;
 }
 
-TextureCube* TextureCube::GetWhite()
+std::shared_ptr<TextureCube> TextureCube::GetWhite()
 {
 	// 白色テクスチャを生成
 	ID3D12Resource* buff = GetDefaultResource(4, 4);
@@ -166,7 +166,7 @@ TextureCube* TextureCube::GetWhite()
 		return nullptr;
 	}
 
-	return new TextureCube(buff);
+	return std::make_shared<TextureCube>(buff);
 }
 
 ID3D12Resource* TextureCube::GetDefaultResource(size_t _width, size_t _height)
@@ -206,7 +206,7 @@ ID3D12Resource* TextureCube::GetDefaultResource(size_t _width, size_t _height)
 	return buff;
 }
 
-bool TextureCube::IsValid()
+bool TextureCube::IsValid() const
 {
 	return m_IsValid;
 }

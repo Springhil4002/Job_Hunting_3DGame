@@ -127,15 +127,15 @@ bool Texture2D::Load(std::string& _path)
 	return LoadFromFile(wpath);
 }
 
-Texture2D* Texture2D::Get(std::string _path)
+std::shared_ptr<Texture2D> Texture2D::Get(std::string _path)
 {
 	auto wpath = GetWideString(_path);
 	return Get(wpath);
 }
 
-Texture2D* Texture2D::Get(std::wstring _path)
+std::shared_ptr<Texture2D> Texture2D::Get(std::wstring _path)
 {
-	auto tex = new Texture2D(_path);
+	auto tex = std::make_shared<Texture2D>(_path);
 	if (!tex->IsValid())
 	{
 		// 読み込み失敗なら白色テクスチャを返す
@@ -144,7 +144,7 @@ Texture2D* Texture2D::Get(std::wstring _path)
 	return tex;
 }
 
-Texture2D* Texture2D::GetWhite()
+std::shared_ptr<Texture2D> Texture2D::GetWhite()
 {
 	// 白色テクスチャを生成
 	ID3D12Resource* buff = GetDefaultResource(4, 4);
@@ -158,7 +158,7 @@ Texture2D* Texture2D::GetWhite()
 		return nullptr;
 	}
 
-	return new Texture2D(buff);;
+	return std::make_shared<Texture2D>(buff);
 }
 
 ID3D12Resource* Texture2D::GetDefaultResource(size_t _width, size_t _height)

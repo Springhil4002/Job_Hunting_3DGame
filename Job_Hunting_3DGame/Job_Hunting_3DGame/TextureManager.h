@@ -19,8 +19,10 @@ private:
 	TextureManager& operator=(const TextureManager&) = delete;
 public:
 	static TextureManager& Instance();
-	std::shared_ptr<Texture2D> LoadTexture(const std::wstring& _path);
 	std::shared_ptr<Texture2D> GetWhiteTexture();
+	std::shared_ptr<Texture2D> GetTexture(const std::wstring& _path);
+	std::shared_ptr<TextureCube> GetCubeMap(const std::wstring& _path);
+	std::shared_ptr<Texture2D> LoadTexture(const std::wstring& _path);
 	std::shared_ptr<TextureCube> LoadCubeMap(const std::wstring& _path);
 	void Clear();
 };

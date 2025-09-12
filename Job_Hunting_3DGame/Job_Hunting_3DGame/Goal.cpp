@@ -124,7 +124,7 @@ bool Goal::Init_PropGoal(Camera* _camera)
 	// ディスクリプタヒープの生成
 	m_pDescriptorHeap = std::make_unique<DescriptorHeap>();
 
-	auto tex = TextureManager::Instance().LoadTexture(L"Assets/Texture/Color_Red.png");
+	auto tex = TextureManager::Instance().GetTexture(L"Assets/Texture/Color_Red.png");
 	if (!tex)
 	{
 		printf("Goal:テクスチャ読み込み失敗\n");
@@ -168,7 +168,7 @@ bool Goal::Init_PropGoal(Camera* _camera)
 	}
 
 
-	printf("Goal:初期化処理に成功\n");
+	printf("Goal:初期化処理に成功\n\n");
 	return true;
 }
 

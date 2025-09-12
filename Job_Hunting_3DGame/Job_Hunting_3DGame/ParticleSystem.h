@@ -11,16 +11,16 @@ enum ParticleState
 
 struct Particle
 {
-	DirectX::XMVECTOR position;		// 位置
-	DirectX::XMVECTOR velocity;		// 速度
-	DirectX::XMFLOAT4 color;		// 色
-	DirectX::XMFLOAT4 startColor;	// 開始色
-	DirectX::XMFLOAT4 endColor;		// 終了色
-	float colorChangeRate;			// 色変化率
-	float lifeTime;					// 寿命
-	float elapsedTime;				// 経過時間
-	float gravity;					// 重力
-	ParticleState particleState;	// 状態管理
+	DirectX::XMVECTOR position = DirectX::XMVectorZero();						// 位置
+	DirectX::XMVECTOR velocity = DirectX::XMVectorZero();						// 速度
+	DirectX::XMFLOAT4 color = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);		// 色
+	DirectX::XMFLOAT4 startColor = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);	// 開始色
+	DirectX::XMFLOAT4 endColor = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);		// 終了色
+	float colorChangeRate = 0.0f;		// 色変化率
+	float lifeTime = 0.0f;				// 寿命
+	float elapsedTime = 0.0f;			// 経過時間
+	float gravity = 0.0f;				// 重力
+	ParticleState particleState;		// 状態管理
 	
 	/// @brief パーティクルのパラメータリセット
 	void Reset();

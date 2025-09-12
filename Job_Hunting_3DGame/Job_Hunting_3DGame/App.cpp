@@ -95,7 +95,7 @@ void MainLoop(const TCHAR* _appName)
 	// ウィンドウ生成
 	InitWindow(_appName);
 
-	Camera* camera = new Camera();
+	auto camera = std::make_unique<Camera>();
 	
 	// 描画基盤の初期化を行う
 	g_DrawBase = new DrawBase();
@@ -108,10 +108,10 @@ void MainLoop(const TCHAR* _appName)
 	g_ImGuiManager.Init(g_hWnd, g_DrawBase);
 	
 	// シーン管理クラスの生成
-	auto sm = new SceneManager(camera,g_hWnd);
+	auto sm = std::make_unique<SceneManager>(camera.get(), g_hWnd);
 	
 	// 経過時間計測処理の初期化
-	Timer* timer = new Timer();
+	auto timer = std::make_unique<Timer>();
 	timer->Init();
 
 	// メッセージを受け取るまでループ
@@ -141,9 +141,6 @@ void MainLoop(const TCHAR* _appName)
 		}
 	}
 	sm->Uninit();
-	delete sm;
-	delete timer;
-	delete camera;
 	delete g_DrawBase;
 	g_DrawBase = nullptr;
 }

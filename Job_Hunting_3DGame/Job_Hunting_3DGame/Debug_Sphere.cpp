@@ -91,7 +91,7 @@ bool Debug_Sphere::Init(Camera* _camera)
         return false;
     }
 
-    printf("Sphere:‰Šú‰»ˆ—‚É¬Œ÷\n");
+    printf("Sphere:‰Šú‰»ˆ—‚É¬Œ÷\n\n");
     return true;
 }
 

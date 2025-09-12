@@ -63,7 +63,7 @@ bool SkyDomeMesh::Init(Camera* _camera)
 	// テクスチャの適用
 	if (m_pTexHandle == nullptr)
 	{
-		auto tex = TextureManager::Instance().LoadTexture(L"Assets/Texture/SkyDome.dds");
+		auto tex = TextureManager::Instance().GetTexture(L"Assets/Texture/SkyDome.dds");
 		m_pTexHandle = m_pDescriptorHeap->Register(tex.get());
 	}
 	
@@ -99,7 +99,7 @@ bool SkyDomeMesh::Init(Camera* _camera)
 		return false;
 	}
 
-	printf("SkyDomeMesh:初期化処理に成功\n");
+	printf("SkyDomeMesh:初期化処理に成功\n\n");
 	return true;
 }
 

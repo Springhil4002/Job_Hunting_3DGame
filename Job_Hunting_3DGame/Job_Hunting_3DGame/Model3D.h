@@ -4,12 +4,10 @@
 #include "App.h"
 #include <d3dx12.h>
 #include "System/SharedStruct.h"
-#include "VertexBuffer.h"
 #include "ConstantBuffer.h"
 #include "RootSignature_Manager.h"
 #include "PipelineState_Manager.h"
-#include "IndexBuffer.h"
-#include "AssimpLoader.h"
+#include "ModelManager.h"
 #include "DescriptorHeap.h"
 #include "Texture2D.h"
 #include "Camera.h"
@@ -38,9 +36,9 @@ private:
 	// メッシュ配列
 	std::vector<Mesh> m_meshes;
 	// メッシュの数分の頂点バッファ
-	std::vector<std::unique_ptr<VertexBuffer>> m_pVertexBuffers;	
+	std::vector<std::shared_ptr<VertexBuffer>> m_pVertexBuffers;	
 	// メッシュの数分のインデックスバッファ
-	std::vector<std::unique_ptr<IndexBuffer>> m_pIndexBuffers;		
+	std::vector<std::shared_ptr<IndexBuffer>> m_pIndexBuffers;		
 	// テクスチャ用のハンドル
 	std::vector<std::shared_ptr<DescriptorHandle>> m_pMaterialHandles;
 public:

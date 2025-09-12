@@ -43,14 +43,14 @@ public:
 	/// @brief ファイルパスを渡してテクスチャを取得する関数
 	/// @param _path ファイルパス
 	/// @return テクスチャを返します
-	static Texture2D* Get(std::string _path); 
+	static std::shared_ptr<Texture2D> Get(std::string _path); 
 	/// @brief ファイルパスを渡してテクスチャを取得する関数
 	/// @param _path ファイルパス
 	/// @return テクスチャを返します
-	static Texture2D* Get(std::wstring _path);
+	static std::shared_ptr<Texture2D> Get(std::wstring _path);
 	/// @brief 白色テクスチャを生成する関数
 	/// @return テクスチャを返します
-	static Texture2D* GetWhite(); 
+	static std::shared_ptr<Texture2D> GetWhite(); 
 	/// @brief 読み込みの成否を取得する関数
 	/// @return 読み込みの成否を返します
 	bool IsValid(); 

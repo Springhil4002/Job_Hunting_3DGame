@@ -94,7 +94,7 @@ private:
 	// フェンスの値（enumで設定した数:2）
 	UINT64 m_fenceValue[FRAME_BUFFER_COUNT];	
 	// ビューポート
-	D3D12_VIEWPORT m_Viewport; 
+	D3D12_VIEWPORT m_Viewport;
 	// シザー矩形
 	D3D12_RECT m_Scissor;
 

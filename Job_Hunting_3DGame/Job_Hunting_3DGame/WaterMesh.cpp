@@ -174,7 +174,7 @@ bool WaterMesh::Init(Camera* _camera)
 	// ディスクリプタヒープ
 	m_pDescriptorHeap = std::make_unique<DescriptorHeap>();
 
-	auto cubeTex = TextureManager::Instance().LoadCubeMap(L"Assets/Texture/SkyDome.dds");
+	auto cubeTex = TextureManager::Instance().GetCubeMap(L"Assets/Texture/SkyDome.dds");
 	if (!cubeTex)
 	{
 		printf("WaterMesh:キューブマップ読み込み失敗\n");
@@ -216,7 +216,7 @@ bool WaterMesh::Init(Camera* _camera)
 		return false;
 	}
 
-	printf("WaterMesh:初期化処理に成功\n");
+	printf("WaterMesh:初期化処理に成功\n\n");
 	return true;
 }
 

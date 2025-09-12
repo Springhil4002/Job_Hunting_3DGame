@@ -43,17 +43,17 @@ public:
 	/// @brief ファイルパスを渡してテクスチャを取得する関数
 	/// @param _path ファイルパス
 	/// @return テクスチャを返します
-	static TextureCube* Get(std::string _path);
+	static std::shared_ptr<TextureCube> Get(std::string _path);
 	/// @brief ファイルパスを渡してテクスチャを取得する関数
 	/// @param _path ファイルパス
 	/// @return テクスチャを返します
-	static TextureCube* Get(std::wstring _path);
+	static std::shared_ptr<TextureCube> Get(std::wstring _path);
 	/// @brief 白色テクスチャを生成する関数
 	/// @return テクスチャを返します
-	static TextureCube* GetWhite();
+	static std::shared_ptr<TextureCube> GetWhite();
 	/// @brief 読み込みの成否を取得する関数
 	/// @return 読み込みの成否を返します
-	bool IsValid();
+	bool IsValid() const;
 
 	/// @brief テクスチャリソースを取得する関数
 	/// @return テクスチャリソースを返します

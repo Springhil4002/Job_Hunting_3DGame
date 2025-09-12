@@ -7,18 +7,28 @@ ModelManager& ModelManager::GetInstance()
     return instance;
 }
 
-// モデルを取得（まだ読み込まれていなければ読み込む）
 std::shared_ptr<ModelData> ModelManager::GetModel(const std::wstring& _filePath)
+{
+    auto it = m_models.find(_filePath);
+    if (it != m_models.end())
+    {
+        printf("ModelManager:既存モデル %ls を再利用します\n",_filePath.c_str());
+        return it->second;
+    }
+    printf("ModelManager:未知モデル %ls 保存されていません\n", _filePath.c_str());
+    return nullptr;
+}
+
+std::shared_ptr<ModelData> ModelManager::LoadModel(const std::wstring& _filePath)
 {
     // 既に読み込まれているか確認
     auto it = m_models.find(_filePath);
     if (it != m_models.end())
     {
-        printf("ModelManager:既存モデルを返します\n");
+        printf("ModelManager:既存モデル %ls を再利用します\n", _filePath.c_str());
         return it->second; // 登録済みのモデルを返す
     }
 
-    printf("ModelManager:新規モデルを読み込みます\n");
     // 無いなら新規登録
     auto modelData = std::make_shared<ModelData>();
     ImportSettings importSetting = {
@@ -60,7 +70,7 @@ std::shared_ptr<ModelData> ModelManager::GetModel(const std::wstring& _filePath)
         }
         modelData->indexBuffers.push_back(ib);
     }
-
+    printf("ModelManager:新規モデル %ls を読み込み成功\n", _filePath.c_str());
     m_models[_filePath] = modelData;
     return modelData;
 }

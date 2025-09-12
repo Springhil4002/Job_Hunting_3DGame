@@ -42,7 +42,7 @@ bool Player::Init(Camera* _camera)
 	// ディスクリプタヒープの生成
 	m_pDescriptorHeap = std::make_unique<DescriptorHeap>();
 
-	auto tex = TextureManager::Instance().LoadTexture(L"Assets/Texture/Player.png");
+	auto tex = TextureManager::Instance().GetTexture(L"Assets/Texture/Player.png");
 	if (!tex)
 	{
 		printf("Player:テクスチャ読み込み失敗\n");
@@ -87,7 +87,7 @@ bool Player::Init(Camera* _camera)
 		return false;
 	}
 
-	printf("Player:初期化処理に成功\n");
+	printf("Player:初期化処理に成功\n\n");
 	return true;
 }
 

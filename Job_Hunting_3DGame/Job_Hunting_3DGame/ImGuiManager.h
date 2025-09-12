@@ -11,7 +11,7 @@ class ImGuiManager
 {
 private:
 	ComPtr<ID3D12DescriptorHeap> m_pSrvHeap;
-	DrawBase* m_pDrawBase;
+	DrawBase* m_pDrawBase = nullptr;
 	static const UINT NumDescriptors = 1;
 public:
 	bool Init(HWND _hwnd, DrawBase* _drawBase);

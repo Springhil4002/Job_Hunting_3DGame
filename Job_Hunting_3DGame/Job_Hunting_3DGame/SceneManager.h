@@ -1,5 +1,6 @@
 #pragma once
 #include "SceneFactory.h"
+#include "SceneResource.h"
 
 class SceneManager
 {
@@ -13,7 +14,8 @@ public:
 	/// @brief コンストラクタ
 	SceneManager(Camera* _camera,HWND _hwnd)
 	{
-		currentScene.reset(sceneFactory.CreateScene(SCENE_ID_TITLE, _camera, _hwnd));
+		// 初期シーンのリソースをロード
+		ChangeScene(SCENE_ID_TITLE, _camera, _hwnd);
 	}
 	/// @brief デストラクタ
 	~SceneManager() = default;

@@ -264,9 +264,6 @@
     <ClCompile Include="PipelineState_General.cpp">
       <Filter>ソース ファイル\Draw\PipelineState</Filter>
     </ClCompile>
-    <ClCompile Include="ModelManager.cpp">
-      <Filter>ソース ファイル\Obj</Filter>
-    </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>ソース ファイル\Obj\GameObj\Player</Filter>
     </ClCompile>
@@ -287,6 +284,12 @@
     </ClCompile>
     <ClCompile Include="Goal.cpp">
       <Filter>ソース ファイル\Obj\GameObj</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneResource.cpp">
+      <Filter>ソース ファイル\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelManager.cpp">
+      <Filter>ソース ファイル\Resource</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -470,14 +473,20 @@
     <ClInclude Include="WaterMesh.h">
       <Filter>ヘッダー ファイル\Obj\GameObj</Filter>
     </ClInclude>
-    <ClInclude Include="ModelManager.h">
-      <Filter>ヘッダー ファイル\Obj</Filter>
-    </ClInclude>
     <ClInclude Include="RootSignature_Manager.h">
       <Filter>ヘッダー ファイル\Draw\RootSignature</Filter>
     </ClInclude>
     <ClInclude Include="RootSignature.h">
       <Filter>ヘッダー ファイル\Draw\RootSignature</Filter>
+    </ClInclude>
+    <ClInclude Include="SCENE_ID.h">
+      <Filter>System</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneResource.h">
+      <Filter>ヘッダー ファイル\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelManager.h">
+      <Filter>ヘッダー ファイル\Resource</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

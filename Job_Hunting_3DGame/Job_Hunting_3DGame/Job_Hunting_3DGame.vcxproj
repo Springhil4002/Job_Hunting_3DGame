@@ -182,6 +182,7 @@
     <ClCompile Include="RootSignature_WaterMesh.cpp" />
     <ClCompile Include="SceneFactory.cpp" />
     <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="SceneResource.cpp" />
     <ClCompile Include="SkyDomeMesh.cpp" />
     <ClCompile Include="System\ImGui\imgui.cpp" />
     <ClCompile Include="System\ImGui\imgui_draw.cpp" />
@@ -245,6 +246,8 @@
     <ClInclude Include="RootSignature_Splash.h" />
     <ClInclude Include="RootSignature_WaterMesh.h" />
     <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="SceneResource.h" />
+    <ClInclude Include="SCENE_ID.h" />
     <ClInclude Include="SkyDomeMesh.h" />
     <ClInclude Include="System\CommonTypes.h" />
     <ClInclude Include="System\ComPtr.h" />

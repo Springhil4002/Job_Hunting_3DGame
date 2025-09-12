@@ -30,8 +30,15 @@ private:
     /// @brief モデルデータを管理するマップ
     std::unordered_map<std::wstring, std::shared_ptr<ModelData>> m_models;
 public:
-    // インスタンス取得関数
+    /// @brief モデルマネージャーのインスタンス取得関数
+    /// @return モデルマネージャーのインスタンスを返します
     static ModelManager& GetInstance();
-    // モデルを取得（まだ読み込まれていなければ読み込む）
+    /// @brief 指定したファイルパスから保存したモデルデータを取得する関数
+    /// @param _filePath 取得したいモデルデータファイルのパス
+    /// @return 取得したいモデルデータ
     std::shared_ptr<ModelData> GetModel(const std::wstring& _filePath);
+    /// @brief 指定したファイルパスのモデルデータを読み込み・保存する関数
+    /// @param _filePath 読み込み・保存したいモデルデータのファイルパス
+    /// @return 指定したモデルデータ
+    std::shared_ptr<ModelData> LoadModel(const std::wstring& _filePath);
 };
