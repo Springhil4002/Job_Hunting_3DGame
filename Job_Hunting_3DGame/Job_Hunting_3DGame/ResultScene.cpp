@@ -21,9 +21,9 @@ void ResultScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 {
 	printf("シーン名：ResultScene\n");
 
+	hwnd = _hwnd;
 	camera = _camera;
 	uiCamera = _uiCamera;
-	hwnd = _hwnd;
 
 	camera->SetPos(XMVectorSet(0.0f, 2.5f, 0.0f, 1.0f));
 	camera->SetTarget(XMVectorSet(0.0f, -15.0f, 50.0f, 0.0f));
@@ -52,6 +52,7 @@ void ResultScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 
 void ResultScene::Update(float _deltaTime)
 {
+	//Update_Input();
 	for (auto& obj : objectInstance)
 	{
 		obj->Update();
@@ -85,6 +86,62 @@ void ResultScene::Uninit()
 	for (auto& obj : objectInstance)
 	{
 		obj->Uninit();
+	}
+	objectInstance.clear();
+}
+
+void ResultScene::Update_Input()
+{
+	// 上移動
+	if (input.GetKeyPress(VK_E)) camera->MoveUp(0.1f);
+	// 下移動
+	if (input.GetKeyPress(VK_Q)) camera->MoveDown(0.1f);
+
+	// 右移動
+	if (input.GetKeyPress(VK_D)) camera->MoveRight(0.1f);
+	// 左移動
+	if (input.GetKeyPress(VK_A)) camera->MoveLeft(0.1f);
+	// 前移動
+	if (input.GetKeyPress(VK_W)) camera->MoveForward(0.1f);
+	// 後移動
+	if (input.GetKeyPress(VK_S)) camera->MoveBack(0.1f);
+
+	// 右方向回転
+	if (input.GetKeyPress(VK_SHIFT) && input.GetKeyPress(VK_D)) camera->Rotate_Yaw(XMConvertToRadians(0.1f));
+	// 左方向回転
+	if (input.GetKeyPress(VK_SHIFT) && input.GetKeyPress(VK_A)) camera->Rotate_Yaw(XMConvertToRadians(-0.1f));
+	// 上向きに回転
+	if (input.GetKeyPress(VK_SHIFT) && input.GetKeyPress(VK_W)) camera->Rotate_Pitch(XMConvertToRadians(-0.1f));
+	// 下向きに回転
+	if (input.GetKeyPress(VK_SHIFT) && input.GetKeyPress(VK_S)) camera->Rotate_Pitch(XMConvertToRadians(0.1f));
+	// マウス右入力で自由にカメラを回転
+	Update_MouseRotate(0.001f);
+}
+
+void ResultScene::Update_MouseRotate(float _sensi)
+{
+	// マウスの現在位置取得
+	POINT currentMousePos;
+	GetCursorPos(&currentMousePos);
+	ScreenToClient(hwnd, &currentMousePos);
+
+	// 差分取得
+	static POINT lastMousePos = currentMousePos;
+	int dx = currentMousePos.x - lastMousePos.x;
+	int dy = currentMousePos.y - lastMousePos.y;
+	lastMousePos = currentMousePos;
+
+	// マウス感度
+	float sensi = _sensi;
+
+	if (GetForegroundWindow() == hwnd)
+	{
+		// マウス右入力でカメラを回転
+		if (GetAsyncKeyState(VK_RBUTTON) & 0x8000)
+		{
+			camera->Rotate_Yaw(dx * sensi);
+			camera->Rotate_Pitch(dy * sensi);
+		}
 	}
 }
 

@@ -10,8 +10,6 @@ private:
 	HWND hwnd;
 	Camera* camera;
 	Camera2D* uiCamera;
-	std::unique_ptr<Game> game;
-	std::unique_ptr<PlayerController> playerCtrl;	
 public:
 	/// @brief コンストラクタ
 	TitleScene() = default;
@@ -40,11 +38,4 @@ public:
 	void Update_MouseRotate(float _sensi);
 	/// @brief ImGuiの描画処理
 	void Draw_ImGui() override;
-
-	// Imgui描画関数群
-	void ImGui_Prop();
-	void ImGui_PlayerController();
-	void ImGui_Goal();
-	void ImGui_WaterMesh();
-	void ImGui_Timer();
 };

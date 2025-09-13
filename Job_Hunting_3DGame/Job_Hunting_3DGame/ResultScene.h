@@ -1,16 +1,20 @@
 #pragma once
 #include "BaseScene.h"
+#include "PlayerController.h"
+#include "Game.h"
+#include "Camera2D.h"
 
 class ResultScene : public BaseScene
 {
 private:
+	HWND hwnd;
 	Camera* camera;
 	Camera2D* uiCamera;
-	HWND hwnd;
 public:
 	/// @brief コンストラクタ
 	ResultScene() = default;
-	ResultScene(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd) { Init(_camera, _uiCamera,_hwnd); }
+	ResultScene(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd) 
+	{ Init(_camera, _uiCamera,_hwnd); }
 	/// @brief デストラクタ
 	~ResultScene() = default;
 
@@ -28,6 +32,10 @@ public:
 	void Draw() override;
 	/// @brief 終了処理
 	void Uninit() override;
+	/// @brief デバッグ用:カメラ移動入力処理
+	void Update_Input();
+	/// @brief デバッグ用:マウスの回転更新処理
+	void Update_MouseRotate(float _sensi);
 	/// @brief ImGuiの描画処理
 	void Draw_ImGui() override;
 };
