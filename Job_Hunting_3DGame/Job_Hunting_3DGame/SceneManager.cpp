@@ -6,7 +6,8 @@
 std::unique_ptr<BaseScene> SceneManager::currentScene = nullptr;
 SceneFactory SceneManager::sceneFactory;
 
-void SceneManager::ChangeScene(SCENE_ID _scene_ID, Camera* _camera, HWND _hwnd)
+void SceneManager::ChangeScene(
+	SCENE_ID _scene_ID, Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 {
 	ClearConsole();
 	if (currentScene)
@@ -54,7 +55,8 @@ void SceneManager::ChangeScene(SCENE_ID _scene_ID, Camera* _camera, HWND _hwnd)
 	printf("SceneManager:リソース読み込み完了\n\n");
 
 	// 新しいシーンを作成
-	currentScene.reset(sceneFactory.CreateScene(_scene_ID, _camera, _hwnd));
+	currentScene.reset(sceneFactory.CreateScene(
+		_scene_ID, _camera, _uiCamera,_hwnd));
 }
 
 void SceneManager::ClearConsole()

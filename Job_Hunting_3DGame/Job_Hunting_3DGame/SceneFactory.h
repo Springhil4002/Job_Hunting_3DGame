@@ -8,5 +8,7 @@
 class SceneFactory
 {
 public:
-	BaseScene* CreateScene(const SCENE_ID& _sceneName, Camera* _camera, HWND _hwnd);
+	BaseScene* CreateScene(
+		const SCENE_ID& _sceneName, Camera* _camera, 
+		Camera2D* _uiCamera, HWND _hwnd);
 };

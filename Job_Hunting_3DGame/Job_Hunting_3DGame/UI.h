@@ -1,21 +1,20 @@
 #pragma once
+#include <d3dx12.h>
 #include "Object.h"
 #include "DrawBase.h"
 #include "App.h"
-#include <d3dx12.h>
 #include "System/SharedStruct.h"
+#include "Camera2D.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "ConstantBuffer.h"
+#include "DescriptorHeap.h"
 #include "RootSignature_Manager.h"
 #include "PipelineState_Manager.h"
-#include "DescriptorHeap.h"
 #include "TextureManager.h"
-#include "Camera.h"
 
-class Debug_Sphere : public Object
+class UI : public Object
 {
-private:
 	// 頂点バッファ
 	std::unique_ptr<VertexBuffer> m_pVertexBuffer;
 	// インデックスバッファ
@@ -27,54 +26,40 @@ private:
 	// ルートシグネチャ
 	std::shared_ptr<RootSignature> m_pRootSignature;
 	// パイプラインステート
-	PipelineState_DebugSphere* m_pPipelineState = nullptr;
+	PipelineState_UI* m_pPipelineState = nullptr;
 	// ディスクリプタハンドル
 	std::shared_ptr<DescriptorHandle> m_pTexHandle;
 	// カメラ
-	Camera* m_camera = nullptr;
-	// 透明度
-	float m_alpha = 0.5f;
-	// 球体の半径
-	float m_radius = 5.0f;
+	Camera2D* m_CameraUI = nullptr;
+	// UIの横幅
+	float m_SizeWidth = 0.0f;
+	// UIの縦幅
+	float m_SizeHeight = 0.0f;
 public:
 	// ワールド行列更新操作用
 	DirectX::XMMATRIX m_worldMatrix = DirectX::XMMatrixIdentity();
-	std::vector<Vertex> vertices;
-	std::vector<uint32_t> indices;
-
-	// コンストラクタ
-	Debug_Sphere() = default;
-	// デストラクタ
-	~Debug_Sphere() = default;
+	/// @brief コンストラクタ
+	UI() = default;
+	/// @brief デストラクタ
+	~UI() = default;
 
 	// クローンメソッド
 	std::unique_ptr<Object> clone() const override;
+	
+	Mesh_UI CreateQuad(
+		float _x, float _y, float _w, float _h, XMFLOAT4 _color);
 
 	/// @brief 初期化処理
 	/// @return 初期化処理の成否を返します
 	bool Init() { return true; }
-	bool Init(Camera* _camera);
+	bool Init(Camera2D* _cameraUI, float _width, float _height);
 	/// @brief 更新処理
-	void Update() override;
+	void Update()	override;
 	/// @brief 描画処理
-	void Draw() override;
+	void Draw()		override;
 	/// @brief 終了処理
-	void Uninit() override;
-	/// @brief ワールド行列の更新
-	void Update_Transform();
-	/// @brief ビュー・プロジェクションの更新
-	void Update_CameraMatrix();
-	/// @brief 球体メッシュ作成関数
-	/// @param _stacks スタック数
-	/// @param _slices 分割数
-	/// @param _radius 半径
-	void Create_Sphere(int _stacks, int _slices, float _radius);
-	
-	/// @brief 各種ゲッター・セッター
-	float GetAlpha() const { return m_alpha; }
-	float GetRadius() const { return m_radius; }
+	void Uninit()	override;
 
-	void SetAlpha(float _alpha) { m_alpha = _alpha; }
-	void SetRadius(float _radius) { m_radius = _radius; }
+	void UpdateTransform();
+	void UpdateCameraMatrix();
 };
-

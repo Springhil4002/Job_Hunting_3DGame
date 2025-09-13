@@ -11,6 +11,7 @@
 #include "RootSignature_Splash.h"
 #include "RootSignature_DebugSphere.h"
 #include "RootSignature_SkyDomeMesh.h"
+#include "RootSignature_UI.h"
 
 enum class Root_Type
 {
@@ -20,7 +21,8 @@ enum class Root_Type
     ROOT_TYPE_MODEL3D,
     ROOT_TYPE_SPLASH,
     ROOT_TYPE_SPHERE,
-    ROOT_TYPE_SKYDOME
+    ROOT_TYPE_SKYDOME,    
+    ROOT_TYPE_UI,
 };
 
 class RootSignatureManager
@@ -74,6 +76,7 @@ public:
         case Root_Type::ROOT_TYPE_SPLASH:     return "Splash";
         case Root_Type::ROOT_TYPE_SPHERE:     return "Sphere";
         case Root_Type::ROOT_TYPE_SKYDOME:    return "SkyDome";
+        case Root_Type::ROOT_TYPE_UI:         return "UI";
         default: return "Unknown";
         }
     }
@@ -86,6 +89,7 @@ public:
     std::shared_ptr<RootSignature_Splash>      GetRoot_Splash()         { return GetRootSignature<RootSignature_Splash>(ToString(Root_Type::ROOT_TYPE_SPLASH)); }
     std::shared_ptr<RootSignature_DebugSphere> GetRoot_DebugSphere()    { return GetRootSignature<RootSignature_DebugSphere>(ToString(Root_Type::ROOT_TYPE_SPHERE)); }
     std::shared_ptr<RootSignature_SkyDomeMesh> GetRoot_SkyDome()        { return GetRootSignature<RootSignature_SkyDomeMesh>(ToString(Root_Type::ROOT_TYPE_SKYDOME)); }
+    std::shared_ptr<RootSignature_UI>          GetRoot_UI()             { return GetRootSignature<RootSignature_UI>(ToString(Root_Type::ROOT_TYPE_UI)); }
 
     // enum ‚ÅŽæ“¾
     std::shared_ptr<RootSignature> GetRoot(Root_Type _type)
@@ -99,6 +103,7 @@ public:
         case Root_Type::ROOT_TYPE_SPLASH:      return GetRoot_Splash();
         case Root_Type::ROOT_TYPE_SPHERE:      return GetRoot_DebugSphere();
         case Root_Type::ROOT_TYPE_SKYDOME:     return GetRoot_SkyDome();
+        case Root_Type::ROOT_TYPE_UI:          return GetRoot_UI();
         default:
             printf("RootSignatureManager:•s–¾‚ÈRoot_Type‚Å‚·\n");
             assert(false);

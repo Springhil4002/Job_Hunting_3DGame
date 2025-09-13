@@ -39,7 +39,7 @@ class ParticleSystem
 {
 protected:
 	std::vector<Particle> m_Particles;	// パーティクルの管理配列
-	int m_MaxParticles;				// パーティクルの上限数
+	int m_MaxParticles = 0;				// パーティクルの上限数
 public:
 	virtual ~ParticleSystem() = default;
 	/// @brief 初期化処理

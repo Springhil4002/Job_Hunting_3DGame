@@ -2,18 +2,21 @@
 #include "BaseScene.h"
 #include "PlayerController.h"
 #include "Game.h"
+#include "Camera2D.h"
 
 class TitleScene : public BaseScene
 {
 private:
 	HWND hwnd;
 	Camera* camera;
+	Camera2D* uiCamera;
 	std::unique_ptr<Game> game;
 	std::unique_ptr<PlayerController> playerCtrl;	
 public:
 	/// @brief コンストラクタ
 	TitleScene() = default;
-	TitleScene(Camera* _camera, HWND _hwnd) { Init(_camera, _hwnd); }
+	TitleScene(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd) 
+	{ Init(_camera, _uiCamera, _hwnd); }
 	/// @brief デストラクタ
 	~TitleScene() = default;
 
@@ -24,7 +27,7 @@ public:
 
 	/// @brief 初期化処理
 	void Init() {};
-	void Init(Camera* _camera,HWND _hwnd);
+	void Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd);
 	/// @brief 更新処理
 	void Update(float _deltaTime) override;
 	/// @brief 描画処理

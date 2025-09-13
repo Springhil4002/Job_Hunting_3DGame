@@ -15,9 +15,10 @@ Object* ResultScene::CreateObj(const std::string& _objectID)
 	return nullptr;
 }
 
-void ResultScene::Init(Camera* _camera,HWND _hwnd)
+void ResultScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 {
 	camera = _camera;
+	uiCamera = _uiCamera;
 	hwnd = _hwnd;
 	printf("ÉVÅ[ÉìñºÅFResultScene\n");
 }
@@ -31,7 +32,7 @@ void ResultScene::Update(float _deltaTime)
 
 	if (input.GetKeyTrigger(VK_RETURN))
 	{
-		SceneManager::ChangeScene(SCENE_ID_TITLE, camera, hwnd);
+		SceneManager::ChangeScene(SCENE_ID_TITLE, camera, uiCamera, hwnd);
 	}
 }
 

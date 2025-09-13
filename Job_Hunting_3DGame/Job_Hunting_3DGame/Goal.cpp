@@ -167,7 +167,6 @@ bool Goal::Init_PropGoal(Camera* _camera)
 		return false;
 	}
 
-
 	printf("Goal:‰Šú‰»ˆ—‚É¬Œ÷\n\n");
 	return true;
 }

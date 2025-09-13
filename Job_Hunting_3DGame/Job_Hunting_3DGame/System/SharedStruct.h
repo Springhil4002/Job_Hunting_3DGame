@@ -74,3 +74,21 @@ private:
 	static const int InputElementCount = 2;
 	static const D3D12_INPUT_ELEMENT_DESC InputElements[InputElementCount];
 };
+
+struct VertexUI
+{
+	XMFLOAT3 pos;	// 位置
+	XMFLOAT2 uv;	// テクスチャ座表
+	XMFLOAT4 color;	// 色
+	static const D3D12_INPUT_LAYOUT_DESC InputLayout;
+private:
+	static const int InputElementCount = 3;
+	static const D3D12_INPUT_ELEMENT_DESC InputElements[InputElementCount];
+};
+
+struct Mesh_UI
+{
+	std::vector<VertexUI> vertices;	// 頂点データの配列
+	std::vector<uint32_t> indices;	// インデックスの配列
+	std::wstring DiffuseMap;		// テクスチャのファイルパス
+};

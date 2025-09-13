@@ -10,7 +10,6 @@
 #include "RootSignature_Manager.h"
 #include "PipelineState_Manager.h"
 #include "DescriptorHeap.h"
-#include "Texture2D.h"
 #include "TextureManager.h"
 #include "Camera.h"
 

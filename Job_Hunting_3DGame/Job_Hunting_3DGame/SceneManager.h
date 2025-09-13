@@ -12,17 +12,18 @@ private:
 public:
 	SceneManager() = default;
 	/// @brief コンストラクタ
-	SceneManager(Camera* _camera,HWND _hwnd)
+	SceneManager(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	{
 		// 初期シーンのリソースをロード
-		ChangeScene(SCENE_ID_TITLE, _camera, _hwnd);
+		ChangeScene(SCENE_ID_TITLE, _camera, _uiCamera, _hwnd);
 	}
 	/// @brief デストラクタ
 	~SceneManager() = default;
 
 	/// @brief シーン遷移関数
 	/// @param _scene_ID 遷移したいシーンのID
-	static void ChangeScene(SCENE_ID _scene_ID, Camera* _camera, HWND _hwnd);
+	static void ChangeScene(
+		SCENE_ID _scene_ID, Camera* _camera, Camera2D* _uiCamera, HWND _hwnd);
 	/// @brief コンソール画面のログをクリア
 	static void ClearConsole();
 

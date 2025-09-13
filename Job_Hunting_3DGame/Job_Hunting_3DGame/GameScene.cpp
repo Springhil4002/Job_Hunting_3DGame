@@ -17,10 +17,17 @@ Object* GameScene::CreateObj(const std::string& _objectID)
 	return nullptr;
 }
 
-void GameScene::Init(Camera* _camera,HWND _hwnd)
+void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 {
 	camera = _camera;
+	uiCamera = _uiCamera;
 	hwnd = _hwnd;
+
+	camera->SetPos(XMVectorSet(0.0f, 2.5f, 0.0f, 1.0f));
+	camera->SetTarget(XMVectorSet(0.0f, -15.0f, 50.0f, 0.0f));
+	camera->SetUp(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
+	uiCamera->Init(screenWidth, screenHeight);
+
 	printf("ÉVÅ[ÉìñºÅFGameScene\n");
 }
 
@@ -35,7 +42,7 @@ void GameScene::Update(float _deltaTime)
 
 	if (input.GetKeyTrigger(VK_RETURN))
 	{
-		SceneManager::ChangeScene(SCENE_ID_RESULT, camera, hwnd);
+		SceneManager::ChangeScene(SCENE_ID_RESULT, camera, uiCamera, hwnd);
 	}
 }
 

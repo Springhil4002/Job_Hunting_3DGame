@@ -9,7 +9,7 @@
 #include "PipelineState_Manager.h"
 #include "ModelManager.h"
 #include "DescriptorHeap.h"
-#include "Texture2D.h"
+#include "TextureManager.h"
 #include "Camera.h"
 
 #include <filesystem>

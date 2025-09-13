@@ -6,10 +6,9 @@
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "ConstantBuffer.h"
-#include "RootSignature_Splash.h"
-#include "PipelineState_Splash.h"
+#include "RootSignature_Manager.h"
+#include "PipelineState_Manager.h"
 #include "DescriptorHeap.h"
-#include "Texture2D.h"
 #include "TextureManager.h"
 #include <d3dx12.h>
 
@@ -39,9 +38,9 @@ private:
 	// ディスクリプタヒープ
 	std::unique_ptr<DescriptorHeap> m_pDescriptorHeap;
 	// ルートシグネチャ
-	std::unique_ptr<RootSignature_Splash> m_pRootSignature;
+	std::shared_ptr<RootSignature> m_pRootSignature;
 	// パイプラインステート
-	std::unique_ptr<PipelineState_Splash> m_pPipelineState;
+	PipelineState_Splash* m_pPipelineState = nullptr;
 	// ディスクリプタハンドル
 	std::shared_ptr<DescriptorHandle> m_pTexHandle;
 	/// @brief 四角形メッシュ生成関数

@@ -92,11 +92,11 @@ private:
 	// フェンス
 	ComPtr<ID3D12Fence> m_pFence = nullptr;		
 	// フェンスの値（enumで設定した数:2）
-	UINT64 m_fenceValue[FRAME_BUFFER_COUNT];	
+	UINT64 m_fenceValue[FRAME_BUFFER_COUNT] = {};
 	// ビューポート
-	D3D12_VIEWPORT m_Viewport;
+	D3D12_VIEWPORT m_Viewport = {};
 	// シザー矩形
-	D3D12_RECT m_Scissor;
+	D3D12_RECT m_Scissor = {};
 
 	//==================================================================
 	// 描画に使うオブジェクトとその生成関数たち

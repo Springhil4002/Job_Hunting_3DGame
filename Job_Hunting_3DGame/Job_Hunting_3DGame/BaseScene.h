@@ -17,6 +17,10 @@ protected:
 	static Input input;
 	// オブジェクト生成に関するインスタンス
 	std::unique_ptr<PrototypeManager> prototypeManager;
+	// 画面横幅
+	float screenWidth = 1920.0f;
+	// 画面縦幅
+	float screenHeight = 1080.0f;
 public:
 	/// @brief コンストラクタ
 	BaseScene() {

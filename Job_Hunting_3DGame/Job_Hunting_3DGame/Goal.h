@@ -4,18 +4,14 @@
 #include "App.h"
 #include <d3dx12.h>
 #include "System/SharedStruct.h"
-#include "VertexBuffer.h"
+#include "Camera.h"
+#include "ModelManager.h"
 #include "ConstantBuffer.h"
+#include "DescriptorHeap.h"
+#include "TextureManager.h"
 #include "RootSignature_Manager.h"
 #include "PipelineState_Manager.h"
-#include "IndexBuffer.h"
-#include "AssimpLoader.h"
-#include "DescriptorHeap.h"
-#include "Texture2D.h"
-#include "TextureManager.h"
-#include "Camera.h"
 #include "Debug_Sphere.h"
-#include "ModelManager.h"
 
 class Goal : public Object
 {

@@ -124,6 +124,12 @@
     <Filter Include="ヘッダー ファイル\Obj\GameObj\Player">
       <UniqueIdentifier>{abb56008-cea2-4f5d-bbef-2b5f2c906571}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\UI">
+      <UniqueIdentifier>{0bd25370-989d-49da-a2b0-348c2ec1f1af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\UI">
+      <UniqueIdentifier>{b8a21055-351f-4570-ae8c-1e487bb8e59f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp">
@@ -290,6 +296,18 @@
     </ClCompile>
     <ClCompile Include="ModelManager.cpp">
       <Filter>ソース ファイル\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="UI.cpp">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="RootSignature_UI.cpp">
+      <Filter>ソース ファイル\Draw\RootSignature</Filter>
+    </ClCompile>
+    <ClCompile Include="PipelineState_UI.cpp">
+      <Filter>ソース ファイル\Draw\PipelineState</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera2D.cpp">
+      <Filter>ソース ファイル\Draw</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -488,6 +506,18 @@
     <ClInclude Include="ModelManager.h">
       <Filter>ヘッダー ファイル\Resource</Filter>
     </ClInclude>
+    <ClInclude Include="UI.h">
+      <Filter>ヘッダー ファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="RootSignature_UI.h">
+      <Filter>ヘッダー ファイル\Draw\RootSignature</Filter>
+    </ClInclude>
+    <ClInclude Include="PipelineState_UI.h">
+      <Filter>ヘッダー ファイル\Draw\PipelineState</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera2D.h">
+      <Filter>ヘッダー ファイル\Draw</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PS_Simple.hlsl">
@@ -518,6 +548,12 @@
       <Filter>リソース ファイル\VertexShader</Filter>
     </FxCompile>
     <FxCompile Include="PS_Sphere.hlsl">
+      <Filter>リソース ファイル\PixelShader</Filter>
+    </FxCompile>
+    <FxCompile Include="VS_UI.hlsl">
+      <Filter>リソース ファイル\VertexShader</Filter>
+    </FxCompile>
+    <FxCompile Include="PS_UI.hlsl">
       <Filter>リソース ファイル\PixelShader</Filter>
     </FxCompile>
   </ItemGroup>

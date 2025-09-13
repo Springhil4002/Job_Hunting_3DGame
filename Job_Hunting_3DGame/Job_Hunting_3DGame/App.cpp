@@ -96,6 +96,7 @@ void MainLoop(const TCHAR* _appName)
 	InitWindow(_appName);
 
 	auto camera = std::make_unique<Camera>();
+	auto cameraUI = std::make_shared<Camera2D>();
 	
 	// 描画基盤の初期化を行う
 	g_DrawBase = new DrawBase();
@@ -108,7 +109,7 @@ void MainLoop(const TCHAR* _appName)
 	g_ImGuiManager.Init(g_hWnd, g_DrawBase);
 	
 	// シーン管理クラスの生成
-	auto sm = std::make_unique<SceneManager>(camera.get(), g_hWnd);
+	auto sm = std::make_unique<SceneManager>(camera.get(), cameraUI.get(), g_hWnd);
 	
 	// 経過時間計測処理の初期化
 	auto timer = std::make_unique<Timer>();

@@ -93,10 +93,8 @@ void ParticleSystem_Splash::Draw()
 	cmdList->SetGraphicsRootSignature(m_pRootSignature->Get());
 	// パイプラインステートをセット
 	cmdList->SetPipelineState(m_pPipelineState->Get());
-
 	// 定数バッファをセット
 	cmdList->SetGraphicsRootConstantBufferView(0, m_pConstantBuffer[currentIndex]->GetAddress());
-	
 	// ディスクリプタヒープをセット
 	cmdList->SetDescriptorHeaps(1, &Heap);
 	// ディスクリプタテーブル
@@ -123,7 +121,6 @@ void ParticleSystem_Splash::Uninit()
 		cb.reset();
 	m_pDescriptorHeap.reset();
 	m_pRootSignature.reset();
-	m_pPipelineState.reset();
 	m_pTexHandle.reset();
 }
 
@@ -171,7 +168,7 @@ bool ParticleSystem_Splash::CreateInstanceBuffer()
 
 	if (FAILED(hr))
 	{
-		printf("水しぶきパーティクル:インスタンスバッファ生成失敗\n");
+		printf("Particle_Splash:インスタンスバッファ生成失敗\n");
 		return false;
 	}
 
@@ -196,7 +193,7 @@ bool ParticleSystem_Splash::Init_Prop(Camera* _camera)
 	m_pVertexBuffer = std::make_unique<VertexBuffer>(vertexSize, vertexStride, mesh.Vertices.data());
 	if (!m_pVertexBuffer->IsValid())
 	{
-		printf("水しぶきパーティクル:頂点バッファ生成失敗\n");
+		printf("Particle_Splash:頂点バッファ生成失敗\n");
 		return false;
 	}
 
@@ -204,7 +201,7 @@ bool ParticleSystem_Splash::Init_Prop(Camera* _camera)
 	m_pIndexBuffer = std::make_unique<IndexBuffer>(indexSize, mesh.Indices.data());
 	if (!m_pIndexBuffer->IsValid())
 	{
-		printf("水しぶきパーティクル:インデックスバッファ生成失敗\n");
+		printf("Particle_Splash:インデックスバッファ生成失敗\n");
 		return false;
 	}
 
@@ -213,7 +210,7 @@ bool ParticleSystem_Splash::Init_Prop(Camera* _camera)
 		m_pConstantBuffer[i] = std::make_unique<ConstantBuffer>(sizeof(Matrix));
 		if (!m_pConstantBuffer[i]->IsValid())
 		{
-			printf("水しぶきパーティクル:コンスタントバッファ生成失敗\n");
+			printf("Particle_Splash:コンスタントバッファ生成失敗\n");
 			return false;
 		}
 
@@ -232,38 +229,45 @@ bool ParticleSystem_Splash::Init_Prop(Camera* _camera)
 	// ディスクリプタヒープ
 	m_pDescriptorHeap = std::make_unique<DescriptorHeap>();
 
-	auto particleTex = TextureManager::Instance().LoadTexture(L"Assets/Texture/Particle_Splash.png");
+	auto particleTex = TextureManager::Instance().GetTexture(L"Assets/Texture/Particle_Splash.png");
 	if (!particleTex)
 	{
-		printf("水しぶきパーティクル:画像読み込み失敗\n");
+		printf("Particle_Splash:画像読み込み失敗\n");
 		return false;
 	}
 	m_pTexHandle = m_pDescriptorHeap->Register(particleTex.get());
 
-	m_pRootSignature = std::make_unique<RootSignature_Splash>();
+	auto& rootManager = RootSignatureManager::GetInstance();
+	m_pRootSignature = rootManager.GetRoot(Root_Type::ROOT_TYPE_SPLASH);
 	if (!m_pRootSignature->IsValid())
 	{
-		printf("水しぶきパーティクル:ルートシグネチャ生成失敗\n");
+		printf("Particle_Splash:ルートシグネチャの生成に失敗\n");
 		return false;
 	}
 
-	m_pPipelineState = std::make_unique<PipelineState_Splash>();
-	m_pPipelineState->SetInputLayout(VertexInstance::InputLayout);
-	m_pPipelineState->SetRootSignature(m_pRootSignature->Get());
-#ifdef _DEBUG
-	m_pPipelineState->SetVS(L"../x64/Debug/VS_Splash.cso");
-	m_pPipelineState->SetPS(L"../x64/Debug/PS_Splash.cso");
-#else
-	m_pPipelineState->SetVS(L"../x64/Release/VS_Splash.cso");
-	m_pPipelineState->SetPS(L"../x64/Release/PS_Splash.cso");
-#endif 
-	m_pPipelineState->Create();
+	auto& psoManager = PipelineState_Manager::GetInstance();
+	m_pPipelineState = psoManager.GetPSO_Splash(PSO_Type::PSO_TYPE_SPLASH);
 	if (!m_pPipelineState->IsValid())
 	{
-		printf("水しぶきパーティクル:パイプラインステート生成失敗\n");
+		m_pPipelineState->SetInputLayout(VertexInstance::InputLayout);
+		m_pPipelineState->SetRootSignature(m_pRootSignature->Get());
+#ifdef _DEBUG
+		m_pPipelineState->SetVS(L"../x64/Debug/VS_Splash.cso");
+		m_pPipelineState->SetPS(L"../x64/Debug/PS_Splash.cso");
+#else
+		m_pPipelineState->SetVS(L"../x64/Release/VS_Splash.cso");
+		m_pPipelineState->SetPS(L"../x64/Release/PS_Splash.cso");
+#endif 
+		m_pPipelineState->Create();
+	}
+
+	if (!m_pPipelineState->IsValid())
+	{
+		printf("Particle_Splash:パイプラインステート生成失敗\n");
 		return false;
 	}
 
+	printf("Particle_Splash:初期化処理に成功\n\n");
 	return true;
 }
 

@@ -5,6 +5,7 @@
 #include "SkyDomeMesh.h"
 #include "Player.h"
 #include "Goal.h"
+#include "UI.h"
 
 class PrototypeManager
 {

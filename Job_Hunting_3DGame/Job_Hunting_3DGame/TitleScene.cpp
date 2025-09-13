@@ -17,22 +17,27 @@ Object* TitleScene::CreateObj(const std::string& _objectID)
 	return nullptr;
 }
 
-void TitleScene::Init(Camera* _camera,HWND _hwnd)
+void TitleScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 {
 	printf("シーン名：TitleScene\n");
 
 	camera = _camera;
+	uiCamera = _uiCamera;
+	hwnd = _hwnd;
+
 	camera->SetPos(XMVectorSet(0.0f, 2.5f, 0.0f, 1.0f));
 	camera->SetTarget(XMVectorSet(0.0f, -15.0f, 50.0f, 0.0f));
 	camera->SetUp(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
-	hwnd = _hwnd;
-	
+
+	uiCamera->Init(screenWidth, screenHeight);
+
 	// プロトタイプ登録
 	prototypeManager->AddPrototype("Sky", std::make_unique<SkyDomeMesh>());
 	prototypeManager->AddPrototype("Player", std::make_unique<Player>());
 	prototypeManager->AddPrototype("WaterMesh", std::make_unique<WaterMesh>());
 	prototypeManager->AddPrototype("Goal", std::make_unique<Goal>());
-
+	prototypeManager->AddPrototype("UI", std::make_unique<UI>());
+	
 	XMVECTOR camPos = camera->GetPos();
 	XMFLOAT3 pos;
 	XMStoreFloat3(&pos, camPos);
@@ -66,6 +71,13 @@ void TitleScene::Init(Camera* _camera,HWND _hwnd)
 	waterMesh->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
 	waterMesh->m_tags.AddTag("WaterMesh");
 
+	UI* ui_test = dynamic_cast<UI*>(CreateObj("UI"));
+	ui_test->Init(uiCamera, 960.0f, 540.0f);
+	ui_test->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
+	ui_test->SetRota(XMVectorZero());
+	ui_test->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	ui_test->m_tags.AddTag("UI");
+
 	playerCtrl = std::make_unique<PlayerController>();
 	playerCtrl->Init(player, waterMesh, camera, &BaseScene::input);
 
@@ -87,7 +99,7 @@ void TitleScene::Update(float _deltaTime)
 
 	if (input.GetKeyTrigger(VK_RETURN) || game->GetGoalFlag())
 	{
-		SceneManager::ChangeScene(SCENE_ID_GAME, camera, hwnd);
+		SceneManager::ChangeScene(SCENE_ID_GAME, camera, uiCamera, hwnd);
 	}
 }
 
