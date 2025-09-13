@@ -35,7 +35,7 @@ void ResultScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	prototypeManager->AddPrototype("UI_Fade", std::make_unique<UI_Fade>());
 
 	UI* ui_test = dynamic_cast<UI*>(CreateObj("UI"));
-	ui_test->Init(uiCamera, 480.0f, 270.0f, L"Assets/Texture/hogehoge.png");
+	ui_test->Init(uiCamera, 1920.0f, 1080.0f, L"Assets/Texture/hogehoge.png");
 	ui_test->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
 	ui_test->SetRota(XMVectorZero());
 	ui_test->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
