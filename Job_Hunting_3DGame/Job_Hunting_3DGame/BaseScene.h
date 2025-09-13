@@ -80,4 +80,30 @@ public:
 		}
 		return objects;
 	}
+
+	template <class T>
+	T* FindByTag(const std::string& _tag)
+	{
+		for (auto& obj : objectInstance)
+		{
+			if (obj->m_tags.SearchTag(_tag))
+			{
+				return dynamic_cast<T*>(obj.get());
+			}
+		}
+		return nullptr;
+	}
+
+	template<typename T>
+	T* FindByType()
+	{
+		for (auto& obj : objectInstance)
+		{
+			if (auto casted = dynamic_cast<T*>(obj.get()))
+			{
+				return casted;
+			}
+		}
+		return nullptr;
+	}
 };

@@ -9,16 +9,14 @@ std::unique_ptr<Object> UI::clone() const
     return newObj;
 }
 
-bool UI::Init(Camera2D* _cameraUI, float _width, float _height)
+bool UI::Init(Camera2D* _cameraUI, float _width, float _height, 
+    const std::wstring& _filePath)
 {
     m_CameraUI = _cameraUI;
+    if (!m_CameraUI) return false;
     m_SizeWidth = _width;
     m_SizeHeight = _height;
-    if (!m_CameraUI || 
-        m_SizeWidth == 0.0f || 
-        m_SizeHeight == 0.0f) 
-        return false;
-
+   
     auto mesh = CreateQuad(0, 0, 
         m_SizeWidth, m_SizeHeight, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f));
     auto vertexSize = sizeof(VertexUI) * std::size(mesh.vertices);
@@ -53,12 +51,13 @@ bool UI::Init(Camera2D* _cameraUI, float _width, float _height)
         ptr->world = XMMatrixIdentity();
         ptr->view = m_CameraUI->GetViewMatrix();
         ptr->proj = m_CameraUI->GetProjMatrix();
+        ptr->alpha = m_Alpha;
     }
 
     // ディスクリプタヒープ
     m_pDescriptorHeap = std::make_unique<DescriptorHeap>();
 
-    auto tex = TextureManager::Instance().GetTexture(L"Assets/Texture/hogehoge.png");
+    auto tex = TextureManager::Instance().GetTexture(_filePath);
     if (!tex)
     {
         printf("UI:画像読み込み失敗\n");
@@ -199,4 +198,10 @@ void UI::UpdateCameraMatrix()
     ptr->world = m_worldMatrix;
     ptr->view = m_CameraUI->GetViewMatrix();
     ptr->proj = m_CameraUI->GetProjMatrix();
+    ptr->alpha = m_Alpha;
+}
+
+float UI::GetAlpha() const
+{
+    return m_Alpha;
 }

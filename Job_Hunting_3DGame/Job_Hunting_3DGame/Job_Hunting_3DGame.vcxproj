@@ -204,6 +204,7 @@
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="UI.cpp" />
+    <ClCompile Include="UI_Fade.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="WaterMesh.cpp" />
   </ItemGroup>
@@ -278,6 +279,7 @@
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="UI.h" />
+    <ClInclude Include="UI_Fade.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="SceneFactory.h" />
     <ClInclude Include="WaterMesh.h" />

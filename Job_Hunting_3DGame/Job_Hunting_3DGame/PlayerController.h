@@ -25,6 +25,8 @@ private:
 	DirectX::XMVECTOR m_LastPlayerPos	= DirectX::XMVectorZero();	// 前フレームプレイヤー位置
 	DirectX::XMVECTOR m_Velocity		= DirectX::XMVectorZero();	// 現在の移動速度ベクトル
 	DirectX::XMVECTOR m_VelocityY		= DirectX::XMVectorZero();	// 縦方向の速度(重力用)		
+	
+	bool m_Played = true;			// 操作可能フラグ
 
 	float m_RotateSpeed = 0.0f;		// 回転速度
 	float m_Acceleration = 0.0f;	// 加速度
@@ -76,9 +78,11 @@ public:
 	DirectX::XMVECTOR GetForwardVec() const { return m_ForwardVec; }
 	DirectX::XMVECTOR GetRightVec() const { return m_RightVec; }
 	DirectX::XMVECTOR GetVelocity() const { return m_Velocity; }
+	bool IsPlayed() const { return m_Played; }
 	float GetMaxSpeed() const { return m_MaxSpeed; }
 	float GetFollowSpeed() const { return m_FollowSpeed; }
 
+	void SetPlayed(bool _played) { m_Played = _played; }
 	void SetPosition(DirectX::XMVECTOR _pos) { m_Position = _pos; }
 	void SetMaxSpeed(float _maxSpeed) { m_MaxSpeed = _maxSpeed; }
 	void SetFollowSpeed(float _followSpeed) { m_FollowSpeed = _followSpeed; }

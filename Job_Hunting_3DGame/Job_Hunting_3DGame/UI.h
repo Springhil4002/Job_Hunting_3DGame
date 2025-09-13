@@ -15,6 +15,7 @@
 
 class UI : public Object
 {
+protected:
 	// 頂点バッファ
 	std::unique_ptr<VertexBuffer> m_pVertexBuffer;
 	// インデックスバッファ
@@ -35,16 +36,18 @@ class UI : public Object
 	float m_SizeWidth = 0.0f;
 	// UIの縦幅
 	float m_SizeHeight = 0.0f;
+	// 透明度
+	float m_Alpha = 1.0f;
 public:
 	// ワールド行列更新操作用
 	DirectX::XMMATRIX m_worldMatrix = DirectX::XMMatrixIdentity();
 	/// @brief コンストラクタ
 	UI() = default;
 	/// @brief デストラクタ
-	~UI() = default;
+	virtual ~UI() = default;
 
 	// クローンメソッド
-	std::unique_ptr<Object> clone() const override;
+	virtual std::unique_ptr<Object> clone() const override;
 	
 	Mesh_UI CreateQuad(
 		float _x, float _y, float _w, float _h, XMFLOAT4 _color);
@@ -52,14 +55,16 @@ public:
 	/// @brief 初期化処理
 	/// @return 初期化処理の成否を返します
 	bool Init() { return true; }
-	bool Init(Camera2D* _cameraUI, float _width, float _height);
+	bool Init(Camera2D* _cameraUI, float _width, float _height, 
+		const std::wstring& _filePath);
 	/// @brief 更新処理
-	void Update()	override;
+	virtual void Update()	override;
 	/// @brief 描画処理
-	void Draw()		override;
+	virtual void Draw()		override;
 	/// @brief 終了処理
-	void Uninit()	override;
+	virtual void Uninit()	override;
 
 	void UpdateTransform();
 	void UpdateCameraMatrix();
+	float GetAlpha() const;
 };

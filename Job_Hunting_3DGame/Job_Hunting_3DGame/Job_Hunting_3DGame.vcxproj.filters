@@ -309,6 +309,9 @@
     <ClCompile Include="Camera2D.cpp">
       <Filter>ソース ファイル\Draw</Filter>
     </ClCompile>
+    <ClCompile Include="UI_Fade.cpp">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h">
@@ -517,6 +520,9 @@
     </ClInclude>
     <ClInclude Include="Camera2D.h">
       <Filter>ヘッダー ファイル\Draw</Filter>
+    </ClInclude>
+    <ClInclude Include="UI_Fade.h">
+      <Filter>ヘッダー ファイル\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

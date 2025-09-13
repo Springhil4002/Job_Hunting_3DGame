@@ -89,6 +89,7 @@ void PlayerController::Init_Param()
 
 void PlayerController::Update_Input(float _deltaTime)
 {
+	if (!m_Played) return;
 	Input_Rotate(_deltaTime);
 	Input_Move(_deltaTime);
 }

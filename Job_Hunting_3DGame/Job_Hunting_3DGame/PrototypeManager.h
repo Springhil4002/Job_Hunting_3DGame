@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "Goal.h"
 #include "UI.h"
+#include "UI_Fade.h"
 
 class PrototypeManager
 {

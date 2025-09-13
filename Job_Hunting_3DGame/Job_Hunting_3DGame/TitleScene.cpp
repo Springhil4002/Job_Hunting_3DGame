@@ -28,7 +28,6 @@ void TitleScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	camera->SetPos(XMVectorSet(0.0f, 2.5f, 0.0f, 1.0f));
 	camera->SetTarget(XMVectorSet(0.0f, -15.0f, 50.0f, 0.0f));
 	camera->SetUp(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
-
 	uiCamera->Init(screenWidth, screenHeight);
 
 	// プロトタイプ登録
@@ -37,11 +36,11 @@ void TitleScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	prototypeManager->AddPrototype("WaterMesh", std::make_unique<WaterMesh>());
 	prototypeManager->AddPrototype("Goal", std::make_unique<Goal>());
 	prototypeManager->AddPrototype("UI", std::make_unique<UI>());
+	prototypeManager->AddPrototype("UI_Fade", std::make_unique<UI_Fade>());
 	
 	XMVECTOR camPos = camera->GetPos();
 	XMFLOAT3 pos;
 	XMStoreFloat3(&pos, camPos);
-	pos.y -= 100.0f;
 
 	SkyDomeMesh* sky = dynamic_cast<SkyDomeMesh*>(CreateObj("Sky"));
 	sky->Init(camera);
@@ -72,11 +71,19 @@ void TitleScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	waterMesh->m_tags.AddTag("WaterMesh");
 
 	UI* ui_test = dynamic_cast<UI*>(CreateObj("UI"));
-	ui_test->Init(uiCamera, 960.0f, 540.0f);
-	ui_test->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
+	ui_test->Init(uiCamera, 480.0f, 270.0f, L"Assets/Texture/hogehoge.png");
+	ui_test->SetPos(XMVectorSet(720.0f, 405.0f, 0.0f, 0.0f));
 	ui_test->SetRota(XMVectorZero());
 	ui_test->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
 	ui_test->m_tags.AddTag("UI");
+
+	UI_Fade* ui_fade = dynamic_cast<UI_Fade*>(CreateObj("UI_Fade"));
+	ui_fade->Init(uiCamera, 1920.0f, 1080.0f);
+	ui_fade->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
+	ui_fade->SetRota(XMVectorZero());
+	ui_fade->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	ui_fade->SetFadeOut();
+	ui_fade->m_tags.AddTag("UI_Fade");
 
 	playerCtrl = std::make_unique<PlayerController>();
 	playerCtrl->Init(player, waterMesh, camera, &BaseScene::input);
@@ -97,7 +104,17 @@ void TitleScene::Update(float _deltaTime)
 		obj->Update();
 	}
 
-	if (input.GetKeyTrigger(VK_RETURN) || game->GetGoalFlag())
+	auto ui_fade = FindByTag<UI_Fade>("UI_Fade");
+	if (ui_fade && ui_fade->GetState() == FADE_STATE::FADE_STATE_NONE)
+	{
+		if (input.GetKeyTrigger(VK_RETURN) || game->GetGoalFlag())
+		{
+			ui_fade->SetFadeIn();
+			playerCtrl->SetPlayed(false);
+		}
+	}
+
+	if (ui_fade && ui_fade->IsFadeFinished() && ui_fade->GetAlpha() >= 1.0f)
 	{
 		SceneManager::ChangeScene(SCENE_ID_GAME, camera, uiCamera, hwnd);
 	}
