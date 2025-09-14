@@ -9,8 +9,10 @@ SceneResourceList GetSceneResourceList(SCENE_ID _ID)
 	{
 	case SCENE_ID_TITLE:
 		list.textures = {
-			{ L"Assets/Texture/Color_Black.png",	 TEX_TYPE::TEX_TYPE_TEXTURE2D },
-			{ L"Assets/Texture/Title.png",			 TEX_TYPE::TEX_TYPE_TEXTURE2D },
+			{ L"Assets/Texture/Color_Black.png",	TEX_TYPE::TEX_TYPE_TEXTURE2D },
+			{ L"Assets/Texture/Title_Bg.png",		TEX_TYPE::TEX_TYPE_TEXTURE2D },
+			{ L"Assets/Texture/Title_Logo.png",		TEX_TYPE::TEX_TYPE_TEXTURE2D },
+			{ L"Assets/Texture/Title_Start.png",	TEX_TYPE::TEX_TYPE_TEXTURE2D },
 		};
 		list.modelPaths = {
 			{},

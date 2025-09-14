@@ -33,7 +33,7 @@ private:
 	// ƒJƒƒ‰
 	Camera* m_camera = nullptr;
 	// “§–¾“x
-	float m_alpha = 0.5f;
+	float m_alpha = 0.0f;
 	// ‹…‘Ì‚Ì”¼Œa
 	float m_radius = 5.0f;
 public:

@@ -34,12 +34,26 @@ void TitleScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	prototypeManager->AddPrototype("UI", std::make_unique<UI>());
 	prototypeManager->AddPrototype("UI_Fade", std::make_unique<UI_Fade>());
 
-	UI* ui_test = dynamic_cast<UI*>(CreateObj("UI"));
-	ui_test->Init(uiCamera, 1920.0f, 1080.0f, L"Assets/Texture/Title.png");
-	ui_test->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
-	ui_test->SetRota(XMVectorZero());
-	ui_test->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
-	ui_test->m_tags.AddTag("UI");
+	UI* ui_bg = dynamic_cast<UI*>(CreateObj("UI"));
+	ui_bg->Init(uiCamera, 1920.0f, 1080.0f, L"Assets/Texture/Title_Bg.png");
+	ui_bg->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
+	ui_bg->SetRota(XMVectorZero());
+	ui_bg->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	ui_bg->m_tags.AddTag("UI_Bg");
+
+	UI* ui_logo = dynamic_cast<UI*>(CreateObj("UI"));
+	ui_logo->Init(uiCamera, 720.0f, 540.0f, L"Assets/Texture/Title_Logo.png");
+	ui_logo->SetPos(XMVectorSet(-620.0f, 400.0f, 0.0f, 0.0f));
+	ui_logo->SetRota(XMVectorZero());
+	ui_logo->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	ui_logo->m_tags.AddTag("UI_Logo");
+
+	UI* ui_start = dynamic_cast<UI*>(CreateObj("UI"));
+	ui_start->Init(uiCamera, 720.0f, 300.0f, L"Assets/Texture/Title_Start.png");
+	ui_start->SetPos(XMVectorSet(-550.0f, -250.0f, 0.0f, 0.0f));
+	ui_start->SetRota(XMVectorZero());
+	ui_start->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	ui_start->m_tags.AddTag("UI_Start");
 
 	UI_Fade* ui_fade = dynamic_cast<UI_Fade*>(CreateObj("UI_Fade"));
 	ui_fade->Init(uiCamera, 1920.0f, 1080.0f);
