@@ -55,6 +55,13 @@ void TitleScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	ui_start->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
 	ui_start->m_tags.AddTag("UI_Start");
 
+	UI* ui_con = dynamic_cast<UI*>(CreateObj("UI"));
+	ui_con->Init(uiCamera, 400.0f, 400.0f, L"Assets/Texture/Game_controller.png");
+	ui_con->SetPos(XMVectorSet(700.0f, 350.0f, 0.0f, 0.0f));
+	ui_con->SetRota(XMVectorZero());
+	ui_con->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	ui_con->m_tags.AddTag("UI_con");
+
 	UI_Fade* ui_fade = dynamic_cast<UI_Fade*>(CreateObj("UI_Fade"));
 	ui_fade->Init(uiCamera, 1920.0f, 1080.0f);
 	ui_fade->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
@@ -75,7 +82,7 @@ void TitleScene::Update(float _deltaTime)
 	auto ui_fade = FindByTag<UI_Fade>("UI_Fade");
 	if (ui_fade && ui_fade->GetState() == FADE_STATE::FADE_STATE_NONE)
 	{
-		if (input.GetKeyTrigger(VK_RETURN))
+		if (input.GetKeyTrigger(VK_SPACE))
 		{
 			ui_fade->SetFadeIn();
 		}
@@ -160,6 +167,11 @@ void TitleScene::Update_MouseRotate(float _sensi)
 }
 
 void TitleScene::Draw_ImGui()
+{
+	//ImGui_Prop();
+}
+
+void TitleScene::ImGui_Prop()
 {
 	ImGui::Begin("SceneName:TitleScene");
 	ImGui::Text("FPS: %.2f", ImGui::GetIO().Framerate);

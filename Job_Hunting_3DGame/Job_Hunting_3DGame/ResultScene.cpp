@@ -35,11 +35,25 @@ void ResultScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	prototypeManager->AddPrototype("UI_Fade", std::make_unique<UI_Fade>());
 
 	UI* ui_test = dynamic_cast<UI*>(CreateObj("UI"));
-	ui_test->Init(uiCamera, 1920.0f, 1080.0f, L"Assets/Texture/hogehoge.png");
+	ui_test->Init(uiCamera, 1920.0f, 1080.0f, L"Assets/Texture/Result_Bg.png");
 	ui_test->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
 	ui_test->SetRota(XMVectorZero());
 	ui_test->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
 	ui_test->m_tags.AddTag("UI");
+
+	UI* ui_clear = dynamic_cast<UI*>(CreateObj("UI"));
+	ui_clear->Init(uiCamera, 720.0f, 300.0f, L"Assets/Texture/Result_Logo.png");
+	ui_clear->SetPos(XMVectorSet(0.0f, 200.0f, 0.0f, 0.0f));
+	ui_clear->SetRota(XMVectorZero());
+	ui_clear->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	ui_clear->m_tags.AddTag("UI");
+
+	UI* ui_logo = dynamic_cast<UI*>(CreateObj("UI"));
+	ui_logo->Init(uiCamera, 720.0f, 300.0f, L"Assets/Texture/Result_ToTitle.png");
+	ui_logo->SetPos(XMVectorSet(0.0f, -100.0f, 0.0f, 0.0f));
+	ui_logo->SetRota(XMVectorZero());
+	ui_logo->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	ui_logo->m_tags.AddTag("UI");
 
 	UI_Fade* ui_fade = dynamic_cast<UI_Fade*>(CreateObj("UI_Fade"));
 	ui_fade->Init(uiCamera, 1920.0f, 1080.0f);
@@ -61,7 +75,7 @@ void ResultScene::Update(float _deltaTime)
 	auto ui_fade = FindByTag<UI_Fade>("UI_Fade");
 	if (ui_fade && ui_fade->GetState() == FADE_STATE::FADE_STATE_NONE)
 	{
-		if (input.GetKeyTrigger(VK_RETURN))
+		if (input.GetKeyTrigger(VK_SPACE))
 		{
 			ui_fade->SetFadeIn();
 		}
@@ -146,6 +160,11 @@ void ResultScene::Update_MouseRotate(float _sensi)
 }
 
 void ResultScene::Draw_ImGui()
+{
+	//ImGui_Prop();
+}
+
+void ResultScene::ImGui_Prop()
 {
 	ImGui::Begin("SceneName:ResultScene");
 	ImGui::Text("FPS: %.2f", ImGui::GetIO().Framerate);

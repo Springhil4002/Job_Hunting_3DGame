@@ -45,11 +45,11 @@ private:
 	// 頂点数
 	UINT m_IndexCount = 0;
 	// Xマス
-	int m_GridX = 256;
+	int m_GridX = 512;
 	// Zマス
-	int m_GridZ = 256;
+	int m_GridZ = 512;
 	// グリッドサイズ
-	float m_GridSize = 512.0f;
+	float m_GridSize = 1024.0f;
 public:
 	// ワールド行列更新操作用
 	DirectX::XMMATRIX m_worldMatrix = DirectX::XMMatrixIdentity();

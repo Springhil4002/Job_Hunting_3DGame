@@ -13,6 +13,7 @@ SceneResourceList GetSceneResourceList(SCENE_ID _ID)
 			{ L"Assets/Texture/Title_Bg.png",		TEX_TYPE::TEX_TYPE_TEXTURE2D },
 			{ L"Assets/Texture/Title_Logo.png",		TEX_TYPE::TEX_TYPE_TEXTURE2D },
 			{ L"Assets/Texture/Title_Start.png",	TEX_TYPE::TEX_TYPE_TEXTURE2D },
+			{ L"Assets/Texture/Game_controller.png", TEX_TYPE::TEX_TYPE_TEXTURE2D },
 		};
 		list.modelPaths = {
 			{},
@@ -26,7 +27,9 @@ SceneResourceList GetSceneResourceList(SCENE_ID _ID)
 			{ L"Assets/Texture/Color_Red.png",		 TEX_TYPE::TEX_TYPE_TEXTURE2D },
 			{ L"Assets/Texture/SkyDome.dds",		 TEX_TYPE::TEX_TYPE_CUBEMAP },
 			{ L"Assets/Texture/Particle_Splash.png", TEX_TYPE::TEX_TYPE_TEXTURE2D },
-			{ L"Assets/Texture/hogehoge.png",		 TEX_TYPE::TEX_TYPE_TEXTURE2D },
+			{ L"Assets/Texture/Game_if.png",		 TEX_TYPE::TEX_TYPE_TEXTURE2D },
+			
+			//{ L"Assets/Texture/Number.png",			 TEX_TYPE::TEX_TYPE_TEXTURE2D },
 		};
 		list.modelPaths = {
 			{ L"Assets/Player/Player.FBX" },
@@ -35,7 +38,10 @@ SceneResourceList GetSceneResourceList(SCENE_ID _ID)
 		break;
 	case SCENE_ID_RESULT:
 		list.textures = {
-			{},
+			{ L"Assets/Texture/hogehoge.png",		 TEX_TYPE::TEX_TYPE_TEXTURE2D },
+			{ L"Assets/Texture/Result_Bg.png",		 TEX_TYPE::TEX_TYPE_TEXTURE2D },
+			{ L"Assets/Texture/Result_Logo.png",	 TEX_TYPE::TEX_TYPE_TEXTURE2D },
+			{ L"Assets/Texture/Result_ToTitle.png",	 TEX_TYPE::TEX_TYPE_TEXTURE2D },
 			{},
 		};
 		list.modelPaths = {

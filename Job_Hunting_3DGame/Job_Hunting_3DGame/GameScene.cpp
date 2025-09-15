@@ -55,13 +55,41 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	player->SetRota(XMVectorZero());
 	player->SetScale(XMVectorSet(0.01f, 0.01f, 0.01f, 0.0f));
 	player->m_tags.AddTag("Player");
-
+	
 	Goal* goal = dynamic_cast<Goal*>(CreateObj("Goal"));
 	goal->Init(camera);
-	goal->SetPos(XMVectorSet(0.0f, -1.0f, 50.0f, 0.0f));
+	goal->SetPos(XMVectorSet(50.0f, -1.0f, 100.0f, 0.0f));
 	goal->SetRota(XMVectorZero());
 	goal->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
 	goal->m_tags.AddTag("Goal");
+
+	Goal* goal2 = dynamic_cast<Goal*>(CreateObj("Goal"));
+	goal2->Init(camera);
+	goal2->SetPos(XMVectorSet(0.0f, -1.0f, 50.0f, 0.0f));
+	goal2->SetRota(XMVectorZero());
+	goal2->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	goal2->m_tags.AddTag("Goal");
+
+	Goal* goal3 = dynamic_cast<Goal*>(CreateObj("Goal"));
+	goal3->Init(camera);
+	goal3->SetPos(XMVectorSet(-50.0f, -1.0f, 100.0f, 0.0f));
+	goal3->SetRota(XMVectorSet(0.0f, XMConvertToRadians(90.0f), 0.0f, 0.0f));
+	goal3->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	goal3->m_tags.AddTag("Goal");
+
+	Goal* goal4 = dynamic_cast<Goal*>(CreateObj("Goal"));
+	goal4->Init(camera);
+	goal4->SetPos(XMVectorSet(-50.0f, -1.0f, -100.0f, 0.0f));
+	goal4->SetRota(XMVectorSet(0.0f, XMConvertToRadians(45.0f), 0.0f, 0.0f));
+	goal4->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	goal4->m_tags.AddTag("Goal");
+
+	Goal* goal5 = dynamic_cast<Goal*>(CreateObj("Goal"));
+	goal5->Init(camera);
+	goal5->SetPos(XMVectorSet(50.0f, -1.0f, -100.0f, 0.0f));
+	goal5->SetRota(XMVectorSet(0.0f, XMConvertToRadians(70.0f), 0.0f, 0.0f));
+	goal5->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	goal5->m_tags.AddTag("Goal");
 
 	WaterMesh* waterMesh = dynamic_cast<WaterMesh*>(CreateObj("WaterMesh"));
 	waterMesh->Init(camera);
@@ -70,12 +98,12 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	waterMesh->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
 	waterMesh->m_tags.AddTag("WaterMesh");
 
-	UI* ui_test = dynamic_cast<UI*>(CreateObj("UI"));
-	ui_test->Init(uiCamera, 480.0f, 270.0f, L"Assets/Texture/hogehoge.png");
-	ui_test->SetPos(XMVectorSet(720.0f, 405.0f, 0.0f, 0.0f));
-	ui_test->SetRota(XMVectorZero());
-	ui_test->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
-	ui_test->m_tags.AddTag("UI");
+	UI* ui_if= dynamic_cast<UI*>(CreateObj("UI"));
+	ui_if->Init(uiCamera, 500.0f, 200.0f, L"Assets/Texture/Game_if.png");
+	ui_if->SetPos(XMVectorSet(-740.0f, 450.0f, 0.0f, 0.0f));
+	ui_if->SetRota(XMVectorZero());
+	ui_if->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	ui_if->m_tags.AddTag("UI_If");
 
 	UI_Fade* ui_fade = dynamic_cast<UI_Fade*>(CreateObj("UI_Fade"));
 	ui_fade->Init(uiCamera, 1920.0f, 1080.0f);
@@ -88,14 +116,30 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	playerCtrl = std::make_unique<PlayerController>();
 	playerCtrl->Init(player, waterMesh, camera, &BaseScene::input);
 
+	std::vector<Goal*> goals;
+	for (auto& obj : objectInstance)
+	{
+		if (obj->m_tags.SearchTag("Goal"))
+		{
+			goals.push_back(dynamic_cast<Goal*>(obj.get()));
+		}
+	}
 	game = std::make_unique<Game>();
-	game->Init(player, goal);
+	game->Init(player, goals);
 }
 
 void GameScene::Update(float _deltaTime)
 {
 	//Update_Input();
 	game->Update(_deltaTime);
+	if (game->GetState() == RACE_STATE::RACE_STATE_COUNTDOWN)
+	{
+		playerCtrl->SetPlayed(false);
+	}
+	else
+	{
+		playerCtrl->SetPlayed(true);
+	}
 
 	playerCtrl->Update(_deltaTime);
 
@@ -107,7 +151,7 @@ void GameScene::Update(float _deltaTime)
 	auto ui_fade = FindByTag<UI_Fade>("UI_Fade");
 	if (ui_fade && ui_fade->GetState() == FADE_STATE::FADE_STATE_NONE)
 	{
-		if (input.GetKeyTrigger(VK_RETURN) || game->GetGoalFlag())
+		if (input.GetKeyTrigger(VK_SPACE) || game->GetGoalFlag())
 		{
 			ui_fade->SetFadeIn();
 			playerCtrl->SetPlayed(false);
@@ -201,10 +245,10 @@ void GameScene::Update_MouseRotate(float _sensi)
 
 void GameScene::Draw_ImGui()
 {
-	ImGui_Prop();
-	ImGui_PlayerController();
-	ImGui_Goal();
-	ImGui_WaterMesh();
+	//ImGui_Prop();
+	//ImGui_PlayerController();
+	//ImGui_Goal();
+	//ImGui_WaterMesh();
 	ImGui_Timer();
 }
 
