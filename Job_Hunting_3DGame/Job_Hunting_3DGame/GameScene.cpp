@@ -245,10 +245,10 @@ void GameScene::Update_MouseRotate(float _sensi)
 
 void GameScene::Draw_ImGui()
 {
-	//ImGui_Prop();
-	//ImGui_PlayerController();
-	//ImGui_Goal();
-	//ImGui_WaterMesh();
+	ImGui_Prop();
+	ImGui_PlayerController();
+	ImGui_Goal();
+	ImGui_WaterMesh();
 	ImGui_Timer();
 }
 

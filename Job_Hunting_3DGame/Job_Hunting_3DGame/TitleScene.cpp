@@ -168,7 +168,7 @@ void TitleScene::Update_MouseRotate(float _sensi)
 
 void TitleScene::Draw_ImGui()
 {
-	//ImGui_Prop();
+	ImGui_Prop();
 }
 
 void TitleScene::ImGui_Prop()
