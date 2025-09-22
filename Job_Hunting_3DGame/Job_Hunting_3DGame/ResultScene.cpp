@@ -39,6 +39,8 @@ void ResultScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	ui_test->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
 	ui_test->SetRota(XMVectorZero());
 	ui_test->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	ui_test->UpdateTransform();
+	ui_test->UpdateCameraMatrix();
 	ui_test->m_tags.AddTag("UI");
 
 	UI* ui_clear = dynamic_cast<UI*>(CreateObj("UI"));
@@ -46,6 +48,8 @@ void ResultScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	ui_clear->SetPos(XMVectorSet(0.0f, 200.0f, 0.0f, 0.0f));
 	ui_clear->SetRota(XMVectorZero());
 	ui_clear->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	ui_clear->UpdateTransform();
+	ui_clear->UpdateCameraMatrix();
 	ui_clear->m_tags.AddTag("UI");
 
 	UI* ui_logo = dynamic_cast<UI*>(CreateObj("UI"));
@@ -53,6 +57,8 @@ void ResultScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	ui_logo->SetPos(XMVectorSet(0.0f, -100.0f, 0.0f, 0.0f));
 	ui_logo->SetRota(XMVectorZero());
 	ui_logo->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	ui_logo->UpdateTransform();
+	ui_logo->UpdateCameraMatrix();
 	ui_logo->m_tags.AddTag("UI");
 
 	UI_Fade* ui_fade = dynamic_cast<UI_Fade*>(CreateObj("UI_Fade"));
@@ -61,6 +67,8 @@ void ResultScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	ui_fade->SetRota(XMVectorZero());
 	ui_fade->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
 	ui_fade->SetFadeOut();
+	ui_fade->UpdateTransform();
+	ui_fade->UpdateCameraMatrix();
 	ui_fade->m_tags.AddTag("UI_Fade");
 }
 

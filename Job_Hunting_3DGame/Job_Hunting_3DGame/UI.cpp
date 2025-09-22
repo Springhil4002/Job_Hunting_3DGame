@@ -39,7 +39,7 @@ bool UI::Init(Camera2D* _cameraUI, float _width, float _height,
 
     for (size_t i = 0; i < DrawBase::FRAME_BUFFER_COUNT; ++i)
     {
-        m_pConstantBuffer[i] = std::make_unique<ConstantBuffer>(sizeof(Matrix));
+        m_pConstantBuffer[i] = std::make_unique<ConstantBuffer>(sizeof(MatrixUI));
         if (!m_pConstantBuffer[i]->IsValid())
         {
             printf("UI:コンスタントバッファ生成失敗\n");
@@ -47,11 +47,12 @@ bool UI::Init(Camera2D* _cameraUI, float _width, float _height,
         }
 
         // カメラの初期化
-        auto ptr = m_pConstantBuffer[i]->GetPtr<Matrix>();
+        auto ptr = m_pConstantBuffer[i]->GetPtr<MatrixUI>();
         ptr->world = XMMatrixIdentity();
         ptr->view = m_CameraUI->GetViewMatrix();
         ptr->proj = m_CameraUI->GetProjMatrix();
         ptr->alpha = m_Alpha;
+        ptr->uv = m_UV;
     }
 
     // ディスクリプタヒープ
@@ -179,6 +180,29 @@ Mesh_UI UI::CreateQuad(float _x, float _y, float _w, float _h, XMFLOAT4 _color)
     return mesh;
 }
 
+void UI::SetTransform(
+    XMVECTOR _pos,
+    XMVECTOR _rota,
+    XMVECTOR _scale,
+    float _alpha,
+    XMFLOAT4 _uv)
+{
+    SetPos(_pos);
+    SetRota(_rota);
+    SetScale(_scale); 
+    m_Alpha = _alpha;
+    m_UV = _uv;
+
+    UpdateTransform();
+    UpdateCameraMatrix();
+}
+
+void UI::SetUV(const XMFLOAT4& _uv)
+{
+    m_UV =_uv;
+    UpdateCameraMatrix();
+}
+
 void UI::UpdateTransform()
 {
     auto pos = GetPos();
@@ -194,14 +218,10 @@ void UI::UpdateTransform()
 void UI::UpdateCameraMatrix()
 {
     auto currentIndex = g_DrawBase->CurrentBackBufferIndex();
-    auto ptr = m_pConstantBuffer[currentIndex]->GetPtr<Matrix>();
+    auto ptr = m_pConstantBuffer[currentIndex]->GetPtr<MatrixUI>();
     ptr->world = m_worldMatrix;
     ptr->view = m_CameraUI->GetViewMatrix();
     ptr->proj = m_CameraUI->GetProjMatrix();
     ptr->alpha = m_Alpha;
-}
-
-float UI::GetAlpha() const
-{
-    return m_Alpha;
+    ptr->uv = m_UV;
 }

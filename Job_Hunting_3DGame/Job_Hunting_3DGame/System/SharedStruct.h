@@ -33,7 +33,7 @@ private:
 	static const D3D12_INPUT_ELEMENT_DESC InputElements[InputElementCount];
 };
 
-// 変換行列の定義
+// 3Dオブジェクト用の変換行列の定義
 struct alignas(256) Matrix
 {
 	Matrix4x4 world;	// ワールド行列
@@ -42,6 +42,16 @@ struct alignas(256) Matrix
 	float time;			// 波のための時間
 	XMFLOAT3 cameraPos;	// カメラ位置
 	float alpha;		// 透明度
+};
+
+struct alignas(256) MatrixUI
+{
+	Matrix4x4 world;	// ワールド行列
+	Matrix4x4 view;		// ビュー行列
+	Matrix4x4 proj;		// 投影行列
+	float alpha;		// 透明度
+	float padding[3];	// パディング
+	XMFLOAT4 uv;		// UV情報
 };
 
 struct GerstnerParams

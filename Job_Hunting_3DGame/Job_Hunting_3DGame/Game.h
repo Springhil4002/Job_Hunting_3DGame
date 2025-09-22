@@ -14,18 +14,21 @@ enum class RACE_STATE
 class Game
 {
 private:
+	Player* player = nullptr;
 	std::vector<Goal*> goals;
 	std::vector<bool> insideFlags;
+
+	std::chrono::steady_clock::time_point countdownStart;
+	std::chrono::steady_clock::time_point raceStartTime;
+	std::chrono::milliseconds elapsedTime = std::chrono::milliseconds(0);
+
+	int countDownTime = 3;
+
 	int goalCount = 0;
 	int clearCount = 0;
 	bool goalFlag = false;
 	bool inside = false;
-	int countDownTime = 3;
-	Player* player = nullptr;
 	RACE_STATE state = RACE_STATE::RACE_STATE_COUNTDOWN;
-	std::chrono::steady_clock::time_point countdownStart;
-	std::chrono::steady_clock::time_point raceStartTime;
-	std::chrono::milliseconds elapsedTime = std::chrono::milliseconds(0);
 public:
 	/// @brief 初期化処理
 	/// @param _player　プレイヤーのポインタ 

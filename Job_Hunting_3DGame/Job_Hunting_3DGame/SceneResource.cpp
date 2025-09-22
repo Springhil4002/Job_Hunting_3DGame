@@ -28,8 +28,8 @@ SceneResourceList GetSceneResourceList(SCENE_ID _ID)
 			{ L"Assets/Texture/SkyDome.dds",		 TEX_TYPE::TEX_TYPE_CUBEMAP },
 			{ L"Assets/Texture/Particle_Splash.png", TEX_TYPE::TEX_TYPE_TEXTURE2D },
 			{ L"Assets/Texture/Game_if.png",		 TEX_TYPE::TEX_TYPE_TEXTURE2D },
-			
-			//{ L"Assets/Texture/Number.png",			 TEX_TYPE::TEX_TYPE_TEXTURE2D },
+			{ L"Assets/Texture/Number.png",			 TEX_TYPE::TEX_TYPE_TEXTURE2D},
+			{ L"Assets/Texture/GO.png",				 TEX_TYPE::TEX_TYPE_TEXTURE2D },
 		};
 		list.modelPaths = {
 			{ L"Assets/Player/Player.FBX" },

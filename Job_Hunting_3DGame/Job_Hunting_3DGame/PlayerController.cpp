@@ -139,7 +139,9 @@ void PlayerController::Update_PlayerTransform(float _deltaTime)
 	XMVECTOR currentCamPos = m_Camera->GetPos();
 
 	// •âŠÔ—¦
-	float interp = std::clamp(m_FollowSpeed * _deltaTime, 0.0f, 1.0f);
+	//float interp = std::clamp(m_FollowSpeed * _deltaTime, 0.0f, 1.0f);
+
+	float interp = 1.0f - expf(-m_FollowSpeed * _deltaTime);
 
 	// ƒJƒƒ‰ˆÊ’u‚ğ•âŠÔ
 	XMVECTOR newCamPos = XMVectorLerp(currentCamPos, idealCamPos, interp);

@@ -35,13 +35,13 @@ bool UI_Fade::Init(Camera2D* _cameraUI, float _width, float _height)
     }
     for (size_t i = 0; i < DrawBase::FRAME_BUFFER_COUNT; ++i)
     {
-        m_pConstantBuffer[i] = std::make_unique<ConstantBuffer>(sizeof(Matrix));
+        m_pConstantBuffer[i] = std::make_unique<ConstantBuffer>(sizeof(MatrixUI));
         if (!m_pConstantBuffer[i]->IsValid()) 
         {
             printf("UI_Fade:コンスタントバッファ生成失敗\n");
             return false;
         }
-        auto ptr = m_pConstantBuffer[i]->GetPtr<Matrix>();
+        auto ptr = m_pConstantBuffer[i]->GetPtr<MatrixUI>();
         ptr->world = XMMatrixIdentity();
         ptr->view = m_CameraUI->GetViewMatrix();
         ptr->proj = m_CameraUI->GetProjMatrix();
@@ -135,15 +135,9 @@ void UI_Fade::Update_Fade()
             m_FadeFinished = true;
         }
     }
-
-    auto currentIndex = g_DrawBase->CurrentBackBufferIndex();
-    auto ptr = m_pConstantBuffer[currentIndex]->GetPtr<Matrix>();
-    ptr->world = m_worldMatrix;
-    ptr->view = m_CameraUI->GetViewMatrix();
-    ptr->proj = m_CameraUI->GetProjMatrix();
-    ptr->alpha = m_Alpha;
-
+    
     UI::UpdateTransform();
+    UI::UpdateCameraMatrix();
 }
 
 void UI_Fade::SetFadeIn()

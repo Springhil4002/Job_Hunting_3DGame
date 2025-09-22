@@ -38,6 +38,8 @@ protected:
 	float m_SizeHeight = 0.0f;
 	// 透明度
 	float m_Alpha = 1.0f;
+	// UV座表
+	DirectX::XMFLOAT4 m_UV = { 0.0f,0.0f,1.0f,1.0f };
 public:
 	// ワールド行列更新操作用
 	DirectX::XMMATRIX m_worldMatrix = DirectX::XMMatrixIdentity();
@@ -64,7 +66,15 @@ public:
 	/// @brief 終了処理
 	virtual void Uninit()	override;
 
+	void SetTransform(
+		DirectX::XMVECTOR _pos,
+		DirectX::XMVECTOR _rota,
+		DirectX::XMVECTOR _scale,
+		float alpha = 1.0f,
+		XMFLOAT4 _uvRect = { 0.0f,0.0f,1.0f,1.0f });
+	void SetUV(const DirectX::XMFLOAT4& _uv);
 	void UpdateTransform();
 	void UpdateCameraMatrix();
-	float GetAlpha() const;
+	float GetAlpha() const { return m_Alpha; }
+	void SetAlpha(float _alpha) { m_Alpha = _alpha; }
 };

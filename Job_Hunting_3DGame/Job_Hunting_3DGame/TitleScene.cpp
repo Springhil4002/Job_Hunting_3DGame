@@ -39,6 +39,8 @@ void TitleScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	ui_bg->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
 	ui_bg->SetRota(XMVectorZero());
 	ui_bg->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	ui_bg->UpdateTransform();
+	ui_bg->UpdateCameraMatrix();
 	ui_bg->m_tags.AddTag("UI_Bg");
 
 	UI* ui_logo = dynamic_cast<UI*>(CreateObj("UI"));
@@ -46,6 +48,8 @@ void TitleScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	ui_logo->SetPos(XMVectorSet(-620.0f, 400.0f, 0.0f, 0.0f));
 	ui_logo->SetRota(XMVectorZero());
 	ui_logo->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	ui_logo->UpdateTransform();
+	ui_logo->UpdateCameraMatrix();
 	ui_logo->m_tags.AddTag("UI_Logo");
 
 	UI* ui_start = dynamic_cast<UI*>(CreateObj("UI"));
@@ -53,6 +57,8 @@ void TitleScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	ui_start->SetPos(XMVectorSet(-550.0f, -250.0f, 0.0f, 0.0f));
 	ui_start->SetRota(XMVectorZero());
 	ui_start->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	ui_start->UpdateTransform();
+	ui_start->UpdateCameraMatrix(); 
 	ui_start->m_tags.AddTag("UI_Start");
 
 	UI* ui_con = dynamic_cast<UI*>(CreateObj("UI"));
@@ -60,6 +66,8 @@ void TitleScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	ui_con->SetPos(XMVectorSet(700.0f, 350.0f, 0.0f, 0.0f));
 	ui_con->SetRota(XMVectorZero());
 	ui_con->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	ui_con->UpdateTransform();
+	ui_con->UpdateCameraMatrix();
 	ui_con->m_tags.AddTag("UI_con");
 
 	UI_Fade* ui_fade = dynamic_cast<UI_Fade*>(CreateObj("UI_Fade"));
@@ -68,6 +76,8 @@ void TitleScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	ui_fade->SetRota(XMVectorZero());
 	ui_fade->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
 	ui_fade->SetFadeOut();
+	ui_fade->UpdateTransform();
+	ui_fade->UpdateCameraMatrix();
 	ui_fade->m_tags.AddTag("UI_Fade");
 }
 

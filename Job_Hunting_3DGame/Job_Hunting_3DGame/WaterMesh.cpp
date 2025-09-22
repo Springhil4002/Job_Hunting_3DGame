@@ -125,22 +125,22 @@ bool WaterMesh::Init(Camera* _camera)
 	}
 
 	// 4‚Â‚Ì”g‚Ìƒpƒ‰ƒ[ƒ^İ’è
-	m_waveParams.amplitude[0]	= { 0.3f, 0,0,0 };
+	m_waveParams.amplitude[0]	= { 0.5f, 0,0,0 };
 	m_waveParams.direction[0]	= { 1.0f, 0.2f, 0,0 };
 	m_waveParams.waveLength[0]	= { 8.0f, 0,0,0 };
 	m_waveParams.speed[0]		= { 0.5f, 0,0,0 };
 
-	m_waveParams.amplitude[1]	= { 0.2f, 0,0,0 };
+	m_waveParams.amplitude[1]	= { 0.3f, 0,0,0 };
 	m_waveParams.direction[1]	= { -0.7f,1.0f, 0,0 };
 	m_waveParams.waveLength[1]	= { 7.0f, 0,0,0 };
 	m_waveParams.speed[1]		= { 0.4f, 0,0,0 };
 
-	m_waveParams.amplitude[2]	= { 0.15f, 0,0,0 };
+	m_waveParams.amplitude[2]	= { 0.25f, 0,0,0 };
 	m_waveParams.direction[2]	= { 0.5f, -1.0f, 0,0 };
 	m_waveParams.waveLength[2]	= { 6.0f, 0,0,0 };
 	m_waveParams.speed[2]		= { 0.3f, 0,0,0 };
 
-	m_waveParams.amplitude[3]	= { 0.1f, 0,0,0 };
+	m_waveParams.amplitude[3]	= { 0.2f, 0,0,0 };
 	m_waveParams.direction[3]	= { -1.0f, -0.3f, 0,0 };
 	m_waveParams.waveLength[3]	= { 5.0f, 0,0,0 };
 	m_waveParams.speed[3]		= { 0.2f, 0,0,0 };
