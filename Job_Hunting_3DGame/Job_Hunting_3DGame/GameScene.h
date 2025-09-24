@@ -47,4 +47,5 @@ public:
 	void ImGui_Goal();
 	void ImGui_WaterMesh();
 	void ImGui_Timer();
+	void ImGui_Camera();
 };

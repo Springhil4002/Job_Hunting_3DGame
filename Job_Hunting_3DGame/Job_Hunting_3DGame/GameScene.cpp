@@ -25,7 +25,7 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	camera = _camera;
 	uiCamera = _uiCamera;
 
-	camera->SetPos(XMVectorSet(0.0f, 2.5f, 0.0f, 1.0f));
+	camera->SetPos(XMVectorSet(0.0f, 2.3f, 0.0f, 1.0f));
 	camera->SetTarget(XMVectorSet(0.0f, -15.0f, 50.0f, 0.0f));
 	camera->SetUp(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
 	uiCamera->Init(screenWidth, screenHeight);
@@ -258,6 +258,7 @@ void GameScene::Draw_ImGui()
 	//ImGui_Goal();
 	//ImGui_WaterMesh();
 	//ImGui_Timer();
+	ImGui_Camera();
 }
 
 void GameScene::ImGui_Prop()
@@ -319,7 +320,7 @@ void GameScene::ImGui_PlayerController()
 			playerCtrl->SetMaxSpeed(maxSpeed);
 
 			// カメラの追尾速度(調節可能)
-			ImGui::SliderFloat("Camera_FollowSpeed", &followSpeed, 12.0f, 50.0f);
+			ImGui::SliderFloat("Camera_FollowSpeed", &followSpeed, 10.0f, 200.0f);
 			playerCtrl->SetFollowSpeed(followSpeed);
 		}
 	}
@@ -442,5 +443,27 @@ void GameScene::ImGui_Timer()
 		ImGui::SetWindowFontScale(1.0f);
 	}
 
+	ImGui::End();
+}
+
+void GameScene::ImGui_Camera()
+{
+	ImGui::Begin("Camera");
+	if (camera)
+	{
+		// 座表表示
+		XMVECTOR camPosVec = camera->GetPos();
+		XMFLOAT3 camPos;
+		XMStoreFloat3(&camPos, camPosVec);
+		ImGui::Text("Position:");
+		ImGui::Text("X:%.3f Y:%.3f Z:%.3f", camPos.x, camPos.y, camPos.z);
+
+		// 注視点表示
+		XMVECTOR camTargetVec = camera->GetTarget();
+		XMFLOAT3 camTarget;
+		XMStoreFloat3(&camTarget, camTargetVec);
+		ImGui::Text("Target:");
+		ImGui::Text("X:%.3f Y:%.3f Z:%.3f", camTarget.x, camTarget.y, camTarget.z);
+	}
 	ImGui::End();
 }

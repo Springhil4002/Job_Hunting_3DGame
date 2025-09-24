@@ -81,7 +81,7 @@ void PlayerController::Init_Param()
 	m_Buoyancy = 30.0f;		// 浮力
 	m_WaterDamping = 4.0f;	// 水中減衰
 	m_PlayerOffsetY = 3.0f; // プレイヤーの高さオフセット
-	m_FollowSpeed = 40.0f;	// カメラの追従速度
+	m_FollowSpeed = 100.0f;	// カメラの追従速度
 
 	m_Emitter_Splash = std::make_unique<ParticleEmitter_Splash>(m_Camera);
 	m_Emitter_Splash->Init();
@@ -133,22 +133,29 @@ void PlayerController::Update_PlayerTransform(float _deltaTime)
 	m_Player->SetPos(m_Position);
 	m_Player->SetRota(m_Rotation);
 
+	// 補間率
+	float interp = 1.0f - expf(-m_FollowSpeed * _deltaTime);
+
 	// カメラの理想位置
 	XMVECTOR idealCamPos = XMVectorAdd(m_Position, m_CamOffset);
 	// 現在のカメラ位置
 	XMVECTOR currentCamPos = m_Camera->GetPos();
-
-	// 補間率
-	//float interp = std::clamp(m_FollowSpeed * _deltaTime, 0.0f, 1.0f);
-
-	float interp = 1.0f - expf(-m_FollowSpeed * _deltaTime);
-
 	// カメラ位置を補間
 	XMVECTOR newCamPos = XMVectorLerp(currentCamPos, idealCamPos, interp);
 	m_Camera->SetPos(newCamPos);
 
 	// カメラの注視点更新
-	XMVECTOR newCamTarget = XMVectorAdd(m_Position, m_ForwardVec * 15.0f);
+	XMVECTOR idealTarget = m_Position + m_ForwardVec * 15.0f;
+
+	// 水面の高さを取得して注視点に加算
+	float fx = static_cast<float>(XMVectorGetX(m_Position));
+	float fz = static_cast<float>(XMVectorGetZ(m_Position));
+	float waveHeight = m_WaterMesh->GetWaveHeight(fx, fz, _deltaTime);
+	idealTarget = XMVectorSetY(idealTarget, 
+		XMVectorGetY(idealTarget) + waveHeight * 0.7f);
+
+	XMVECTOR currentTarget = m_Camera->GetTarget();
+	XMVECTOR newCamTarget = XMVectorLerp(currentTarget, idealTarget, interp);
 	m_Camera->SetTarget(newCamTarget);
 }
 
