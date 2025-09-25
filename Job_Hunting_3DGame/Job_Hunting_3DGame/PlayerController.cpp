@@ -78,7 +78,7 @@ void PlayerController::Init_Param()
 	m_MaxSpeed = 40.0f;		// 最大速度
 
 	m_Gravity = -9.8f;		// 重力
-	m_Buoyancy = 30.0f;		// 浮力
+	m_Buoyancy = 10.0f;		// 浮力
 	m_WaterDamping = 4.0f;	// 水中減衰
 	m_PlayerOffsetY = 3.0f; // プレイヤーの高さオフセット
 	m_FollowSpeed = 100.0f;	// カメラの追従速度
