@@ -4,7 +4,7 @@
 #include <string>
 #include "PipelineState_General.h"
 #include "PipelineState_Splash.h"
-#include "PipelineState_SkyDomeMesh.h"
+#include "PipelineState_SkyBox.h"
 #include "PipelineState_DebugSphere.h"
 #include "PipelineState_UI.h"
 
@@ -16,7 +16,7 @@ enum class PSO_Type
 	PSO_TYPE_MODEL3D,
 	PSO_TYPE_SPLASH,
 	PSO_TYPE_SPHERE,
-	PSO_TYPE_SKYDOME,
+	PSO_TYPE_SKYBOX,
 	PSO_TYPE_UI,
 };
 
@@ -37,7 +37,7 @@ private:
 	// 球体メッシュ用PSO
 	std::unordered_map<std::string, std::unique_ptr<PipelineState_DebugSphere>> m_PSO_DebugSphere;	
 	// スカイドーム用PSO
-	std::unordered_map<std::string, std::unique_ptr<PipelineState_SkyDomeMesh>> m_PSO_SkyDomeMesh;
+	std::unordered_map<std::string, std::unique_ptr<PipelineState_SkyBox>> m_PSO_SkyBox;
 	// UI用PSO
 	std::unordered_map<std::string, std::unique_ptr<PipelineState_UI>> m_PSO_UI;
 
@@ -84,7 +84,7 @@ public:
 		case PSO_Type::PSO_TYPE_MODEL3D:	return "Model3D";
 		case PSO_Type::PSO_TYPE_SPLASH:		return "Splash";
 		case PSO_Type::PSO_TYPE_SPHERE:		return "Sphere";
-		case PSO_Type::PSO_TYPE_SKYDOME:	return "SkyDome";
+		case PSO_Type::PSO_TYPE_SKYBOX:		return "SkyBox";
 		case PSO_Type::PSO_TYPE_UI:			return "UI";
 		default: return "Unknown";
 		}
@@ -93,12 +93,12 @@ public:
 	PipelineState_General* GetPSO_General(const std::string& _key) { return GetPSOCreate(m_PSO_General, _key); }
 	PipelineState_Splash* GetPSO_Splash(const std::string& _key) { return GetPSOCreate(m_PSO_Splash, _key); }
 	PipelineState_DebugSphere* GetPSO_DebugSphere(const std::string& _key) { return GetPSOCreate(m_PSO_DebugSphere, _key); }
-	PipelineState_SkyDomeMesh* GetPSO_SkyDomeMesh(const std::string& _key) { return GetPSOCreate(m_PSO_SkyDomeMesh, _key); }
+	PipelineState_SkyBox* GetPSO_SkyBox(const std::string& _key) { return GetPSOCreate(m_PSO_SkyBox, _key); }
 	PipelineState_UI* GetPSO_UI(const std::string _key) { return GetPSOCreate(m_PSO_UI, _key); }
 	
 	PipelineState_General* GetPSO_General(PSO_Type _type) { return GetPSO_General(ToString(_type)); }
 	PipelineState_Splash* GetPSO_Splash(PSO_Type _type) { return GetPSO_Splash(ToString(_type)); }
 	PipelineState_DebugSphere* GetPSO_DebugSphere(PSO_Type _type) { return GetPSO_DebugSphere(ToString(_type)); }
-	PipelineState_SkyDomeMesh* GetPSO_SkyDomeMesh(PSO_Type _type) { return GetPSO_SkyDomeMesh(ToString(_type)); }
+	PipelineState_SkyBox* GetPSO_SkyBox(PSO_Type _type) { return GetPSO_SkyBox(ToString(_type)); }
 	PipelineState_UI* GetPSO_UI(PSO_Type _type) { return GetPSO_UI(ToString(_type)); }
 };

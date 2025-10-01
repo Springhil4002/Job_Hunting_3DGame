@@ -31,7 +31,7 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	uiCamera->Init(screenWidth, screenHeight);
 
 	// プロトタイプ登録
-	prototypeManager->AddPrototype("Sky", std::make_unique<SkyDomeMesh>());
+	prototypeManager->AddPrototype("Sky", std::make_unique<SkyBox>());
 	prototypeManager->AddPrototype("Player", std::make_unique<Player>());
 	prototypeManager->AddPrototype("WaterMesh", std::make_unique<WaterMesh>());
 	prototypeManager->AddPrototype("Goal", std::make_unique<Goal>());
@@ -43,7 +43,7 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	XMFLOAT3 pos;
 	XMStoreFloat3(&pos, camPos);
 
-	SkyDomeMesh* sky = dynamic_cast<SkyDomeMesh*>(CreateObj("Sky"));
+	SkyBox* sky = dynamic_cast<SkyBox*>(CreateObj("Sky"));
 	sky->Init(camera);
 	sky->SetPos(XMLoadFloat3(&pos));
 	sky->SetRota(XMVectorZero());

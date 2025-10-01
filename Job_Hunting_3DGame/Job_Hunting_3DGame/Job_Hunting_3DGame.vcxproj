@@ -169,7 +169,7 @@
     <ClCompile Include="ParticleSystem_Splash.cpp" />
     <ClCompile Include="PipelineState_DebugSphere.cpp" />
     <ClCompile Include="PipelineState_General.cpp" />
-    <ClCompile Include="PipelineState_SkyDomeMesh.cpp" />
+    <ClCompile Include="PipelineState_SkyBox.cpp" />
     <ClCompile Include="PipelineState_Splash.cpp" />
     <ClCompile Include="PipelineState_UI.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -179,14 +179,14 @@
     <ClCompile Include="RootSignature_DebugSphere.cpp" />
     <ClCompile Include="RootSignature_Goal.cpp" />
     <ClCompile Include="RootSignature_Player.cpp" />
-    <ClCompile Include="RootSignature_SkyDomeMesh.cpp" />
+    <ClCompile Include="RootSignature_SkyBox.cpp" />
     <ClCompile Include="RootSignature_Splash.cpp" />
     <ClCompile Include="RootSignature_UI.cpp" />
     <ClCompile Include="RootSignature_WaterMesh.cpp" />
     <ClCompile Include="SceneFactory.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SceneResource.cpp" />
-    <ClCompile Include="SkyDomeMesh.cpp" />
+    <ClCompile Include="SkyBox.cpp" />
     <ClCompile Include="System\ImGui\imgui.cpp" />
     <ClCompile Include="System\ImGui\imgui_draw.cpp" />
     <ClCompile Include="System\ImGui\imgui_impl_dx12.cpp" />
@@ -237,7 +237,7 @@
     <ClInclude Include="PipelineState_DebugSphere.h" />
     <ClInclude Include="PipelineState_General.h" />
     <ClInclude Include="PipelineState_Manager.h" />
-    <ClInclude Include="PipelineState_SkyDomeMesh.h" />
+    <ClInclude Include="PipelineState_SkyBox.h" />
     <ClInclude Include="PipelineState_Splash.h" />
     <ClInclude Include="PipelineState_UI.h" />
     <ClInclude Include="Player.h" />
@@ -250,14 +250,14 @@
     <ClInclude Include="RootSignature_Goal.h" />
     <ClInclude Include="RootSignature_Manager.h" />
     <ClInclude Include="RootSignature_Player.h" />
-    <ClInclude Include="RootSignature_SkyDomeMesh.h" />
+    <ClInclude Include="RootSignature_SkyBox.h" />
     <ClInclude Include="RootSignature_Splash.h" />
     <ClInclude Include="RootSignature_UI.h" />
     <ClInclude Include="RootSignature_WaterMesh.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="SceneResource.h" />
     <ClInclude Include="SCENE_ID.h" />
-    <ClInclude Include="SkyDomeMesh.h" />
+    <ClInclude Include="SkyBox.h" />
     <ClInclude Include="System\CommonTypes.h" />
     <ClInclude Include="System\ComPtr.h" />
     <ClInclude Include="System\ImGui\imconfig.h" />
@@ -296,15 +296,15 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pixel</EntryPointName>
     </FxCompile>
-    <FxCompile Include="PS_SkyDomeMesh.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+    <FxCompile Include="PS_SkyBox.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PS_Main</EntryPointName>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PS_Main</EntryPointName>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PS_Main</EntryPointName>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="PS_Sphere.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
@@ -355,15 +355,15 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">vert</EntryPointName>
     </FxCompile>
-    <FxCompile Include="VS_SkyDomeMesh.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+    <FxCompile Include="VS_SkyBox.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
-      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">VS_Main</EntryPointName>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">VS_Main</EntryPointName>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">VS_Main</EntryPointName>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="VS_Sphere.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>

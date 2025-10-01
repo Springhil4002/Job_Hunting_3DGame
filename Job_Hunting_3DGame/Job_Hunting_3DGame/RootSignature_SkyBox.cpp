@@ -1,9 +1,9 @@
-#include "RootSignature_SkyDomeMesh.h"
+#include "RootSignature_SkyBox.h"
 #include "DrawBase.h"
 #include <d3dx12.h>
 #include "Debug_New.h"
 
-RootSignature_SkyDomeMesh::RootSignature_SkyDomeMesh()
+RootSignature_SkyBox::RootSignature_SkyBox()
 {
 	// アプリケーションの入力アセンブラを使用する
 	auto flag = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
@@ -20,10 +20,10 @@ RootSignature_SkyDomeMesh::RootSignature_SkyDomeMesh()
 	// [0] b0：定数バッファ、頂点シェーダー用
 	rootParam[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_VERTEX);
 	
-	CD3DX12_DESCRIPTOR_RANGE texRange;
+	CD3DX12_DESCRIPTOR_RANGE texRange = {};
 	// 初期化処理:SRVを設定、数は１個、t0にバインド
 	texRange.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
-	// [1] t0：テクスチャ、ピクセルシェーダー用
+	// [1] t0：テクスチャ(キューブマップ)、ピクセルシェーダー用
 	rootParam[1].InitAsDescriptorTable(1, &texRange, D3D12_SHADER_VISIBILITY_PIXEL);
 
 	// スタティックサンプラーの設定
@@ -53,7 +53,7 @@ RootSignature_SkyDomeMesh::RootSignature_SkyDomeMesh()
 		pErrorBlob.GetAddressOf());
 	if (FAILED(hr))
 	{
-		printf("SkyDome:ルートシグネチャシリアライズに失敗");
+		printf("SkyBox:ルートシグネチャシリアライズに失敗");
 		return;
 	}
 
@@ -65,19 +65,19 @@ RootSignature_SkyDomeMesh::RootSignature_SkyDomeMesh()
 		IID_PPV_ARGS(m_pRootSignature.ReleaseAndGetAddressOf())); // ルートシグニチャ格納先のポインタ
 	if (FAILED(hr))
 	{
-		printf("SkyDome:ルートシグネチャの生成に失敗");
+		printf("SkyBox:ルートシグネチャの生成に失敗");
 		return;
 	}
 
 	m_IsValid = true;
 }
 
-bool RootSignature_SkyDomeMesh::IsValid() const
+bool RootSignature_SkyBox::IsValid() const
 {
 	return m_IsValid;
 }
 
-ID3D12RootSignature* RootSignature_SkyDomeMesh::Get()
+ID3D12RootSignature* RootSignature_SkyBox::Get()
 {
 	return m_pRootSignature.Get();
 }

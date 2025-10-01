@@ -1,20 +1,21 @@
-#include "SkyDomeMesh.h"
+#include "SkyBox.h"
 #include "Debug_New.h"
 
 using namespace DirectX;
 
-std::unique_ptr<Object> SkyDomeMesh::clone() const
+std::unique_ptr<Object> SkyBox::clone() const
 {
-	auto newObj = std::make_unique<SkyDomeMesh>();
+	auto newObj = std::make_unique<SkyBox>();
 	return newObj;
 }
 
-bool SkyDomeMesh::Init(Camera* _camera)
+bool SkyBox::Init(Camera* _camera)
 {
 	m_camera = _camera;
 
 	// メッシュ生成
-	CreateMesh(32, 64, 1000.0f);
+	//CreateMesh(32, 64, 1000.0f);
+	CreateCubeMesh();
 
 	// 頂点バッファ生成
 	auto vbSize = sizeof(SkyVertex) * vertices.size();
@@ -22,7 +23,7 @@ bool SkyDomeMesh::Init(Camera* _camera)
 	m_pVertexBuffer = std::make_unique<VertexBuffer>(vbSize, vbStride, vertices.data());
 	if (!m_pVertexBuffer->IsValid())
 	{
-		printf("SkyDomeMesh:頂点バッファ生成失敗\n");
+		printf("SkyBox:頂点バッファ生成失敗\n");
 		return false;
 	}
 
@@ -31,7 +32,7 @@ bool SkyDomeMesh::Init(Camera* _camera)
 	m_pIndexBuffer = std::make_unique<IndexBuffer>(ibSize, indices.data());
 	if (!m_pIndexBuffer->IsValid())
 	{
-		printf("SkyDomeMesh:インデックスバッファ生成失敗\n");
+		printf("SkyBox:インデックスバッファ生成失敗\n");
 		return false;
 	}
 
@@ -41,7 +42,7 @@ bool SkyDomeMesh::Init(Camera* _camera)
 		m_pConstantBuffer[i] = std::make_unique<ConstantBuffer>(sizeof(Matrix));
 		if (!m_pConstantBuffer[i]->IsValid())
 		{
-			printf("SkyDomeMesh:コンスタントバッファ生成失敗\n");
+			printf("SkyBox:コンスタントバッファ生成失敗\n");
 			return false;
 		}
 
@@ -54,62 +55,64 @@ bool SkyDomeMesh::Init(Camera* _camera)
 		XMVECTOR camPosVec = m_camera->GetPos();
 		XMFLOAT3 camPos;
 		XMStoreFloat3(&camPos, camPosVec);
-		ptr->cameraPos = XMFLOAT3(camPos.x, camPos.y, camPos.z);
+		ptr->cameraPos = camPos;
 	}
 
 	// ディスクリプタヒープ
 	m_pDescriptorHeap = std::make_unique<DescriptorHeap>();
 
 	// テクスチャの適用
-	if (m_pTexHandle == nullptr)
+	auto tex = TextureManager::Instance().GetCubeMap(L"Assets/Texture/SkyDome.dds");
+	if(!tex)
 	{
-		auto tex = TextureManager::Instance().GetTexture(L"Assets/Texture/SkyDome.dds");
-		m_pTexHandle = m_pDescriptorHeap->Register(tex.get());
+		printf("SkyBox:テクスチャの取得失敗\n");
+		return false;
 	}
+	m_pCubeTexHandle = m_pDescriptorHeap->Register(tex.get());
 	
 	// ルートシグネチャ生成
 	auto& rootManager = RootSignatureManager::GetInstance();
-	m_pRootSignature = rootManager.GetRoot(Root_Type::ROOT_TYPE_SKYDOME);
+	m_pRootSignature = rootManager.GetRoot(Root_Type::ROOT_TYPE_SKYBOX);
 	if (!m_pRootSignature->IsValid())
 	{
-		printf("SkyDomeMesh:ルートシグネチャ生成失敗\n");
+		printf("SkyBox:ルートシグネチャ生成失敗\n");
 		return false;
 	}
 
 	// パイプラインステート生成
 	auto& psoManager = PipelineState_Manager::GetInstance();
-	m_pPipelineState = psoManager.GetPSO_SkyDomeMesh(PSO_Type::PSO_TYPE_SKYDOME);
+	m_pPipelineState = psoManager.GetPSO_SkyBox(PSO_Type::PSO_TYPE_SKYBOX);
 	if (!m_pPipelineState->IsValid())
 	{
 		m_pPipelineState->SetInputLayout(SkyVertex::InputLayout);
 		m_pPipelineState->SetRootSignature(m_pRootSignature->Get());
 #ifdef _DEBUG
-		m_pPipelineState->SetVS(L"../x64/Debug/VS_SkyDomeMesh.cso");
-		m_pPipelineState->SetPS(L"../x64/Debug/PS_SkyDomeMesh.cso");
+		m_pPipelineState->SetVS(L"../x64/Debug/VS_SkyBox.cso");
+		m_pPipelineState->SetPS(L"../x64/Debug/PS_SkyBox.cso");
 #else
-		m_pPipelineState->SetVS(L"../x64/Release/VS_SkyDomeMesh.cso");
-		m_pPipelineState->SetPS(L"../x64/Release/PS_SkyDomeMesh.cso");
+		m_pPipelineState->SetVS(L"../x64/Release/VS_SkyBox.cso");
+		m_pPipelineState->SetPS(L"../x64/Release/PS_SkyBox.cso");
 #endif 
 		m_pPipelineState->Create();
 	}
 
 	if (!m_pPipelineState->IsValid())
 	{
-		printf("SkyDomeMesh:パイプラインステートの生成に失敗\n");
+		printf("SkyBox:パイプラインステートの生成に失敗\n");
 		return false;
 	}
 
-	printf("SkyDomeMesh:初期化処理に成功\n\n");
+	printf("SkyBox:初期化処理に成功\n\n");
 	return true;
 }
 
-void SkyDomeMesh::Update()
+void SkyBox::Update()
 {
 	Update_Transform();
 	Update_CameraMatrix();
 }
 
-void SkyDomeMesh::Draw()
+void SkyBox::Draw()
 {
 	// 現在のフレーム番号取得
 	auto currentIndex = g_DrawBase->CurrentBackBufferIndex();
@@ -131,7 +134,7 @@ void SkyDomeMesh::Draw()
 	// ディスクリプタヒープをセット
 	cmdList->SetDescriptorHeaps(1, &Heap);
 	// テクスチャをセット
-	cmdList->SetGraphicsRootDescriptorTable(1,m_pTexHandle->handleGPU);
+	cmdList->SetGraphicsRootDescriptorTable(1, m_pCubeTexHandle->handleGPU);
 	
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	cmdList->IASetVertexBuffers(0, 1, &vbView);
@@ -140,7 +143,7 @@ void SkyDomeMesh::Draw()
 	cmdList->DrawIndexedInstanced(static_cast<UINT>(indices.size()), 1, 0, 0, 0);
 }
 
-void SkyDomeMesh::Uninit()
+void SkyBox::Uninit()
 {
 	m_camera = nullptr;
 	m_pVertexBuffer.reset();
@@ -148,73 +151,48 @@ void SkyDomeMesh::Uninit()
 	for (auto& cb : m_pConstantBuffer)
 		cb.reset();
 	m_pDescriptorHeap.reset();
-	m_pTexHandle.reset();
+	m_pCubeTexHandle.reset();
 }
 
-void SkyDomeMesh::CreateMesh(int _slices, int _stacks, float _radius)
+void SkyBox::CreateCubeMesh()
 {
 	vertices.clear();
 	indices.clear();
-
-	for (int stack = 0; stack <= _stacks; ++stack)
+	
+	// 立方体の頂点データ
+	XMFLOAT3 cubeVertices[] =
 	{
-		float phi = XM_PI * float(stack) / float(_stacks);
-		for (int slice = 0; slice <= _slices; ++slice)
-		{
-			float theta = XM_2PI * float(slice) / float(_slices);
-			
-			float x = _radius * sinf(phi) * cosf(theta);
-			float y = _radius * cosf(phi);
-			float z = _radius * sinf(phi) * sinf(theta);
+		{-1.0f,-1.0f,-1.0f},{1.0f,-1.0f,-1.0f},{1.0f,1.0f,-1.0f},{-1.0f,1.0f,-1.0f},
+		{-1.0f,-1.0f, 1.0f},{1.0f,-1.0f, 1.0f},{1.0f,1.0f, 1.0f},{-1.0f,1.0f, 1.0f}
+	};
 
-			float u = float(slice) / float(_slices);
-			float v = float(stack) / float(_stacks);
-
-			vertices.push_back({ XMFLOAT3(x,y,z),XMFLOAT2(u,v) });
-		}
-	}
-
-	for (int stack = 0; stack < _stacks; ++stack) 
+	uint32_t cubeIndices[] =
 	{
-		for (int slice = 0; slice < _slices; ++slice)
-		{
-			int cur = stack * (_slices + 1) + slice;
-			int next = (stack + 1) * (_slices + 1) + slice;
+		0,1,2, 0,2,3,	// -Z
+		4,6,5, 4,7,6,   // +Z
+		4,5,1, 4,1,0,   // -Y
+		3,2,6, 3,6,7,   // +Y
+		1,5,6, 1,6,2,   // +X
+		4,0,3, 4,3,7    // -X
+	};
 
-			indices.push_back(cur);
-			indices.push_back(next);
-			indices.push_back(cur + 1);
+	for (auto& v : cubeVertices)
+		vertices.push_back({ v,XMFLOAT2(0.0f, 0.0f) });
 
-			indices.push_back(cur + 1);
-			indices.push_back(next);
-			indices.push_back(next + 1);
-		}
-	}
-	//printf("スカイドーム:頂点数:%zu\n", vertices.size());
-	//printf("スカイドーム:インデックス数:%zu\n", indices.size());
+	indices.assign(cubeIndices, cubeIndices + _countof(cubeIndices));
 }
 
-void SkyDomeMesh::Update_Transform()
+void SkyBox::Update_Transform()
 {
-	// カメラの更新処理
-	auto pos = GetPos();
-	auto rota = GetRota();
-	auto scale = GetScale();
-
-	auto mat =
-		DirectX::XMMatrixScalingFromVector(scale) *
-		DirectX::XMMatrixRotationRollPitchYawFromVector(rota) *
-		DirectX::XMMatrixTranslationFromVector(pos);
-
-	//m_worldMatrix = ;
+	// スカイボックスは回転・スケール不要、カメラ位置追従のみ
+	m_worldMatrix = XMMatrixTranslationFromVector(m_camera->GetPos());
 }
 
-void SkyDomeMesh::Update_CameraMatrix()
+void SkyBox::Update_CameraMatrix()
 {
 	auto currentIndex = g_DrawBase->CurrentBackBufferIndex();
 	auto ptr = m_pConstantBuffer[currentIndex]->GetPtr<Matrix>();
-	//ptr->world = ;
-	ptr->world = XMMatrixTranslationFromVector(m_camera->GetPos());
+	ptr->world = m_worldMatrix;
 	ptr->view = m_camera->GetViewMatrix();
 	ptr->proj = m_camera->GetProjMatrix();
 

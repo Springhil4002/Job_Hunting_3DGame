@@ -13,7 +13,7 @@
 #include "TextureManager.h"
 #include "Camera.h"
 
-class SkyDomeMesh : public Object
+class SkyBox : public Object
 {
 private:
 	// 頂点バッファ
@@ -27,9 +27,9 @@ private:
 	// ルートシグネチャ
 	std::shared_ptr<RootSignature> m_pRootSignature;
 	// パイプラインステート
-	PipelineState_SkyDomeMesh* m_pPipelineState = nullptr;
+	PipelineState_SkyBox* m_pPipelineState = nullptr;
 	// ディスクリプタハンドル
-	std::shared_ptr<DescriptorHandle> m_pTexHandle;
+	std::shared_ptr<DescriptorHandle> m_pCubeTexHandle;
 	// カメラ
 	Camera* m_camera = nullptr;
 public:
@@ -54,11 +54,8 @@ public:
 	/// @brief 終了処理
 	void Uninit() override;
 
-	/// @brief メッシュ生成関数
-	/// @param _slices 分割数
-	/// @param _stacks 層数
-	/// @param _radius 半径
-	void CreateMesh(int _slices, int _stacks, float _radius);
+	/// @brief キューブメッシュ作成関数
+	void CreateCubeMesh();
 
 	/// @brief ワールド行列の更新
 	void Update_Transform();

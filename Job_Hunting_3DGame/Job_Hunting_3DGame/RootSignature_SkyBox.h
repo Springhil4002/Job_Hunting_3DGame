@@ -4,7 +4,7 @@
 
 struct ID3D12RootSignature;
 
-class RootSignature_SkyDomeMesh :public RootSignature
+class RootSignature_SkyBox :public RootSignature
 {
 private:
 	// ルートシグネチャの生成に成功したかのフラグ
@@ -13,7 +13,7 @@ private:
 	ComPtr<ID3D12RootSignature> m_pRootSignature = nullptr;
 public:
 	// コンストラクタでルートシグネチャを生成
-	RootSignature_SkyDomeMesh();
+	RootSignature_SkyBox();
 	/// @brief // ルートシグネチャの生成に成否を取得する処理
 	/// @return ルートシグネチャの生成成否を返す
 	bool IsValid() const override;

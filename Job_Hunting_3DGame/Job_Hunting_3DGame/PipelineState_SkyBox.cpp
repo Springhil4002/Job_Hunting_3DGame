@@ -1,4 +1,4 @@
-#include "PipelineState_SkyDomeMesh.h"
+#include "PipelineState_SkyBox.h"
 #include "DrawBase.h"
 #include <d3dx12.h>
 #include <d3dcompiler.h>
@@ -7,7 +7,7 @@
 #pragma comment(lib,"d3dcompiler.lib")
 
 // パイプラインステートの設定
-PipelineState_SkyDomeMesh::PipelineState_SkyDomeMesh()
+PipelineState_SkyBox::PipelineState_SkyBox()
 {
 	// zeroMemoryで初期化
 	ZeroMemory(&desc, sizeof(desc));
@@ -15,7 +15,7 @@ PipelineState_SkyDomeMesh::PipelineState_SkyDomeMesh()
 	// ラスタライザーステート:デフォルト設定
 	desc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
 	// カリングなし:両面描画
-	desc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK;
+	desc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 	// ブレンドステート:デフォルト設定(不透明描画)
 	desc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
 	// 深度ステンシルステート:深度テストON・書きこみなし
@@ -37,61 +37,61 @@ PipelineState_SkyDomeMesh::PipelineState_SkyDomeMesh()
 	desc.SampleDesc.Quality = 0;
 }
 
-bool PipelineState_SkyDomeMesh::IsValid() const
+bool PipelineState_SkyBox::IsValid() const
 {
 	return m_IsValid;
 }
 
-void PipelineState_SkyDomeMesh::SetInputLayout(D3D12_INPUT_LAYOUT_DESC layout)
+void PipelineState_SkyBox::SetInputLayout(D3D12_INPUT_LAYOUT_DESC layout)
 {
 	desc.InputLayout = layout;
 }
 
-void PipelineState_SkyDomeMesh::SetRootSignature(ID3D12RootSignature* rootSignature)
+void PipelineState_SkyBox::SetRootSignature(ID3D12RootSignature* rootSignature)
 {
 	desc.pRootSignature = rootSignature;
 }
 
-void PipelineState_SkyDomeMesh::SetVS(std::wstring filePath)
+void PipelineState_SkyBox::SetVS(std::wstring filePath)
 {
 	// 頂点シェーダー読み込み
 	auto hr = D3DReadFileToBlob(filePath.c_str(), m_pVsBlob.GetAddressOf());
 	if (FAILED(hr))
 	{
-		printf("PSO_SkyDomeMesh:頂点シェーダーの読み込みに失敗\n");
+		printf("PSO_SkyBox:頂点シェーダーの読み込みに失敗\n");
 		return;
 	}
 
 	desc.VS = CD3DX12_SHADER_BYTECODE(m_pVsBlob.Get());
 }
 
-void PipelineState_SkyDomeMesh::SetPS(std::wstring filePath)
+void PipelineState_SkyBox::SetPS(std::wstring filePath)
 {
 	// ピクセルシェーダー読み込み
 	auto hr = D3DReadFileToBlob(filePath.c_str(), m_pPSBlob.GetAddressOf());
 	if (FAILED(hr))
 	{
-		printf("PSO_SkyDomeMesh:ピクセルシェーダーの読み込みに失敗\n");
+		printf("PSO_SkyBox:ピクセルシェーダーの読み込みに失敗\n");
 		return;
 	}
 
 	desc.PS = CD3DX12_SHADER_BYTECODE(m_pPSBlob.Get());
 }
 
-void PipelineState_SkyDomeMesh::Create()
+void PipelineState_SkyBox::Create()
 {
 	// パイプラインステートを生成
 	auto hr = g_DrawBase->Device()->CreateGraphicsPipelineState(&desc, IID_PPV_ARGS(m_pPipelineState.ReleaseAndGetAddressOf()));
 	if (FAILED(hr))
 	{
-		printf("PSO_SkyDomeMesh:パイプラインステートの生成に失敗\n");
+		printf("PSO_SkyBox:パイプラインステートの生成に失敗\n");
 		return;
 	}
 
 	m_IsValid = true;
 }
 
-ID3D12PipelineState* PipelineState_SkyDomeMesh::Get()
+ID3D12PipelineState* PipelineState_SkyBox::Get()
 {
 	return m_pPipelineState.Get();
 }
