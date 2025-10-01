@@ -339,6 +339,7 @@ void WaterMesh::Update_Light()
 
 	LightPalams lightParams;
 	lightParams.lightDir = lightDir;
+	lightParams.envStrength = 0.4f;
 	lightParams.lightColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
 

@@ -6,7 +6,7 @@ cbuffer Transform : register(b0)
     float time;         // 時間
     float3 cameraPos;   // カメラ位置
     float pad1;         // パディング
-}
+};
 
 #define WAVE_COUNT (4)
 
@@ -16,7 +16,7 @@ cbuffer GerstnerParams : register(b1)
     float4 direction[WAVE_COUNT];   // (x,y = 方向ベクトル, zw = 予備)
     float4 waveLength[WAVE_COUNT];  // (x = 波長, yzw = 予備)
     float4 speed[WAVE_COUNT];       // (x = 波の速度, yzw = 予備)
-}
+};
 
 struct VS_Input
 {
@@ -48,11 +48,11 @@ VS_Out VS_Main(VS_Input vin)
     float3 waveOffset = float3(0.0f, 0.0f, 0.0f);
     
     // 法線用の偏微分ベクトル
-    float3 tangentX = float3(1, 0, 0);  // X方向の単位ベクトル(ワールド空間)
-    float3 tangentZ = float3(0, 0, 1);  // Z方向の単位ベクトル(ワールド空間)
+    float3 tangentX = float3(1, 0, 0); // X方向の単位ベクトル(ワールド空間)
+    float3 tangentZ = float3(0, 0, 1); // Z方向の単位ベクトル(ワールド空間)
     
-    float3 dx = float3(0, 0, 0);    // X方向の傾き
-    float3 dz = float3(0, 0, 0);    // Z方向の傾き
+    float3 dx = float3(0, 0, 0); // X方向の傾き
+    float3 dz = float3(0, 0, 0); // Z方向の傾き
     
     // Gerstner波の計算(ワールド座標ベース)
     for (int i = 0; i < WAVE_COUNT; ++i)
@@ -103,4 +103,4 @@ VS_Out VS_Main(VS_Input vin)
     vout.normal = normal_WS;
     vout.worldPos = worldPos;
     return vout;
-}
+};

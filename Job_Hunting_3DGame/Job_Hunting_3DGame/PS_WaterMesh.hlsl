@@ -6,14 +6,14 @@ cbuffer Transform : register(b0)
     float time;         // 時間
     float3 cameraPos;   // カメラ位置
     float pad1;         // パディング
-}
+};
 
 cbuffer LightParams : register(b2)
 {
     float3 lightDir;    // ライトの方向
-    float pad0;         // パディング
+    float envStrength;  // 環境マップ反射の強さ
     float4 lightColor;  // ライトの色
-}
+};
 
 struct PS_IN
 {
@@ -52,18 +52,16 @@ float4 PS_Main(PS_IN pin) : SV_TARGET
                     pow(1.0 - saturate(dot(N, V)),
                     fresnelPower);
     // ライティング
-    float4 ambient = float4(0.5f,0.6f,0.8f,1.0f);
-    float4 diffuse = pin.color * lightColor * NdotL * 0.7f;
-    //float4 diffuse = 0.0f;
+    float4 ambient = float4(0.5f, 0.6f, 0.8f, 1.0f);
+    //float4 diffuse = pin.color * lightColor * NdotL * 0.7f;
+    float4 diffuse = float4(0.05f, 0.1f, 0.15f, 1.0f) * NdotL * 0.5f;
     float4 specular = fresnel * specIntensity * spec * lightColor;
     
     float4 lighting = ambient + diffuse + specular;
     
     float3 reflectDir = reflect(-V, N); // 視線ベクトルに反射方向
-    float4 envColor = skyCube.Sample(smp,reflectDir);
-    float envStrength = 0.4f;
-    
+    float4 envColor = skyCube.Sample(smp, reflectDir);
     float4 finalColor = lerp(lighting, envColor, envStrength);
     
     return finalColor;
-}
+};

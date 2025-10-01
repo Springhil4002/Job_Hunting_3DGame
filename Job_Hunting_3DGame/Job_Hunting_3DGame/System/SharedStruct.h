@@ -72,7 +72,7 @@ struct Mesh
 struct LightPalams
 {
 	XMFLOAT3 lightDir;		// ライトの方向
-	float pad1;				// パディング
+	float envStrength;		// パディング
 	XMFLOAT4 lightColor;	// ライトの色
 };
 
