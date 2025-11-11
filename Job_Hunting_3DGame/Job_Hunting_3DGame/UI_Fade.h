@@ -11,7 +11,7 @@ enum class FADE_STATE
 class UI_Fade : public UI
 {
 private:
-	float m_FadeSpeed = 0.008f;		// フェード速度	
+	float m_FadeSpeed = 0.025f;		// フェード速度	
 	bool m_FadeFinished = false;	// フェード完了フラグ
 	FADE_STATE m_State = FADE_STATE::FADE_STATE_NONE;
 public:

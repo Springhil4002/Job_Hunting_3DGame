@@ -5,65 +5,67 @@
 
 RootSignature_WaterMesh::RootSignature_WaterMesh()
 {
-	// ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚Ì“ü—ÍƒAƒZƒ“ƒuƒ‰‚ðŽg—p‚·‚é
+	// ï¿½Aï¿½vï¿½ï¿½ï¿½Pï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½Ì“ï¿½ï¿½ÍƒAï¿½Zï¿½ï¿½ï¿½uï¿½ï¿½ï¿½ï¿½ï¿½gï¿½pï¿½ï¿½ï¿½ï¿½
 	auto flag = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
-	// ƒhƒƒCƒ“ƒVƒF[ƒ_[‚Ìƒ‹[ƒgƒVƒOƒlƒ`ƒƒ‚Ö‚ÌƒAƒNƒZƒX‚ð‹‘”Û‚·‚é
+	// ï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½Vï¿½Fï¿½[ï¿½_ï¿½[ï¿½Ìƒï¿½ï¿½[ï¿½gï¿½Vï¿½Oï¿½lï¿½`ï¿½ï¿½ï¿½Ö‚ÌƒAï¿½Nï¿½Zï¿½Xï¿½ï¿½ï¿½ï¿½ï¿½Û‚ï¿½ï¿½ï¿½
 	flag |= D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS;
-	// ƒnƒ‹ƒVƒF[ƒ_[‚Ìƒ‹[ƒgƒVƒOƒlƒ`ƒƒ‚Ö‚ÌƒAƒNƒZƒX‚ð‹‘”Û‚·‚é
+	// ï¿½nï¿½ï¿½ï¿½Vï¿½Fï¿½[ï¿½_ï¿½[ï¿½Ìƒï¿½ï¿½[ï¿½gï¿½Vï¿½Oï¿½lï¿½`ï¿½ï¿½ï¿½Ö‚ÌƒAï¿½Nï¿½Zï¿½Xï¿½ï¿½ï¿½ï¿½ï¿½Û‚ï¿½ï¿½ï¿½
 	flag |= D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS;
-	// ƒWƒIƒƒgƒŠƒVƒF[ƒ_[‚Ìƒ‹[ƒgƒVƒOƒlƒ`ƒƒ‚Ö‚ÌƒAƒNƒZƒX‚ð‹‘”Û‚·‚é
+	// ï¿½Wï¿½Iï¿½ï¿½ï¿½gï¿½ï¿½ï¿½Vï¿½Fï¿½[ï¿½_ï¿½[ï¿½Ìƒï¿½ï¿½[ï¿½gï¿½Vï¿½Oï¿½lï¿½`ï¿½ï¿½ï¿½Ö‚ÌƒAï¿½Nï¿½Zï¿½Xï¿½ï¿½ï¿½ï¿½ï¿½Û‚ï¿½ï¿½ï¿½
 	flag |= D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
 
-	// ƒfƒBƒXƒNƒŠƒvƒ^ƒŒƒ“ƒW
+	// ï¿½fï¿½Bï¿½Xï¿½Nï¿½ï¿½ï¿½vï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½W
 	CD3DX12_DESCRIPTOR_RANGE texRange[1] = {};
-	// t0‚É1ŒÂSRV
+	// t3ï¿½ï¿½1ï¿½ï¿½SRV
 	texRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 3);
 
-	// ƒ‹[ƒgƒpƒ‰ƒ[ƒ^Ý’è
-	CD3DX12_ROOT_PARAMETER rootParam[4] = {};
-	// b0:‚ÌMatrix’è”ƒoƒbƒtƒ@‚ðÝ’èA‘S‚Ä‚ÌƒVƒF[ƒ_[‚©‚çŒ©‚¦‚é‚æ‚¤‚É‚·‚é
+	// ï¿½ï¿½ï¿½[ï¿½gï¿½pï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½Ý’ï¿½
+	CD3DX12_ROOT_PARAMETER rootParam[5] = {};
+	// b0:ï¿½ï¿½Matrixï¿½è”ï¿½oï¿½bï¿½tï¿½@ï¿½ï¿½Ý’ï¿½Aï¿½Sï¿½Ä‚ÌƒVï¿½Fï¿½[ï¿½_ï¿½[ï¿½ï¿½ï¿½çŒ©ï¿½ï¿½ï¿½ï¿½æ‚¤ï¿½É‚ï¿½ï¿½ï¿½
 	rootParam[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL); 
-	// b1:Gerstner”g’è”ƒoƒbƒtƒ@‚ðÝ’èA‘S‚Ä‚ÌƒVƒF[ƒ_[‚©‚çŒ©‚¦‚é‚æ‚¤‚É‚·‚é
+	// b1:Gerstnerï¿½gï¿½è”ï¿½oï¿½bï¿½tï¿½@ï¿½ï¿½Ý’ï¿½Aï¿½Sï¿½Ä‚ÌƒVï¿½Fï¿½[ï¿½_ï¿½[ï¿½ï¿½ï¿½çŒ©ï¿½ï¿½ï¿½ï¿½æ‚¤ï¿½É‚ï¿½ï¿½ï¿½
 	rootParam[1].InitAsConstantBufferView(1, 0, D3D12_SHADER_VISIBILITY_ALL); 
-	// b2:ƒ‰ƒCƒg—p’è”ƒoƒbƒtƒ@‚ðÝ’èA‘S‚Ä‚ÌƒVƒF[ƒ_[‚©‚çŒ©‚¦‚é‚æ‚¤‚É‚·‚é
+	// b2:ï¿½ï¿½ï¿½Cï¿½gï¿½pï¿½è”ï¿½oï¿½bï¿½tï¿½@ï¿½ï¿½Ý’ï¿½Aï¿½Sï¿½Ä‚ÌƒVï¿½Fï¿½[ï¿½_ï¿½[ï¿½ï¿½ï¿½çŒ©ï¿½ï¿½ï¿½ï¿½æ‚¤ï¿½É‚ï¿½ï¿½ï¿½
 	rootParam[2].InitAsConstantBufferView(2, 0, D3D12_SHADER_VISIBILITY_ALL);
-	// t3FCubeMap‚ðÝ’èAƒsƒNƒZƒ‹ƒVƒF[ƒ_[‚©‚çŒ©‚¦‚é‚æ‚¤‚É‚·‚é
-	rootParam[3].InitAsDescriptorTable(1, &texRange[0], D3D12_SHADER_VISIBILITY_PIXEL);
+	// b3:WaterParamsï¿½Aï¿½ï¿½ï¿½×‚Ä‚ÌƒVï¿½Fï¿½[ï¿½_ï¿½[ï¿½ï¿½ï¿½çŒ©ï¿½ï¿½ï¿½ï¿½æ‚¤ï¿½É‚ï¿½ï¿½ï¿½
+	rootParam[3].InitAsConstantBufferView(3, 0, D3D12_SHADER_VISIBILITY_ALL);
+	// t3ï¿½FCubeMapï¿½ï¿½Ý’ï¿½Aï¿½sï¿½Nï¿½Zï¿½ï¿½ï¿½Vï¿½Fï¿½[ï¿½_ï¿½[ï¿½ï¿½ï¿½çŒ©ï¿½ï¿½ï¿½ï¿½æ‚¤ï¿½É‚ï¿½ï¿½ï¿½
+	rootParam[4].InitAsDescriptorTable(1, &texRange[0], D3D12_SHADER_VISIBILITY_PIXEL);
 	
-	// ƒXƒ^ƒeƒBƒbƒNƒTƒ“ƒvƒ‰[‚ÌÝ’è
+	// ï¿½Xï¿½^ï¿½eï¿½Bï¿½bï¿½Nï¿½Tï¿½ï¿½ï¿½vï¿½ï¿½ï¿½[ï¿½ÌÝ’ï¿½
 	auto sampler = CD3DX12_STATIC_SAMPLER_DESC(
-		0,									// ƒŒƒWƒXƒ^[
-		D3D12_FILTER_MIN_MAG_MIP_LINEAR,	// ƒtƒBƒ‹ƒ^[
-		D3D12_TEXTURE_ADDRESS_MODE_WRAP,	// ƒAƒhƒŒƒXƒ‚[ƒh U
-		D3D12_TEXTURE_ADDRESS_MODE_WRAP,	// ƒAƒhƒŒƒXƒ‚[ƒh V
-		D3D12_TEXTURE_ADDRESS_MODE_WRAP,	// ƒAƒhƒŒƒXƒ‚[ƒh W
+		0,									// ï¿½ï¿½ï¿½Wï¿½Xï¿½^ï¿½[
+		D3D12_FILTER_MIN_MAG_MIP_LINEAR,	// ï¿½tï¿½Bï¿½ï¿½ï¿½^ï¿½[
+		D3D12_TEXTURE_ADDRESS_MODE_WRAP,	// ï¿½Aï¿½hï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½[ï¿½h U
+		D3D12_TEXTURE_ADDRESS_MODE_WRAP,	// ï¿½Aï¿½hï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½[ï¿½h V
+		D3D12_TEXTURE_ADDRESS_MODE_WRAP,	// ï¿½Aï¿½hï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½[ï¿½h W
 		0.0f,								// MipLODBias
 		1,									// MaxAnisotropy
-		D3D12_COMPARISON_FUNC_ALWAYS,		// ”äŠrŠÖ”iŽg‚Á‚Ä‚È‚¢‚È‚ç ALWAYS ‚ÅOKj
+		D3D12_COMPARISON_FUNC_ALWAYS,		// ï¿½ï¿½rï¿½Öï¿½ï¿½iï¿½gï¿½ï¿½ï¿½Ä‚È‚ï¿½ï¿½È‚ï¿½ ALWAYS ï¿½ï¿½OKï¿½j
 		D3D12_STATIC_BORDER_COLOR_OPAQUE_WHITE,
 		0.0f,								// MinLOD
 		D3D12_FLOAT32_MAX,					// MaxLOD
-		D3D12_SHADER_VISIBILITY_PIXEL		// PS‚©‚çŒ©‚¦‚é‚æ‚¤‚É–¾Ž¦
+		D3D12_SHADER_VISIBILITY_PIXEL		// PSï¿½ï¿½ï¿½çŒ©ï¿½ï¿½ï¿½ï¿½æ‚¤ï¿½É–ï¿½ï¿½ï¿½
 	);
 
-	// ƒ‹[ƒgƒVƒOƒjƒ`ƒƒ‚ÌÝ’èiÝ’è‚µ‚½‚¢ƒ‹[ƒgƒpƒ‰ƒ[ƒ^[‚ÆƒXƒ^ƒeƒBƒbƒNƒTƒ“ƒvƒ‰[‚ð“ü‚ê‚éj
+	// ï¿½ï¿½ï¿½[ï¿½gï¿½Vï¿½Oï¿½jï¿½`ï¿½ï¿½ï¿½ÌÝ’ï¿½iï¿½Ý’è‚µï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½gï¿½pï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½[ï¿½ÆƒXï¿½^ï¿½eï¿½Bï¿½bï¿½Nï¿½Tï¿½ï¿½ï¿½vï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½j
 	D3D12_ROOT_SIGNATURE_DESC desc = {};
-	// ƒ‹[ƒgƒpƒ‰ƒ[ƒ^[‚ÌŒÂ”‚ð‚¢‚ê‚é
+	// ï¿½ï¿½ï¿½[ï¿½gï¿½pï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½[ï¿½ÌŒÂï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	desc.NumParameters = _countof(rootParam);
-	// ƒTƒ“ƒvƒ‰[‚ÌŒÂ”‚ð‚¢‚ê‚é
+	// ï¿½Tï¿½ï¿½ï¿½vï¿½ï¿½ï¿½[ï¿½ÌŒÂï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	desc.NumStaticSamplers = 1;
-	// ƒ‹[ƒgƒpƒ‰ƒ[ƒ^[‚Ìƒ|ƒCƒ“ƒ^‚ð‚¢‚ê‚é
+	// ï¿½ï¿½ï¿½[ï¿½gï¿½pï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^ï¿½[ï¿½Ìƒ|ï¿½Cï¿½ï¿½ï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	desc.pParameters = rootParam;
-	// ƒTƒ“ƒvƒ‰[‚Ìƒ|ƒCƒ“ƒ^‚ð“ü‚ê‚é
+	// ï¿½Tï¿½ï¿½ï¿½vï¿½ï¿½ï¿½[ï¿½Ìƒ|ï¿½Cï¿½ï¿½ï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	desc.pStaticSamplers = &sampler;
-	// ƒtƒ‰ƒO‚ðÝ’è
+	// ï¿½tï¿½ï¿½ï¿½Oï¿½ï¿½Ý’ï¿½
 	desc.Flags = flag;
 
 	ComPtr<ID3DBlob> pBlob;
 	ComPtr<ID3DBlob> pErrorBlob;
 
-	// ƒVƒŠƒAƒ‰ƒCƒY
+	// ï¿½Vï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½Cï¿½Y
 	auto hr = D3D12SerializeRootSignature(
 		&desc,
 		D3D_ROOT_SIGNATURE_VERSION_1_0,
@@ -71,19 +73,19 @@ RootSignature_WaterMesh::RootSignature_WaterMesh()
 		pErrorBlob.GetAddressOf());
 	if (FAILED(hr))
 	{
-		printf("WaterMesh:ƒ‹[ƒgƒVƒOƒlƒ`ƒƒƒVƒŠƒAƒ‰ƒCƒY‚ÉŽ¸”s");
+		printf("WaterMesh:ï¿½ï¿½ï¿½[ï¿½gï¿½Vï¿½Oï¿½lï¿½`ï¿½ï¿½ï¿½Vï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½Cï¿½Yï¿½ÉŽï¿½ï¿½s");
 		return;
 	}
 
-	// ƒ‹[ƒgƒVƒOƒlƒ`ƒƒ¶¬
+	// ï¿½ï¿½ï¿½[ï¿½gï¿½Vï¿½Oï¿½lï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	hr = g_DrawBase->Device()->CreateRootSignature(
-		0, // GPU‚ª•¡”‚ ‚éê‡‚Ìƒm[ƒhƒ}ƒXƒNi¡‰ñ‚Í1ŒÂ‚µ‚©–³‚¢‘z’è‚È‚Ì‚Å0j
-		pBlob->GetBufferPointer(), // ƒVƒŠƒAƒ‰ƒCƒY‚µ‚½ƒf[ƒ^‚Ìƒ|ƒCƒ“ƒ^
-		pBlob->GetBufferSize(), // ƒVƒŠƒAƒ‰ƒCƒY‚µ‚½ƒf[ƒ^‚ÌƒTƒCƒY
-		IID_PPV_ARGS(m_pRootSignature.GetAddressOf())); // ƒ‹[ƒgƒVƒOƒjƒ`ƒƒŠi”[æ‚Ìƒ|ƒCƒ“ƒ^
+		0, // GPUï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ï¿½Ìƒmï¿½[ï¿½hï¿½}ï¿½Xï¿½Nï¿½iï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½Â‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½zï¿½ï¿½È‚Ì‚ï¿½0ï¿½j
+		pBlob->GetBufferPointer(), // ï¿½Vï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½Cï¿½Yï¿½ï¿½ï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½Ìƒ|ï¿½Cï¿½ï¿½ï¿½^
+		pBlob->GetBufferSize(), // ï¿½Vï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½Cï¿½Yï¿½ï¿½ï¿½ï¿½ï¿½fï¿½[ï¿½^ï¿½ÌƒTï¿½Cï¿½Y
+		IID_PPV_ARGS(m_pRootSignature.GetAddressOf())); // ï¿½ï¿½ï¿½[ï¿½gï¿½Vï¿½Oï¿½jï¿½`ï¿½ï¿½ï¿½iï¿½[ï¿½ï¿½Ìƒ|ï¿½Cï¿½ï¿½ï¿½^
 	if (FAILED(hr))
 	{
-		printf("WaterMesh:ƒ‹[ƒgƒVƒOƒlƒ`ƒƒ‚Ì¶¬‚ÉŽ¸”s");
+		printf("WaterMesh:ï¿½ï¿½ï¿½[ï¿½gï¿½Vï¿½Oï¿½lï¿½`ï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½ï¿½ÉŽï¿½ï¿½s");
 		return;
 	}
 

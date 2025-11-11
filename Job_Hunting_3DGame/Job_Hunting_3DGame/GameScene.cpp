@@ -2,6 +2,7 @@
 #include "SceneManager.h"
 #include "System/ImGui/imgui.h"
 #include "Debug_New.h"
+#include "DirectionalLight.h"
 
 using namespace DirectX;
 
@@ -10,7 +11,7 @@ Object* GameScene::CreateObj(const std::string& _objectID)
 	auto obj = prototypeManager->Create(_objectID);
 	if (obj)
 	{
-		// 所有権をシーン内管理vector配列に映す
+		// 所有権をシーン内管理配列に映す
 		objectInstance.push_back(std::move(obj));
 		return objectInstance.back().get();
 	}
@@ -25,10 +26,15 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	camera = _camera;
 	uiCamera = _uiCamera;
 
+	// カメラ設定
 	camera->SetPos(XMVectorSet(0.0f, 2.3f, 0.0f, 1.0f));
 	camera->SetTarget(XMVectorSet(0.0f, -15.0f, 50.0f, 0.0f));
 	camera->SetUp(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
 	uiCamera->Init(screenWidth, screenHeight);
+
+	XMVECTOR camPos = camera->GetPos();
+	XMFLOAT3 pos;
+	XMStoreFloat3(&pos, camPos);
 
 	// プロトタイプ登録
 	prototypeManager->AddPrototype("Sky", std::make_unique<SkyBox>());
@@ -38,11 +44,13 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	prototypeManager->AddPrototype("UI", std::make_unique<UI>());
 	prototypeManager->AddPrototype("UI_Fade", std::make_unique<UI_Fade>());
 	prototypeManager->AddPrototype("UI_Timer", std::make_unique<UI_Timer>());
-	 
-	XMVECTOR camPos = camera->GetPos();
-	XMFLOAT3 pos;
-	XMStoreFloat3(&pos, camPos);
+	
+	// ライト設定
+	DirectionalLight::Instance().SetLightDir({ 0.35f,-1.0f,0.15f });
+	DirectionalLight::Instance().SetEnvStrength(0.65f);
+	DirectionalLight::Instance().SetLightColor({ 1.0f,1.0f,1.0f,1.0f });
 
+	// オブジェクト生成
 	SkyBox* sky = dynamic_cast<SkyBox*>(CreateObj("Sky"));
 	sky->Init(camera);
 	sky->SetPos(XMLoadFloat3(&pos));
@@ -113,6 +121,7 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	game = std::make_unique<Game>();
 	game->Init(player, goals);
 
+	// UI系生成
 	UI* ui_if = dynamic_cast<UI*>(CreateObj("UI"));
 	ui_if->Init(uiCamera, 500.0f, 200.0f, L"Assets/Texture/Game_if.png");
 	ui_if->SetTransform(
@@ -146,6 +155,8 @@ void GameScene::Update(float _deltaTime)
 		playerCtrl->SetPlayed(true);
 
 	playerCtrl->Update(_deltaTime);
+
+	DirectionalLight::Instance().UpdateLightFollowCamera(camera);
 
 	for (auto& obj : objectInstance)
 	{
@@ -254,17 +265,22 @@ void GameScene::Update_MouseRotate(float _sensi)
 void GameScene::Draw_ImGui()
 {
 	ImGui_Prop();
-	ImGui_PlayerController();
+	
+	//ImGui_PlayerController();
 	//ImGui_Goal();
 	//ImGui_WaterMesh();
-	//ImGui_Timer();
-	ImGui_Camera();
+	//ImGui_Camera();
 }
 
 void GameScene::ImGui_Prop()
 {
 	ImGui::Begin("SceneName:GameScene");
 	ImGui::Text("FPS: %.2f", ImGui::GetIO().Framerate);
+
+	const auto& light = DirectionalLight::Instance().GetLightData();
+	ImGui::Text("LightDir: X=%.2f Y=%.2f Z=%.2f",
+		light.lightDir.x, light.lightDir.y, light.lightDir.z);
+
 	ImGui::Text("Press Enter to Result!");
 	ImGui::End();
 }
@@ -346,7 +362,7 @@ void GameScene::ImGui_Goal()
 	// ゴールオブジェクトのリスト表示
 	if (!goals.empty())
 	{
-		ImGui::Text("Selct Goal:");
+		ImGui::Text("Select Goal:");
 		for (int i = 0; i < goals.size(); ++i)
 		{
 			std::string label = "Goal" + std::to_string(i);
@@ -385,7 +401,6 @@ void GameScene::ImGui_WaterMesh()
 		WaterMesh* waterMesh = nullptr;
 		for (auto& obj : objectInstance)
 		{
-			// 水面メッシュを検索
 			if (obj->m_tags.SearchTag("WaterMesh"))
 			{
 				waterMesh = dynamic_cast<WaterMesh*>(obj.get());
@@ -403,46 +418,6 @@ void GameScene::ImGui_WaterMesh()
 			}
 		}
 	}
-	ImGui::End();
-}
-
-void GameScene::ImGui_Timer()
-{
-	if (!game) return;
-	ImGui::Begin("RaceTimer");
-
-	int countDown = game->GetCountDownRemaining();
-	if (countDown > 0)
-	{
-		// カウントダウン表示
-		ImGui::SetWindowFontScale(5.0f);
-		ImVec2 windowSize = ImGui::GetWindowSize();
-		char buffer[8];
-		snprintf(buffer, sizeof(buffer), "%d", countDown);
-		ImVec2 textSize = ImGui::CalcTextSize(buffer);
-		ImGui::SetCursorPosX((windowSize.x - textSize.x) * 0.5f);
-		ImGui::Text("%s", buffer);
-		ImGui::SetWindowFontScale(1.0f);
-	}
-	else
-	{
-		// レースタイマー表示
-		auto currentElapsed = game->GetElapsedTime();
-
-		int min = static_cast<int>(std::chrono::duration_cast
-			<std::chrono::minutes>(currentElapsed).count());
-		int sec = static_cast<int>(std::chrono::duration_cast
-			<std::chrono::seconds>(currentElapsed).count() % 60);
-		int cenSec = static_cast<int>((currentElapsed.count() % 1000) / 10);
-
-		char buffer[16];
-		snprintf(buffer, sizeof(buffer), "%02d:%02d:%02d", min, sec, cenSec);
-
-		ImGui::SetWindowFontScale(3.0f);
-		ImGui::Text("Time: %s", buffer);
-		ImGui::SetWindowFontScale(1.0f);
-	}
-
 	ImGui::End();
 }
 

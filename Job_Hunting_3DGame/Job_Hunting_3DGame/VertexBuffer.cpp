@@ -61,3 +61,18 @@ bool VertexBuffer::IsValid()
 {
 	return m_IsValid;
 }
+
+void VertexBuffer::Update(const void* _pData, size_t _dataSize)
+{
+	if (!m_IsValid || !m_pBuffer) return;
+
+	void* ptr = nullptr;
+	HRESULT hr = m_pBuffer->Map(0, nullptr, &ptr);
+	if (FAILED(hr))
+	{
+		printf("VertexBuffer:頂点バッファマッピングに失敗\n");
+		return;
+	}
+	memcpy(ptr, _pData, _dataSize);
+	m_pBuffer->Unmap(0, nullptr);
+}

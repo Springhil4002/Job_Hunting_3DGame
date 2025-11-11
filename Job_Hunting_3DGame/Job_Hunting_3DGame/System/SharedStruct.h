@@ -3,14 +3,13 @@
 #include "CommonTypes.h"
 #include "ComPtr.h"
 
-// 頂点データの定義
 struct Vertex
 {
-	XMFLOAT3 position;	// 位置
-	XMFLOAT3 normal;	// 法線
-	XMFLOAT2 uv;		// UV座標
-	XMFLOAT3 tangent;	// 接空間
-	XMFLOAT4 color;		// 頂点カラー
+	XMFLOAT3 position;	
+	XMFLOAT3 normal;	
+	XMFLOAT2 uv;		
+	XMFLOAT3 tangent;	
+	XMFLOAT4 color;		
 
 	static const D3D12_INPUT_LAYOUT_DESC InputLayout;
 private:
@@ -18,14 +17,13 @@ private:
 	static const D3D12_INPUT_ELEMENT_DESC InputElements[InputElementCount];
 };
 
-// 頂点データ(インスタンシング)の定義
 struct VertexInstance
 {
-	XMFLOAT3 position;	// 位置
-	XMFLOAT3 normal;	// 法線
-	XMFLOAT2 uv;		// UV座標
-	XMFLOAT3 tangent;	// 接空間
-	XMFLOAT4 color;		// 頂点カラー
+	XMFLOAT3 position;	
+	XMFLOAT3 normal;	
+	XMFLOAT2 uv;		
+	XMFLOAT3 tangent;	
+	XMFLOAT4 color;		
 
 	static const D3D12_INPUT_LAYOUT_DESC InputLayout;
 private:
@@ -33,47 +31,46 @@ private:
 	static const D3D12_INPUT_ELEMENT_DESC InputElements[InputElementCount];
 };
 
-// 3Dオブジェクト用の変換行列の定義
 struct alignas(256) Matrix
 {
-	Matrix4x4 world;	// ワールド行列
-	Matrix4x4 view;		// ビュー行列
-	Matrix4x4 proj;		// 投影行列
-	float time;			// 波のための時間
-	XMFLOAT3 cameraPos;	// カメラ位置
-	float alpha;		// 透明度
+	Matrix4x4 world;	
+	Matrix4x4 view;		
+	Matrix4x4 proj;		
+	float time;			
+	XMFLOAT3 cameraPos;	
+	float alpha;		
 };
 
 struct alignas(256) MatrixUI
 {
-	Matrix4x4 world;	// ワールド行列
-	Matrix4x4 view;		// ビュー行列
-	Matrix4x4 proj;		// 投影行列
-	float alpha;		// 透明度
-	float padding[3];	// パディング
-	XMFLOAT4 uv;		// UV情報
+	Matrix4x4 world;	
+	Matrix4x4 view;		
+	Matrix4x4 proj;		
+	float alpha;		
+	float padding[3];	
+	XMFLOAT4 uv;		
 };
 
 struct GerstnerParams
 {
-	DirectX::XMFLOAT4 amplitude[4];		// x=振幅
-	DirectX::XMFLOAT4 direction[4];		// xy=方向
-	DirectX::XMFLOAT4 waveLength[4];	// x=波長
-	DirectX::XMFLOAT4 speed[4];			// x=速度
+	DirectX::XMFLOAT4 amplitude[4];	
+	DirectX::XMFLOAT4 direction[4];	
+	DirectX::XMFLOAT4 waveLength[4];
+	DirectX::XMFLOAT4 speed[4];		
 };
 
 struct Mesh
 {
-	std::vector<Vertex> Vertices;	// 頂点データの配列
-	std::vector<uint32_t> Indices;	// インデックスの配列
-	std::wstring DiffuseMap;		// テクスチャのファイルパス
+	std::vector<Vertex> Vertices;	
+	std::vector<uint32_t> Indices;	
+	std::wstring DiffuseMap;		
 };
 
 struct LightPalams
 {
-	XMFLOAT3 lightDir;		// ライトの方向
-	float envStrength;		// パディング
-	XMFLOAT4 lightColor;	// ライトの色
+	XMFLOAT3 lightDir;		
+	float envStrength;		
+	XMFLOAT4 lightColor;	
 };
 
 struct SkyVertex {
@@ -87,9 +84,9 @@ private:
 
 struct VertexUI
 {
-	XMFLOAT3 pos;	// 位置
-	XMFLOAT2 uv;	// テクスチャ座表
-	XMFLOAT4 color;	// 色
+	XMFLOAT3 pos;	
+	XMFLOAT2 uv;	
+	XMFLOAT4 color;	
 	static const D3D12_INPUT_LAYOUT_DESC InputLayout;
 private:
 	static const int InputElementCount = 3;
@@ -98,7 +95,22 @@ private:
 
 struct Mesh_UI
 {
-	std::vector<VertexUI> vertices;	// 頂点データの配列
-	std::vector<uint32_t> indices;	// インデックスの配列
-	std::wstring DiffuseMap;		// テクスチャのファイルパス
+	std::vector<VertexUI> vertices;	
+	std::vector<uint32_t> indices;	
+	std::wstring DiffuseMap;		
+};
+
+struct WaterParams
+{
+	XMFLOAT2 fbmScale;       
+	float fbmGain;            
+	float fbmLacunarity;      
+
+	int fbmOctaves;            
+	float normalPerturb;       
+	float foamThreshold;       
+	float foamIntensity;       
+
+	XMFLOAT4 shallowColor;     
+	XMFLOAT4 deepColor;        
 };

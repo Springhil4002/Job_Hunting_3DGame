@@ -68,8 +68,6 @@ void PlayerController::Init_Param()
 	m_ForwardVec = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 	m_RightVec = XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
 	m_UpVec = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-	m_CamOffset = XMVectorSubtract(m_Camera->GetPos(), m_Player->GetPos());
-	m_InitCamOffset = m_CamOffset;
 	m_LastPlayerPos = m_Position;
 
 	m_RotateSpeed = XMConvertToRadians(45.0f);	// 回転速度
@@ -83,6 +81,19 @@ void PlayerController::Init_Param()
 	m_PlayerOffsetY = 3.0f; // プレイヤーの高さオフセット
 	m_FollowSpeed = 100.0f;	// カメラの追従速度
 
+	XMVECTOR initOffset = XMVectorSet(0.0f, 1.5f, -3.0f, 0.0f);
+
+	float initDistance = XMVectorGetX(XMVector3Length(initOffset));
+
+	m_ZoomSpeed = 10.0f;
+	m_MinDistance = initDistance;
+	m_MaxDistance = 20.0f;
+	
+	m_CurrentDistance = initDistance;
+	m_InitCamOffset = XMVector3Normalize(initOffset);
+
+	m_CamOffset = initOffset;
+
 	m_Emitter_Splash = std::make_unique<ParticleEmitter_Splash>(m_Camera);
 	m_Emitter_Splash->Init();
 }
@@ -92,6 +103,8 @@ void PlayerController::Update_Input(float _deltaTime)
 	if (!m_Played) return;
 	Input_Rotate(_deltaTime);
 	Input_Move(_deltaTime);
+
+	Input_Zoom(_deltaTime);
 }
 
 void PlayerController::Update_Buoyancy(float _deltaTime)
@@ -152,7 +165,7 @@ void PlayerController::Update_PlayerTransform(float _deltaTime)
 	float fz = static_cast<float>(XMVectorGetZ(m_Position));
 	float waveHeight = m_WaterMesh->GetWaveHeight(fx, fz, _deltaTime);
 	idealTarget = XMVectorSetY(idealTarget, 
-		XMVectorGetY(idealTarget) + waveHeight * 0.7f);
+		XMVectorGetY(idealTarget) + waveHeight * 0.3f);
 
 	XMVECTOR currentTarget = m_Camera->GetTarget();
 	XMVECTOR newCamTarget = XMVectorLerp(currentTarget, idealTarget, interp);
@@ -166,10 +179,8 @@ void PlayerController::Update_Emitter(float _deltaTime)
 	bool isMoving = false;
 
 	XMVECTOR horizontalVelocity = XMVectorSet(XMVectorGetX(m_Velocity), 0, XMVectorGetZ(m_Velocity), 0);
-	if (XMVectorGetX(XMVector3Length(horizontalVelocity))> 0.1f)
-	{
-		isMoving = true;
-	}
+	float speed = XMVectorGetX(XMVector3Length(horizontalVelocity));
+	if (speed > 0.1f) isMoving = true;
 	
 	const float splashOffsetY = -1.0f;
 	// Playerの先頭部分(中心座標＋進行方向のオフセット)
@@ -192,7 +203,10 @@ void PlayerController::Input_Rotate(float _deltaTime)
 	XMMATRIX rotMat = XMMatrixRotationY(XMVectorGetY(m_Rotation));
 	m_ForwardVec = XMVector3TransformNormal(XMVectorSet(0, 0, 1, 0), rotMat);
 	m_RightVec = XMVector3TransformNormal(XMVectorSet(1, 0, 0, 0), rotMat);
-	m_CamOffset = XMVector3TransformCoord(m_InitCamOffset, rotMat);
+	
+	XMVECTOR rotateOffsetDir = XMVector3TransformNormal(m_InitCamOffset, rotMat);
+
+	m_CamOffset = rotateOffsetDir * m_CurrentDistance;
 }
 
 void PlayerController::Input_Move(float _deltaTime)
@@ -257,4 +271,36 @@ void PlayerController::Input_Move(float _deltaTime)
 
 	// 位置に速度を加算
 	m_Position += m_Velocity * _deltaTime;
+}
+
+void PlayerController::Input_Zoom(float _deltaTime)
+{
+	if (!m_Input) return;
+
+	float zoomDirection = 0.0f;
+
+	if (m_Input->GetKeyPress(VK_E))
+	{
+		zoomDirection = 1.0f;
+	}
+	if (m_Input->GetKeyPress(VK_Q))
+	{
+		zoomDirection = -1.0f;
+	}
+
+	if (zoomDirection != 0.0f)
+	{
+		float zoomAmount = zoomDirection * m_ZoomSpeed * _deltaTime;
+
+		m_CurrentDistance += zoomAmount;
+
+		if (m_CurrentDistance < m_MinDistance)
+		{
+			m_CurrentDistance = m_MinDistance;
+		}
+		else if (m_CurrentDistance > m_MaxDistance)
+		{
+			m_CurrentDistance = m_MaxDistance;
+		}
+	}
 }

@@ -154,22 +154,33 @@ bool WaterMesh::Init(Camera* _camera)
 		printf("WaterMesh:ライト用コンスタントバッファ生成失敗\n");
 		return false;
 	}
-
-	// カメラ方向と反対方向にライト方向を設定
-	XMVECTOR eye = m_Camera->GetPos();
-	XMVECTOR target = m_Camera->GetTarget();
-	XMVECTOR camDir = XMVector3Normalize(XMVectorSubtract(target, eye));
-
-	XMVECTOR lightDirVec = XMVectorScale(camDir, -1.0f);
-	XMFLOAT3 lightDir;
-	XMStoreFloat3(&lightDir, lightDirVec);
-
+	
 	LightPalams lightParams = {};
-	lightParams.lightDir = lightDir;
+	lightParams.lightDir = XMFLOAT3(0.0f, -1.0f, 0.0f);
+	lightParams.envStrength = 0.65f;
 	lightParams.lightColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// バッファにコピー
 	std::memcpy(m_pLightBuffer->GetPtr(), &lightParams, sizeof(LightPalams));
+
+	// WaterParamsコンスタントバッファ
+	m_pWaterBuffer = std::make_unique<ConstantBuffer>(sizeof(WaterParams));
+	if (!m_pWaterBuffer->IsValid())
+	{
+		printf("WaterMesh:WaterParams コンスタントバッファ生成失敗\n");
+		return false;
+	}
+
+	m_waterParams.fbmScale = XMFLOAT2(0.02f, 0.02f);
+	m_waterParams.fbmGain = 0.5f;
+	m_waterParams.fbmLacunarity = 2.0f;
+	m_waterParams.fbmOctaves = 6;
+	m_waterParams.normalPerturb = 0.1f;
+	m_waterParams.foamThreshold = 0.55f;
+	m_waterParams.foamIntensity = 0.6f;
+	m_waterParams.shallowColor = XMFLOAT4(0.03f, 0.10f, 0.18f, 1.0f);
+	m_waterParams.deepColor = XMFLOAT4(0.005f, 0.02f, 0.05f, 1.0f);
+	std::memcpy(m_pWaterBuffer->GetPtr(), &m_waterParams, sizeof(WaterParams));
 
 	// ディスクリプタヒープ
 	m_pDescriptorHeap = std::make_unique<DescriptorHeap>();
@@ -223,8 +234,9 @@ bool WaterMesh::Init(Camera* _camera)
 void WaterMesh::Update()
 {
 	// 時間更新
-	g_Time += 0.016f;	
+	g_Time += 0.016f;
 	m_WaveTime += 0.016f;
+
 	Update_Transform();
 	Update_CameraMatrix();
 	Update_Light();
@@ -251,11 +263,12 @@ void WaterMesh::Draw()
 	cmdList->SetGraphicsRootConstantBufferView(0, m_pConstantBuffer[currentIndex]->GetAddress());
 	cmdList->SetGraphicsRootConstantBufferView(1, m_pWaveBuffer->GetAddress());
 	cmdList->SetGraphicsRootConstantBufferView(2, m_pLightBuffer->GetAddress());
+	cmdList->SetGraphicsRootConstantBufferView(3, m_pWaterBuffer->GetAddress());
 
 	// ディスクリプタヒープをセット
 	cmdList->SetDescriptorHeaps(1, &Heap);
 	// キューブマップをセット
-	cmdList->SetGraphicsRootDescriptorTable(3, m_pSkyCubeTexHandle->handleGPU);
+	cmdList->SetGraphicsRootDescriptorTable(4, m_pSkyCubeTexHandle->handleGPU);
 
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	cmdList->IASetVertexBuffers(0, 1, &vbView);
@@ -329,19 +342,10 @@ void WaterMesh::Update_CameraMatrix()
 
 void WaterMesh::Update_Light()
 {
-	// カメラの前方向ベクトルを取得
-	XMVECTOR camDir = m_Camera->GetForward();
-
-	// カメラと向かい合うようにライト方向を求める
-	XMVECTOR lightDirVec = XMVectorScale(camDir, -1.0f);
-	XMFLOAT3 lightDir;
-	XMStoreFloat3(&lightDir, lightDirVec);
-
 	LightPalams lightParams;
-	lightParams.lightDir = lightDir;
-	lightParams.envStrength = 0.4f;
+	lightParams.lightDir = XMFLOAT3(0.0f, -1.0f, 0.0f);
+	lightParams.envStrength = 0.6f;
 	lightParams.lightColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-
 
 	// 定数バッファに更新
 	std::memcpy(m_pLightBuffer->GetPtr(), &lightParams, sizeof(LightPalams));

@@ -39,6 +39,11 @@ private:
 	float m_PlayerOffsetY = 0.0f;	// プレイヤーの高さオフセット
 	float m_FollowSpeed = 0.0f;		// カメラの追従速度	
 
+	float m_CurrentDistance = 0.0f; // 現在のカメラとPlayerの距離
+	float m_MinDistance = 0.0f;		// 最小カメラ距離
+	float m_MaxDistance = 0.0f;		// 最大カメラ距離
+	float m_ZoomSpeed = 0.0f;		// ズーム速度
+
 	/// @brief パラメータの初期化
 	void Init_Param();
 	/// @brief 入力処理
@@ -58,6 +63,9 @@ private:
 	/// @brief 入力による移動処理
 	/// @param _deltaTime 経過時間
 	void Input_Move(float _deltaTime);
+
+
+	void Input_Zoom(float _deltaTime);
 public:
 	/// @brief 初期化処理
 	/// @param _player プレイヤーのポインタ変数 

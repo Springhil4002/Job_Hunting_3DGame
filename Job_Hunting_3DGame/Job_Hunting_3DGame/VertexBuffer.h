@@ -25,5 +25,7 @@ public:
 
 	/// @brief	バッファの生成に成功したかを取得
 	/// @return バッファ生成の成否を返します
-	bool IsValid();								
+	bool IsValid();	
+
+	void Update(const void* _pData, size_t _dataSize);
 };

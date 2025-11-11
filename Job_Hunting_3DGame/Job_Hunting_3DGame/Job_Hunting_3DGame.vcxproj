@@ -153,6 +153,7 @@
     <ClCompile Include="DescriptorHeap.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="DrawBase.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameScene.cpp" />
@@ -221,6 +222,7 @@
     <ClInclude Include="DescriptorHeap.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="DrawBase.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameScene.h" />
