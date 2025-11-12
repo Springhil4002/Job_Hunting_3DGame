@@ -114,10 +114,9 @@ void PlayerController::Update_Buoyancy(float _deltaTime)
 	float fx = static_cast<float>(XMVectorGetX(m_Position));
 	float fz = static_cast<float>(XMVectorGetZ(m_Position));
 	float y = XMVectorGetY(m_Position) - m_PlayerOffsetY;
-	
 
-	// 水面の波の高さを取得
-	float waterHeight = m_WaterMesh->GetWaveHeight(fx, fz, _deltaTime);
+	// 浮力の基準となる高さ場の高さを取得
+	float waterHeight = m_WaterMesh->GetHeightFieldHeight(fx, fz);
 	float depth = waterHeight - y;
 
 	// 水中にいるなら
@@ -163,10 +162,11 @@ void PlayerController::Update_PlayerTransform(float _deltaTime)
 	// 水面の高さを取得して注視点に加算
 	float fx = static_cast<float>(XMVectorGetX(m_Position));
 	float fz = static_cast<float>(XMVectorGetZ(m_Position));
-	float waveHeight = m_WaterMesh->GetWaveHeight(fx, fz, _deltaTime);
+	float waveHeight = m_WaterMesh->GetHeightFieldHeight(fx, fz);
 	idealTarget = XMVectorSetY(idealTarget, 
 		XMVectorGetY(idealTarget) + waveHeight * 0.3f);
-
+	
+	// カメラ注視点更新
 	XMVECTOR currentTarget = m_Camera->GetTarget();
 	XMVECTOR newCamTarget = XMVectorLerp(currentTarget, idealTarget, interp);
 	m_Camera->SetTarget(newCamTarget);
@@ -174,7 +174,7 @@ void PlayerController::Update_PlayerTransform(float _deltaTime)
 
 void PlayerController::Update_Emitter(float _deltaTime)
 {
-	if (!m_Emitter_Splash) return;
+	if (!m_Emitter_Splash || !m_WaterMesh) return;
 
 	bool isMoving = false;
 
@@ -189,6 +189,40 @@ void PlayerController::Update_Emitter(float _deltaTime)
 	spawnPos = XMVectorAdd(spawnPos, XMVectorSet(0, splashOffsetY, 0, 0));
 
 	m_Emitter_Splash->Update(_deltaTime, spawnPos, m_RightVec, isMoving);
+	
+	// 移動時、波紋生成
+	if (speed > 0.05f)
+	{
+		// プレイヤーのワールド座表
+		float fx = XMVectorGetX(m_Position);
+		float fz = XMVectorGetZ(m_Position);
+		
+		XMVECTOR forwardVec = m_ForwardVec;
+
+		const float offset = 3.0f;
+
+		fx += XMVectorGetX(forwardVec) * offset;
+		fz += XMVectorGetZ(forwardVec) * offset;
+
+		// 水面メッシュのグリッドサイズを取得
+		const float gridSize = m_WaterMesh->GetGridSize();
+		const float halfSize = gridSize * 0.5f;
+
+		// ワールド座表をWaterMeshのUVに変換、Gridの中心がWaterMeshの中心になるように
+		float u = (fx + halfSize) / gridSize;
+		float v = (fz + halfSize) / gridSize;
+
+		// UV座表をクランプ
+		u = std::clamp(u, 0.0f, 1.0f);
+		v = std::clamp(v, 0.0f, 1.0f);
+
+		// 速度に応じたドロップの半径と強さを設定
+		const float dropStrength = std::min(5.0f, speed * 0.05f);
+		const float radius = 3.0f;
+
+		// 波紋生成
+		m_WaterMesh->ApplyDrop(XMFLOAT2(u, v), dropStrength, radius);
+	}
 }
 
 void PlayerController::Input_Rotate(float _deltaTime)

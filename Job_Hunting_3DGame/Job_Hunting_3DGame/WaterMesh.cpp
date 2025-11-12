@@ -1,5 +1,6 @@
 #include "WaterMesh.h"
 #include "Debug_New.h"
+#include <algorithm>
 
 using namespace DirectX;
 
@@ -71,6 +72,11 @@ Mesh WaterMesh::CreateGridMesh()
 	}
 
 	m_IndexCount = static_cast<UINT>(mesh.Indices.size());
+
+	// 頂点データを移動
+	m_Vertices = std::move(mesh.Vertices);
+	mesh.Vertices.clear();
+
 	return mesh;
 }
 
@@ -78,10 +84,12 @@ bool WaterMesh::Init(Camera* _camera)
 {
 	m_Camera = _camera;
 	
+	if (!Init_SimulationResources()) return false;
+
 	auto mesh = CreateGridMesh();
-	auto vertexSize = sizeof(Vertex) * std::size(mesh.Vertices);
+	auto vertexSize = sizeof(Vertex) * std::size(m_Vertices);
 	auto vertexStride = sizeof(Vertex);
-	m_pVertexBuffer = std::make_unique<VertexBuffer>(vertexSize, vertexStride, mesh.Vertices.data());
+	m_pVertexBuffer = std::make_unique<VertexBuffer>(vertexSize, vertexStride, m_Vertices.data());
 	if (!m_pVertexBuffer->IsValid())
 	{
 		printf("WaterMesh:頂点バッファ生成失敗\n");
@@ -237,9 +245,14 @@ void WaterMesh::Update()
 	g_Time += 0.016f;
 	m_WaveTime += 0.016f;
 
+	ApplyPendingDrops();
+	StepSimulation(0.016f);
+
 	Update_Transform();
 	Update_CameraMatrix();
 	Update_Light();
+
+	Update_VertexBuffer();
 }
 
 void WaterMesh::Draw()
@@ -351,9 +364,162 @@ void WaterMesh::Update_Light()
 	std::memcpy(m_pLightBuffer->GetPtr(), &lightParams, sizeof(LightPalams));
 }
 
+bool WaterMesh::Init_SimulationResources()
+{
+	const size_t total = static_cast<size_t>(m_GridX + 1) * 
+						static_cast<size_t>(m_GridZ + 1);
+	m_Height.assign(total, 0.0f);
+	m_Velocity.assign(total, 0.0f);
+
+	return true;
+}
+
+float WaterMesh::Sample(int _sx, int _sz)
+{
+	_sx = std::clamp(_sx, 0, m_GridX);
+	_sz = std::clamp(_sz, 0, m_GridZ);
+
+	return m_Height[Index(_sx, _sz)];
+}
+
+void WaterMesh::StepSimulation(float _deltaTime)
+{
+	const float gridWidth = m_GridSize;
+	const float gridDepth = m_GridSize;
+	if (gridWidth <= 0.0f || gridDepth <= 0.0f) return;
+
+	// グリッドセルの間隔
+	const float dx = gridWidth / float(m_GridX);
+	const float dz = gridDepth / float(m_GridZ);
+
+	const float heightCell = std::max(1e-5f, std::min(dx, dz));
+	const float cell = std::max(1e-4f, m_WaveSpeed);
+
+	const float dtCFL = 0.5f * (heightCell / cell);
+	const float dtMax = std::min(_deltaTime, 0.033f);
+	int steps = std::max(1, (int)std::ceil(dtMax / dtCFL));
+	steps = std::min(steps, 8);
+	const float sdt = dtMax / float(steps);
+	const float dampPerStep = std::pow(m_Damping, sdt / (1.0f / 60.0f));
+	
+	const float coeff = (m_WaveSpeed * m_WaveSpeed);
+
+	for (int s = 0; s < steps; ++s)
+	{
+		std::vector<float> newHeight(m_Height.size(), 0.0f);
+		for (int z = 0; z <= m_GridZ; ++z)
+		{
+			for (int x = 0; x <= m_GridX; ++x)
+			{
+				size_t i = Index(x, z);
+				float h = m_Height[i];
+				
+				float lap = Sample(x - 1, z)
+						  + Sample(x + 1, z)
+						  + Sample(x, z - 1)
+						  + Sample(x, z + 1)
+						  - 4.0f * h;
+				float accel = coeff * lap;
+
+				m_Velocity[i] += accel * sdt;
+				m_Velocity[i] *= dampPerStep;
+				newHeight[i] = h + m_Velocity[i] * sdt;
+			}
+		}
+		m_Height.swap(newHeight);
+	}
+}
+
+void WaterMesh::ApplyDrop(const DirectX::XMFLOAT2& _uv, float _strength, float _radius)
+{
+	m_PendingDrops.push_back({ _uv,_strength,_radius });
+}
+
+void WaterMesh::ApplyPendingDrops()
+{
+	for (const auto& drop : m_PendingDrops)
+	{
+		const int cx = static_cast<int>(drop.uv.x * m_GridX);
+		const int cz = static_cast<int>(drop.uv.y * m_GridZ);
+
+		const int radius = static_cast<int>(std::max(1.0f, drop.radius));
+	
+		for (int z = -radius; z <= radius; ++z)
+		{
+			for (int x = -radius; x <= radius; ++x)
+			{
+				int ix = std::clamp(cx + x, 0, m_GridX);
+				int iz = std::clamp(cz + z, 0, m_GridZ);
+
+				float dist = std::sqrt(float(x * x + z * z)) / std::max(1, radius);
+				float w = 1.0f - dist;
+				w = std::max(0.0f, w);
+
+				size_t i = Index(ix, iz);
+
+				m_Velocity[i] += drop.strength * w;
+			}
+		}
+	}
+	m_PendingDrops.clear();		// リストクリア
+}
+
+void WaterMesh::Update_VertexBuffer()
+{
+	if (m_Vertices.size() != m_Height.size()) return;
+
+	float halfSize = m_GridSize * 0.5f;
+	float gridX = static_cast<float>(m_GridX);
+	float gridZ = static_cast<float>(m_GridZ);
+	const float stepX = m_GridSize / gridX;
+	const float stepZ = m_GridSize / gridZ;
+
+	// 水面メッシュの高さを更新
+	for (int z = 0; z <= m_GridZ; ++z)
+	{
+		for (int x = 0; x <= m_GridX; ++x)
+		{
+			const size_t i = Index(x, z);
+			m_Vertices[i].position.y = m_Height[i];
+		}
+	}
+
+	// 法線ベクトルを更新
+	const float inv2dx = 1.0f / (2.0f * stepX);
+	const float inv2dz = 1.0f / (2.0f * stepZ);
+	for (int z = 0; z <= m_GridZ; ++z)
+	{
+		for (int x = 0; x <= m_GridX; ++x)
+		{
+			const int xm = std::max(0, x - 1);
+			const int xp = std::min(m_GridX, x + 1);
+			const int zm = std::max(0, z - 1);
+			const int zp = std::min(m_GridZ, z + 1);
+			
+			// X方向の高さの差
+			const float hx = m_Height[Index(xp, z)] - m_Height[Index(xm, z)];
+			// Z方向の高さの差
+			const float hz = m_Height[Index(x, zp)] - m_Height[Index(x, zm)];
+		
+			// 傾きを計算
+			const float dhdx = hx * inv2dx;
+			const float dhdz = hz * inv2dz;
+
+			XMFLOAT3 nLocal(-dhdx, 1.0f, -dhdz);
+			XMVECTOR n = XMVector3Normalize(XMLoadFloat3(&nLocal));
+
+			XMStoreFloat3(&m_Vertices[Index(x, z)].normal, n);
+		}
+	}
+
+	// 頂点バッファをGPUに転送
+	m_pVertexBuffer->Update(m_Vertices.data(), m_Vertices.size() * sizeof(Vertex));
+}
+
 float WaterMesh::GetWaveHeight(float _x, float _z, float _time)
 {
-	float height = 0.0f;
+	// 波の高さ
+	float waveHeight = 0.0f;
 	for (int i = 0; i < 4; ++i)
 	{
 		XMFLOAT2 dir = XMFLOAT2(m_waveParams.direction[i].x, m_waveParams.direction[i].y);
@@ -364,7 +530,26 @@ float WaterMesh::GetWaveHeight(float _x, float _z, float _time)
 		float k = XM_2PI / len;
 		float dot = _x * dir.x + _z * dir.y;
 		float phase = k * dot + _time * speed;
-		height += amp * sinf(phase);
+		waveHeight += amp * sinf(phase);
 	}
-	return height;
+
+	return waveHeight;
+}
+
+float WaterMesh::GetHeightFieldHeight(float _x, float _z)
+{
+	// 高さ場の高さ
+	float heightFieldHeight = 0.0f;
+
+	const float halfSize = m_GridSize * 0.5f;
+	float gridX_pos = (_x + halfSize) / (m_GridSize / m_GridX);
+	float gridZ_pos = (_z + halfSize) / (m_GridSize / m_GridZ);
+
+	// 最も近いグリッド点をサンプリング
+	int ix = std::clamp(static_cast<int>(std::round(gridX_pos)), 0, m_GridX);
+	int iz = std::clamp(static_cast<int>(std::round(gridZ_pos)), 0, m_GridZ);
+
+	heightFieldHeight = m_Height[Index(ix, iz)];
+
+	return heightFieldHeight;
 }

@@ -20,19 +20,19 @@ cbuffer GerstnerParams : register(b1)
 
 struct VS_Input
 {
-    float3 pos      : POSITION;  // 頂点座標
-    float3 normal   : NORMAL;    // 法線
-    float2 uv       : TEXCOORD;  // UV
-    float3 tangent  : TANGENT;   // 接空間
-    float4 color    : COLOR;     // 頂点色
+    float3 pos : POSITION;      // 頂点座標
+    float3 normal : NORMAL;     // 法線
+    float2 uv : TEXCOORD;       // UV
+    float3 tangent : TANGENT;   // 接空間
+    float4 color : COLOR;       // 頂点色
 };
 
 struct VS_Out
 {
-    float4 svpos    : SV_POSITION;  // 変換された座標
-    float4 color    : COLOR;        // 変換された色
-    float2 uv       : TEXCOORD;     // 変換されたUV
-    float3 normal   : NORMAL;       // 変換された法線
+    float4 svpos : SV_POSITION;     // 変換された座標
+    float4 color : COLOR;           // 変換された色
+    float2 uv : TEXCOORD;           // 変換されたUV
+    float3 normal : NORMAL;         // 変換された法線
     float3 worldPos : POSITION1;    // 変換されたワールド空間座標(スペキュラ計算用)
 };
 
@@ -47,12 +47,14 @@ VS_Out VS_Main(VS_Input vin)
     // 波による変位ベクトル(初期値ゼロ)
     float3 waveOffset = float3(0.0f, 0.0f, 0.0f);
     
-    // 法線用の偏微分ベクトル
-    float3 tangentX = float3(1, 0, 0); // X方向の単位ベクトル(ワールド空間)
-    float3 tangentZ = float3(0, 0, 1); // Z方向の単位ベクトル(ワールド空間)
+    // ゲルストナー波法線計算用の接線ベクトル
+    float3 tangentX = float3(1, 0, 0);
+    float3 tangentZ = float3(0, 0, 1);
     
-    float3 dx = float3(0, 0, 0); // X方向の傾き
-    float3 dz = float3(0, 0, 0); // Z方向の傾き
+    // x方向の接線ベクトルの傾き成分
+    float3 dx = float3(0, 0, 0); 
+    // z方向の接線ベクトルの傾き成分
+    float3 dz = float3(0, 0, 0); 
     
     // Gerstner波の計算(ワールド座標ベース)
     for (int i = 0; i < WAVE_COUNT; ++i)
@@ -75,8 +77,10 @@ VS_Out VS_Main(VS_Input vin)
         waveOffset.z += dir.y * (amp * cosPhase);
         waveOffset.y += amp * sinPhase;
         
-        // 法線再計算用:偏微分
+        // ゲルストナー波の接線計算
         float3 D = float3(dir.x, freq * amp * cosPhase, dir.y);
+        
+        // 接線方向への波の傾き成分を累積
         dx += D * dot(dir, tangentX.xz);
         dz += D * dot(dir, tangentZ.xz);
     }
@@ -84,13 +88,23 @@ VS_Out VS_Main(VS_Input vin)
     // ワールド座標に波の変位を加算
     worldPos += waveOffset;
     
-    // 接ベクトルの交差で法線を計算(偏微分)
-    float3 binormal = float3(0, 1, 0) - dx; // y方向を中心に傾き修正
-    float3 tangent = float3(0, 1, 0) - dz;
-    float3 normal = normalize(cross(tangent, binormal));
-
-    // 法線をワールド行列で変換
-    float3 normal_WS = normalize(mul((float3x3) world, normal));
+    // ゲルストナー波による接線と従法線を計算
+    float3 tangent = float3(1, 0, 0) + dx;
+    float3 binormal = float3(0, 0, 1) + dz;
+    float3 normal_WS = normalize(cross(tangent,binormal));
+    
+    // 高さ場の法線をワールド行列で変換
+    float3 normal_HF = normalize(mul((float3x3) world, normal_WS));
+    
+    // ゲルストナー波の法線に高さ場の法線を合成
+    float3 unionNormal_WS_HF = normalize(mul((float3x3) world, vin.normal));
+    
+    // 最終法線
+    const float HF_WEIGHT = 0.46f;
+    float3 finalNormal = normalize(
+        unionNormal_WS_HF * (1.0f - HF_WEIGHT) +
+        normal_HF * HF_WEIGHT
+    );
     
     // ビュー変換とプロジェクション変換
     float4 viewPos = mul(view, float4(worldPos, 1.0f));
@@ -100,7 +114,7 @@ VS_Out VS_Main(VS_Input vin)
     vout.svpos = projPos;
     vout.color = vin.color;
     vout.uv = vin.uv;
-    vout.normal = normal_WS;
+    vout.normal = finalNormal;
     vout.worldPos = worldPos;
     return vout;
 };

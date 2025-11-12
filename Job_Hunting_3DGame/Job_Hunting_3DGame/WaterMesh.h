@@ -53,6 +53,27 @@ private:
 	int m_GridZ = 256;
 	// グリッドの大きさ
 	float m_GridSize = 512.0f;
+
+	std::vector<float> m_Height;	// 高さ場
+	std::vector<float> m_Velocity;	// 速度場
+	std::vector<Vertex> m_Vertices;	// 頂点データリスト
+
+	// 波の伝播速度
+	float m_WaveSpeed = 10.0f;
+	float m_Damping = 0.95f;
+
+	struct DropRequest
+	{
+		DirectX::XMFLOAT2 uv;
+		float strength;
+		float radius;
+	};
+	std::vector<DropRequest> m_PendingDrops;
+	size_t Index(int _x, int _z) const
+	{
+		return static_cast<size_t>(_z) * (m_GridX + 1) + static_cast<size_t>(_x);
+	}
+
 public:
 	// ワールド行列
 	DirectX::XMMATRIX m_worldMatrix = DirectX::XMMatrixIdentity();
@@ -85,13 +106,36 @@ public:
 	void Update_CameraMatrix();
 	/// @brief ライト更新関数
 	void Update_Light();
-	
+
+	// 動的波紋シミュレーション関数
+	void StepSimulation(float _deltaTime);
+
+	// 頂点バッファ更新関数
+	void Update_VertexBuffer();
+
+	// 波紋生成関数
+	void ApplyDrop(const DirectX::XMFLOAT2& _uv, float _strength, float _radius);
+
+	// 処理待ちのドロップを適用する
+	void ApplyPendingDrops();
+
+	// 高さ場の初期化
+	bool Init_SimulationResources();
+
+	float Sample(int _sx, int _sz);
+
 	/// @brief 波の高さ取得関数
 	/// @param _x X軸
 	/// @param _z Z軸
 	/// @param _time 時間
 	/// @return 波の高さ
 	float GetWaveHeight(float _x, float _z, float _time);
+
+	/// @brief 高さ場シミュレーションの取得関数
+	/// @param _x X軸
+	/// @param _z Z軸
+	/// @return 高さ場の高さ
+	float GetHeightFieldHeight(float _x, float _z);
 
 	// ゲッター
 	int GetGridX() const { return m_GridX; }
@@ -101,4 +145,4 @@ public:
 	void SetGridX(int _gridX) { m_GridX = _gridX; }
 	void SetGridZ(int _gridZ) { m_GridZ = _gridZ; }
 	void SetGridSize(float _gridSize) { m_GridSize = _gridSize; }
-};
+}; 
