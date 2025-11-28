@@ -14,10 +14,11 @@ SceneResourceList GetSceneResourceList(SCENE_ID _ID)
 			{ L"Assets/Texture/Title_Logo.png",		TEX_TYPE::TEX_TYPE_TEXTURE2D },
 			{ L"Assets/Texture/Title_Start.png",	TEX_TYPE::TEX_TYPE_TEXTURE2D },
 			{ L"Assets/Texture/Game_controller.png", TEX_TYPE::TEX_TYPE_TEXTURE2D },
+			{ L"Assets/Texture/SkyDome.dds",		 TEX_TYPE::TEX_TYPE_CUBEMAP },
+			{ L"Assets/Texture/SeaMesh_Normal.png",  TEX_TYPE::TEX_TYPE_TEXTURE2D },
+			{ L"Assets/Texture/SeaMesh_Normal_2.png", TEX_TYPE::TEX_TYPE_TEXTURE2D },
 		};
 		list.modelPaths = {
-			{},
-			{},
 		};
 		break;
 	case SCENE_ID_GAME:
@@ -45,8 +46,6 @@ SceneResourceList GetSceneResourceList(SCENE_ID _ID)
 			{},
 		};
 		list.modelPaths = {
-			{},
-			{},
 		};
 		break;
 	default:

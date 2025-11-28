@@ -199,7 +199,7 @@ void PlayerController::Update_Emitter(float _deltaTime)
 		
 		XMVECTOR forwardVec = m_ForwardVec;
 
-		const float offset = 3.0f;
+		const float offset = 2.0f;
 
 		fx += XMVectorGetX(forwardVec) * offset;
 		fz += XMVectorGetZ(forwardVec) * offset;

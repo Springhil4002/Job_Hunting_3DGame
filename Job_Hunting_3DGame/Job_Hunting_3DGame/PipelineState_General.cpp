@@ -6,7 +6,7 @@
 #pragma comment(lib,"d3dcompiler.lib")
 
 // 現状このパイプラインステートを使える対象
-// Player、Goal,Model3D
+// Player,Goal,Model3D,WaterMesh,SeaMesh
 
 PipelineState_General::PipelineState_General()
 {

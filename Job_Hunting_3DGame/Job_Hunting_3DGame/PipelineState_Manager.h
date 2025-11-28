@@ -13,6 +13,7 @@ enum class PSO_Type
 	PSO_TYPE_PLAYER,
 	PSO_TYPE_GOAL,
 	PSO_TYPE_WATERMESH,
+	PSO_TYPE_SEAMESH,
 	PSO_TYPE_MODEL3D,
 	PSO_TYPE_SPLASH,
 	PSO_TYPE_SPHERE,
@@ -81,6 +82,7 @@ public:
 		case PSO_Type::PSO_TYPE_PLAYER:		return "Player";
 		case PSO_Type::PSO_TYPE_GOAL:		return "Goal";
 		case PSO_Type::PSO_TYPE_WATERMESH:	return "WaterMesh";
+		case PSO_Type::PSO_TYPE_SEAMESH:	return "SeaMesh";
 		case PSO_Type::PSO_TYPE_MODEL3D:	return "Model3D";
 		case PSO_Type::PSO_TYPE_SPLASH:		return "Splash";
 		case PSO_Type::PSO_TYPE_SPHERE:		return "Sphere";

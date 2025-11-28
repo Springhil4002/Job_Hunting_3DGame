@@ -2,6 +2,7 @@
 #include "Object.h"
 #include "Model3D.h"
 #include "WaterMesh.h"
+#include "SeaMesh.h"
 #include "SkyBox.h"
 #include "Player.h"
 #include "Goal.h"

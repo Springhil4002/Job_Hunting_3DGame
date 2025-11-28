@@ -47,7 +47,7 @@ Mesh WaterMesh::CreateGridMesh()
 				XMFLOAT3(0.0f,1.0f,0.0f),
 				XMFLOAT2(u,v),
 				XMFLOAT3(1.0f,0.0f,0.0f),
-				XMFLOAT4(0.3f,0.8f,1.0f,1.0f)	// 水色
+				XMFLOAT4(1.0f,1.0f,1.0f,1.0f)
 			};
 		}
 	}
@@ -132,7 +132,7 @@ bool WaterMesh::Init(Camera* _camera)
 		return false;
 	}
 
-	// 4つの波のパラメータ設定
+	// 4頂点の座標
 	m_waveParams.amplitude[0]	= { 0.5f, 0,0,0 };
 	m_waveParams.direction[0]	= { 1.0f, 0.2f, 0,0 };
 	m_waveParams.waveLength[0]	= { 8.0f, 0,0,0 };

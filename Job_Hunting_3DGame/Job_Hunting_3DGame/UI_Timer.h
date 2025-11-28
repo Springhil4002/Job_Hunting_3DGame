@@ -1,5 +1,4 @@
 #pragma once
-#define NOMINMAX
 #include "UI.h"
 #include "Game.h"
 #include <array>

@@ -8,6 +8,7 @@
 #include "RootSignature_Player.h"
 #include "RootSignature_Goal.h"
 #include "RootSignature_WaterMesh.h"
+#include "RootSignature_SeaMesh.h"
 #include "RootSignature_Splash.h"
 #include "RootSignature_DebugSphere.h"
 #include "RootSignature_SkyBox.h"
@@ -18,6 +19,7 @@ enum class Root_Type
     ROOT_TYPE_PLAYER,
     ROOT_TYPE_GOAL,
     ROOT_TYPE_WATERMESH,
+    ROOT_TYPE_SEAMESH,
     ROOT_TYPE_MODEL3D,
     ROOT_TYPE_SPLASH,
     ROOT_TYPE_SPHERE,
@@ -72,6 +74,7 @@ public:
         case Root_Type::ROOT_TYPE_PLAYER:     return "Player";
         case Root_Type::ROOT_TYPE_GOAL:       return "Goal";
         case Root_Type::ROOT_TYPE_WATERMESH:  return "WaterMesh";
+        case Root_Type::ROOT_TYPE_SEAMESH:    return "SeaMesh";
         case Root_Type::ROOT_TYPE_MODEL3D:    return "Model3D";
         case Root_Type::ROOT_TYPE_SPLASH:     return "Splash";
         case Root_Type::ROOT_TYPE_SPHERE:     return "Sphere";
@@ -85,6 +88,7 @@ public:
     std::shared_ptr<RootSignature_Player>      GetRoot_Player()         { return GetRootSignature<RootSignature_Player>(ToString(Root_Type::ROOT_TYPE_PLAYER)); }
     std::shared_ptr<RootSignature_Goal>        GetRoot_Goal()           { return GetRootSignature<RootSignature_Goal>(ToString(Root_Type::ROOT_TYPE_GOAL)); }
     std::shared_ptr<RootSignature_WaterMesh>   GetRoot_WaterMesh()      { return GetRootSignature<RootSignature_WaterMesh>(ToString(Root_Type::ROOT_TYPE_WATERMESH)); }
+	std::shared_ptr<RootSignature_SeaMesh>     GetRoot_SeaMesh()        { return GetRootSignature<RootSignature_SeaMesh>(ToString(Root_Type::ROOT_TYPE_SEAMESH)); }
     std::shared_ptr<RootSignature_Model3D>     GetRoot_Model3D()        { return GetRootSignature<RootSignature_Model3D>(ToString(Root_Type::ROOT_TYPE_MODEL3D)); }
     std::shared_ptr<RootSignature_Splash>      GetRoot_Splash()         { return GetRootSignature<RootSignature_Splash>(ToString(Root_Type::ROOT_TYPE_SPLASH)); }
     std::shared_ptr<RootSignature_DebugSphere> GetRoot_DebugSphere()    { return GetRootSignature<RootSignature_DebugSphere>(ToString(Root_Type::ROOT_TYPE_SPHERE)); }
@@ -99,6 +103,7 @@ public:
         case Root_Type::ROOT_TYPE_PLAYER:      return GetRoot_Player();
         case Root_Type::ROOT_TYPE_GOAL:        return GetRoot_Goal();
         case Root_Type::ROOT_TYPE_WATERMESH:   return GetRoot_WaterMesh();
+		case Root_Type::ROOT_TYPE_SEAMESH:     return GetRoot_SeaMesh();
         case Root_Type::ROOT_TYPE_MODEL3D:     return GetRoot_Model3D();
         case Root_Type::ROOT_TYPE_SPLASH:      return GetRoot_Splash();
         case Root_Type::ROOT_TYPE_SPHERE:      return GetRoot_DebugSphere();
