@@ -57,18 +57,30 @@ float4 PS_Main(PS_IN pin) : SV_TARGET
     float3 normal   = normalize(pin.worldNormal);
     // タンジェント空間からワールド空間に変換
     float3x3 TBN = float3x3(tangent, binormal, normal);
-   
     // ノーマルマップの法線をTBN行列で変換、ワールド空間の法線を取得
     float3 N = mul(normalMap_Normalized, TBN);
+    
     // 視線ベクトル
     float3 viewVec = normalize(cameraPos.xyz - pin.worldPos);
     // 反射ベクトル
     float3 R = reflect(viewVec, N);
     
-    // キューブマップの調整読み込み
-    float3 adjustedR = float3(R.x, R.z,-R.y);
+    // 視線ベクトルと法線の内積の絶対値取得
+    float VdotN = saturate(dot(viewVec, N));
+    
+    // フレネル反射の計算
+    float F0 = 0.02f;
+    float F = F0 + (1.0f - F0) * pow(1.0f - VdotN, 5.0f);
+    // 反射色と屈折色のブレンド
+    // 反射色(環境マップの色)
+    float3 adjustedR = float3(R.x, R.z, -R.y);
     // キューブマップのサンプリング
     float4 reflectionColor = cubeTex.Sample(smp, adjustedR);
+    // 屈折色の計算(海の色)
+    float4 refractionColor = float4(0.3f, 0.5f, 0.7f, 1.0f);
     
-    return reflectionColor; 
+    // フレネル反射に基づいて色を補間してブレンド
+    float4 finalColor = lerp(refractionColor, reflectionColor, F);
+    
+    return finalColor; 
 }

@@ -46,26 +46,30 @@ private:
 
 	/// @brief パラメータの初期化
 	void Init_Param();
-	/// @brief 入力処理
+	/// @brief カメラ初期位置設定関数
+	void Init_CameraSet();
+
+	/// @brief Playerの回転と方向ベクトルの更新関数
 	/// @param _deltaTime 経過時間
-	void Update_Input(float _deltaTime);
-	/// @brief 浮力処理
+	void Apply_Rotate(float _deltaTime);
+	/// @brief Playerの移動処理系を更新する関数
 	/// @param _deltaTime 経過時間
-	void Update_Buoyancy(float _deltaTime);
+	void Apply_Move(float _deltaTime);
+	/// @brief 水の処理関係を更新する関数
+	/// @param _deltaTime 経過時間
+	void Apply_WaterPhysics(float _deltaTime);
+	
+	/// @brief Playerの位置と回転の更新関数
+	void Update_Player();
 	/// @brief Playerとカメラの位置更新
-	void Update_PlayerTransform(float _deltaTime);
-	/// @brief エミッタの更新処理
-	/// @param _deltaTime 経過時間
-	void Update_Emitter(float _deltaTime);
-	/// @brief 入力による回転処理
-	/// @param _deltaTime 経過時間
-	void Input_Rotate(float _deltaTime);
-	/// @brief 入力による移動処理
-	/// @param _deltaTime 経過時間
-	void Input_Move(float _deltaTime);
+	void Update_Camera(float _deltaTime);
 	/// @brief カメラズーム関数
 	/// @param _deltaTime 経過時間
-	void Input_Zoom(float _deltaTime);
+	void Apply_CameraZoom(float _deltaTime);
+
+	/// @brief エミッタの更新処理
+	/// @param _deltaTime 経過時間
+	void Update_WaterEffects(float _deltaTime);
 public:
 	/// @brief 初期化処理
 	/// @param _player プレイヤーのポインタ変数 

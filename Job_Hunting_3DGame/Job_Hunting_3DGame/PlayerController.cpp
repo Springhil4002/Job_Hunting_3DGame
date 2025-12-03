@@ -15,15 +15,32 @@ bool PlayerController::Init(
 	m_Input = _input;
 		
 	Init_Param();
+	Init_CameraSet();
+
 	return true;
 }
 
 void PlayerController::Update(float _deltaTime)
 {
-	Update_Input(_deltaTime);
-	Update_Buoyancy(_deltaTime);
-	Update_PlayerTransform(_deltaTime);
-	Update_Emitter(_deltaTime);
+	// 操作不能であれば処理しない
+	if (!m_Played) return;
+
+	// 回転処理
+	Apply_Rotate(_deltaTime);
+	// 移動処理
+	Apply_Move(_deltaTime);
+	// 物理演算処理
+	Apply_WaterPhysics(_deltaTime);
+
+	// Playerの更新
+	Update_Player();
+
+	// カメラ処理
+	Apply_CameraZoom(_deltaTime);
+	Update_Camera(_deltaTime);
+
+	// 水のエフェクト処理
+	Update_WaterEffects(_deltaTime);
 }
 
 void PlayerController::Draw()
@@ -81,7 +98,7 @@ void PlayerController::Init_Param()
 	m_PlayerOffsetY = 3.0f; // プレイヤーの高さオフセット
 	m_FollowSpeed = 100.0f;	// カメラの追従速度
 
-	XMVECTOR initOffset = XMVectorSet(0.0f, 1.5f, -3.0f, 0.0f);
+	XMVECTOR initOffset = XMVectorSet(0.0f, 1.5f, -1.5f, 0.0f);
 
 	float initDistance = XMVectorGetX(XMVector3Length(initOffset));
 
@@ -98,152 +115,51 @@ void PlayerController::Init_Param()
 	m_Emitter_Splash->Init();
 }
 
-void PlayerController::Update_Input(float _deltaTime)
+void PlayerController::Init_CameraSet()
 {
-	if (!m_Played) return;
-	Input_Rotate(_deltaTime);
-	Input_Move(_deltaTime);
-
-	Input_Zoom(_deltaTime);
-}
-
-void PlayerController::Update_Buoyancy(float _deltaTime)
-{
-	if (!m_WaterMesh) return;
-
-	float fx = static_cast<float>(XMVectorGetX(m_Position));
-	float fz = static_cast<float>(XMVectorGetZ(m_Position));
-	float y = XMVectorGetY(m_Position) - m_PlayerOffsetY;
-
-	// 浮力の基準となる高さ場の高さを取得
-	float waterHeight = m_WaterMesh->GetHeightFieldHeight(fx, fz);
-	float depth = waterHeight - y;
-
-	// 水中にいるなら
-	if (depth > 0.0f)
+	if (m_Camera)
 	{
-		float buoyancyForce = m_Buoyancy * depth;
-		float damping = m_WaterDamping * XMVectorGetY(m_VelocityY);
-		
-		float vy = XMVectorGetY(m_VelocityY);
-		vy += (buoyancyForce + m_Gravity - damping) * _deltaTime;
-		
-		m_VelocityY = XMVectorSet(0, vy, 0, 0);
-	}
-	else
-	{
-		// 水面上なら重力のみ
-		m_VelocityY += XMVectorSet(0, m_Gravity * _deltaTime, 0, 0);
-	}
+		// カメラの理想的な初期位置を計算
+		XMVECTOR idealCamPos = XMVectorAdd(m_Position, m_CamOffset);
 
-	m_Position += m_VelocityY * _deltaTime;
-}
+		// カメラの注視点の理想的な初期位置を計算
+		XMVECTOR idealTarget = m_Position + m_ForwardVec * 15.0f;
 
-void PlayerController::Update_PlayerTransform(float _deltaTime)
-{
-	// プレイヤーの位置更新
-	m_Player->SetPos(m_Position);
-	m_Player->SetRota(m_Rotation);
+		// 水面の高さを考慮した注視点の調整
+		if (m_WaterMesh)
+		{
+			float fx = static_cast<float>(XMVectorGetX(m_Position));
+			float fz = static_cast<float>(XMVectorGetZ(m_Position));
+			float waveHeight = m_WaterMesh->GetHeightFieldHeight(fx, fz);
+			idealTarget = XMVectorSetY(idealTarget,
+				XMVectorGetY(idealTarget) + waveHeight * 0.3f);
+		}
 
-	// 補間率
-	float interp = 1.0f - expf(-m_FollowSpeed * _deltaTime);
-
-	// カメラの理想位置
-	XMVECTOR idealCamPos = XMVectorAdd(m_Position, m_CamOffset);
-	// 現在のカメラ位置
-	XMVECTOR currentCamPos = m_Camera->GetPos();
-	// カメラ位置を補間
-	XMVECTOR newCamPos = XMVectorLerp(currentCamPos, idealCamPos, interp);
-	m_Camera->SetPos(newCamPos);
-
-	// カメラの注視点更新
-	XMVECTOR idealTarget = m_Position + m_ForwardVec * 15.0f;
-
-	// 水面の高さを取得して注視点に加算
-	float fx = static_cast<float>(XMVectorGetX(m_Position));
-	float fz = static_cast<float>(XMVectorGetZ(m_Position));
-	float waveHeight = m_WaterMesh->GetHeightFieldHeight(fx, fz);
-	idealTarget = XMVectorSetY(idealTarget, 
-		XMVectorGetY(idealTarget) + waveHeight * 0.3f);
-	
-	// カメラ注視点更新
-	XMVECTOR currentTarget = m_Camera->GetTarget();
-	XMVECTOR newCamTarget = XMVectorLerp(currentTarget, idealTarget, interp);
-	m_Camera->SetTarget(newCamTarget);
-}
-
-void PlayerController::Update_Emitter(float _deltaTime)
-{
-	if (!m_Emitter_Splash || !m_WaterMesh) return;
-
-	bool isMoving = false;
-
-	XMVECTOR horizontalVelocity = XMVectorSet(XMVectorGetX(m_Velocity), 0, XMVectorGetZ(m_Velocity), 0);
-	float speed = XMVectorGetX(XMVector3Length(horizontalVelocity));
-	if (speed > 0.1f) isMoving = true;
-	
-	const float splashOffsetY = -1.0f;
-	// Playerの先頭部分(中心座標＋進行方向のオフセット)
-	const float offsetLength = 2.0f;
-	XMVECTOR spawnPos = m_Position + m_ForwardVec * offsetLength;
-	spawnPos = XMVectorAdd(spawnPos, XMVectorSet(0, splashOffsetY, 0, 0));
-
-	m_Emitter_Splash->Update(_deltaTime, spawnPos, m_RightVec, isMoving);
-	
-	// 移動時、波紋生成
-	if (speed > 0.05f)
-	{
-		// プレイヤーのワールド座表
-		float fx = XMVectorGetX(m_Position);
-		float fz = XMVectorGetZ(m_Position);
-		
-		XMVECTOR forwardVec = m_ForwardVec;
-
-		const float offset = 2.0f;
-
-		fx += XMVectorGetX(forwardVec) * offset;
-		fz += XMVectorGetZ(forwardVec) * offset;
-
-		// 水面メッシュのグリッドサイズを取得
-		const float gridSize = m_WaterMesh->GetGridSize();
-		const float halfSize = gridSize * 0.5f;
-
-		// ワールド座表をWaterMeshのUVに変換、Gridの中心がWaterMeshの中心になるように
-		float u = (fx + halfSize) / gridSize;
-		float v = (fz + halfSize) / gridSize;
-
-		// UV座表をクランプ
-		u = std::clamp(u, 0.0f, 1.0f);
-		v = std::clamp(v, 0.0f, 1.0f);
-
-		// 速度に応じたドロップの半径と強さを設定
-		const float dropStrength = std::min(5.0f, speed * 0.05f);
-		const float radius = 3.0f;
-
-		// 波紋生成
-		m_WaterMesh->ApplyDrop(XMFLOAT2(u, v), dropStrength, radius);
+		// カメラを理想位置に即座に設定 
+		m_Camera->SetPos(idealCamPos);
+		m_Camera->SetTarget(idealTarget);
 	}
 }
 
-void PlayerController::Input_Rotate(float _deltaTime)
+void PlayerController::Apply_Rotate(float _deltaTime)
 {
-	// 回転(Q:左回転、E:右回転)
+	// 回転
 	if (m_Input->GetKeyPress(VK_A))
 		m_Rotation -= XMVectorSet(0, m_RotateSpeed * _deltaTime, 0, 0);
 	if (m_Input->GetKeyPress(VK_D))
 		m_Rotation += XMVectorSet(0, m_RotateSpeed * _deltaTime, 0, 0);
-
-	// 回転度から方向ベクトルを更新
+	
+	// 回転角度から方向ベクトルを更新
 	XMMATRIX rotMat = XMMatrixRotationY(XMVectorGetY(m_Rotation));
 	m_ForwardVec = XMVector3TransformNormal(XMVectorSet(0, 0, 1, 0), rotMat);
 	m_RightVec = XMVector3TransformNormal(XMVectorSet(1, 0, 0, 0), rotMat);
-	
-	XMVECTOR rotateOffsetDir = XMVector3TransformNormal(m_InitCamOffset, rotMat);
 
+	// カメラオフセットの更新
+	XMVECTOR rotateOffsetDir = XMVector3TransformNormal(m_InitCamOffset, rotMat);
 	m_CamOffset = rotateOffsetDir * m_CurrentDistance;
 }
 
-void PlayerController::Input_Move(float _deltaTime)
+void PlayerController::Apply_Move(float _deltaTime)
 {
 	XMVECTOR accelVec = XMVectorZero();
 
@@ -307,20 +223,62 @@ void PlayerController::Input_Move(float _deltaTime)
 	m_Position += m_Velocity * _deltaTime;
 }
 
-void PlayerController::Input_Zoom(float _deltaTime)
+void PlayerController::Apply_WaterPhysics(float _deltaTime)
+{
+	if (!m_WaterMesh) return;
+
+	float fx = static_cast<float>(XMVectorGetX(m_Position));
+	float fz = static_cast<float>(XMVectorGetZ(m_Position));
+	// プレイヤーの底面Y座標
+	float y = XMVectorGetY(m_Position) - m_PlayerOffsetY;
+
+	// 浮力の基準となる高さ場の高さを取得
+	float waterHeight = m_WaterMesh->GetHeightFieldHeight(fx, fz);
+	// 水面からの沈み込み深さ
+	float depth = waterHeight - y;
+
+	// 水中にいるなら
+	if (depth > 0.0f)
+	{
+		// 浮力
+		float buoyancyForce = m_Buoyancy * depth;
+		// 水中減衰
+		float damping = m_WaterDamping * XMVectorGetY(m_VelocityY);
+		
+		float vy = XMVectorGetY(m_VelocityY);
+		// 垂直速度
+		vy += (buoyancyForce + m_Gravity - damping) * _deltaTime;
+		
+		m_VelocityY = XMVectorSet(0, vy, 0, 0);
+	}
+	else
+	{
+		// 水面上なら重力のみ
+		m_VelocityY += XMVectorSet(0, m_Gravity * _deltaTime, 0, 0);
+	}
+
+	// 垂直速度を位置に加算
+	m_Position += m_VelocityY * _deltaTime;
+}
+
+void PlayerController::Update_Player()
+{
+	if (!m_Player) return;
+	// プレイヤーの位置更新
+	m_Player->SetPos(m_Position);
+	m_Player->SetRota(m_Rotation);
+}
+
+void PlayerController::Apply_CameraZoom(float _deltaTime)
 {
 	if (!m_Input) return;
 
 	float zoomDirection = 0.0f;
 
 	if (m_Input->GetKeyPress(VK_E))
-	{
 		zoomDirection = 1.0f;
-	}
 	if (m_Input->GetKeyPress(VK_Q))
-	{
 		zoomDirection = -1.0f;
-	}
 
 	if (zoomDirection != 0.0f)
 	{
@@ -336,5 +294,94 @@ void PlayerController::Input_Zoom(float _deltaTime)
 		{
 			m_CurrentDistance = m_MaxDistance;
 		}
+	}
+
+	XMMATRIX rotMat = XMMatrixRotationY(XMVectorGetY(m_Rotation));
+	XMVECTOR rotateOffsetDir = XMVector3TransformNormal(m_InitCamOffset, rotMat);
+	m_CamOffset = rotateOffsetDir * m_CurrentDistance;
+}
+
+void PlayerController::Update_Camera(float _deltaTime)
+{
+	if (!m_Camera) return;
+
+	// 補間率
+	float interp = 1.0f - expf(-m_FollowSpeed * _deltaTime);
+
+	// カメラの理想位置
+	XMVECTOR idealCamPos = XMVectorAdd(m_Position, m_CamOffset);
+	// 現在のカメラ位置
+	XMVECTOR currentCamPos = m_Camera->GetPos();
+	// カメラ位置を補間
+	XMVECTOR newCamPos = XMVectorLerp(currentCamPos, idealCamPos, interp);
+	m_Camera->SetPos(newCamPos);
+
+	// カメラの注視点更新
+	XMVECTOR idealTarget = m_Position + m_ForwardVec * 15.0f;
+
+	// 水面の高さを取得して注視点に加算
+	float fx = static_cast<float>(XMVectorGetX(m_Position));
+	float fz = static_cast<float>(XMVectorGetZ(m_Position));
+	float waveHeight = m_WaterMesh->GetHeightFieldHeight(fx, fz);
+	idealTarget = XMVectorSetY(idealTarget,
+		XMVectorGetY(idealTarget) + waveHeight * 0.3f);
+
+	// カメラ注視点更新
+	XMVECTOR currentTarget = m_Camera->GetTarget();
+	// 注視点の補間、新しい注視点の適用
+	XMVECTOR newCamTarget = XMVectorLerp(currentTarget, idealTarget, interp);
+	m_Camera->SetTarget(newCamTarget);
+}
+
+void PlayerController::Update_WaterEffects(float _deltaTime)
+{
+	if (!m_Emitter_Splash || !m_WaterMesh) return;
+
+	bool isMoving = false;
+
+	XMVECTOR horizontalVelocity = XMVectorSet(XMVectorGetX(m_Velocity), 0, XMVectorGetZ(m_Velocity), 0);
+	float speed = XMVectorGetX(XMVector3Length(horizontalVelocity));
+	if (speed > 0.1f) isMoving = true;
+	
+	const float splashOffsetY = -1.0f;
+	// Playerの先頭部分(中心座標＋進行方向のオフセット)
+	const float offsetLength = 2.0f;
+	XMVECTOR spawnPos = m_Position + m_ForwardVec * offsetLength;
+	spawnPos = XMVectorAdd(spawnPos, XMVectorSet(0, splashOffsetY, 0, 0));
+
+	m_Emitter_Splash->Update(_deltaTime, spawnPos, m_RightVec, isMoving);
+	
+	// 移動時、波紋生成
+	if (speed > 0.05f)
+	{
+		// プレイヤーのワールド座表
+		float fx = XMVectorGetX(m_Position);
+		float fz = XMVectorGetZ(m_Position);
+		
+		XMVECTOR forwardVec = m_ForwardVec;
+
+		const float offset = 2.0f;
+
+		fx += XMVectorGetX(forwardVec) * offset;
+		fz += XMVectorGetZ(forwardVec) * offset;
+
+		// 水面メッシュのグリッドサイズを取得
+		const float gridSize = m_WaterMesh->GetGridSize();
+		const float halfSize = gridSize * 0.5f;
+
+		// ワールド座表をWaterMeshのUVに変換、Gridの中心がWaterMeshの中心になるように
+		float u = (fx + halfSize) / gridSize;
+		float v = (fz + halfSize) / gridSize;
+
+		// UV座表をクランプ
+		u = std::clamp(u, 0.0f, 1.0f);
+		v = std::clamp(v, 0.0f, 1.0f);
+
+		// 速度に応じたドロップの半径と強さを設定
+		const float dropStrength = std::min(5.0f, speed * 0.05f);
+		const float radius = 3.0f;
+
+		// 波紋生成
+		m_WaterMesh->ApplyDrop(XMFLOAT2(u, v), dropStrength, radius);
 	}
 }

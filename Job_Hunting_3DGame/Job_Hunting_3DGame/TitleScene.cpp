@@ -31,12 +31,12 @@ void TitleScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	uiCamera->Init(screenWidth, screenHeight);
 	
 	// プロトタイプ登録
-	//prototypeManager->AddPrototype("UI", std::make_unique<UI>());
+	prototypeManager->AddPrototype("UI", std::make_unique<UI>());
 	prototypeManager->AddPrototype("UI_Fade", std::make_unique<UI_Fade>());
-	//prototypeManager->AddPrototype("Sky", std::make_unique<SkyBox>());
-	prototypeManager->AddPrototype("SeaMesh", std::make_unique<SeaMesh>());
+	prototypeManager->AddPrototype("Sky", std::make_unique<SkyBox>());
+	//prototypeManager->AddPrototype("SeaMesh", std::make_unique<SeaMesh>());
 
-	/*UI* ui_bg = dynamic_cast<UI*>(CreateObj("UI"));
+	UI* ui_bg = dynamic_cast<UI*>(CreateObj("UI"));
 	ui_bg->Init(uiCamera, 1920.0f, 1080.0f, L"Assets/Texture/Title_Bg.png");
 	ui_bg->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
 	ui_bg->SetRota(XMVectorZero());
@@ -70,7 +70,7 @@ void TitleScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	ui_con->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
 	ui_con->UpdateTransform();
 	ui_con->UpdateCameraMatrix();
-	ui_con->m_tags.AddTag("UI_con");*/
+	ui_con->m_tags.AddTag("UI_con");
 
 	/*SkyBox* sky = dynamic_cast<SkyBox*>(CreateObj("Sky"));
 	sky->Init(camera);
@@ -79,12 +79,12 @@ void TitleScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	sky->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
 	sky->m_tags.AddTag("SkyDome");*/
 
-	SeaMesh* seaMesh = dynamic_cast<SeaMesh*>(CreateObj("SeaMesh"));
+	/*SeaMesh* seaMesh = dynamic_cast<SeaMesh*>(CreateObj("SeaMesh"));
 	seaMesh->Init(camera);
 	seaMesh->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
 	seaMesh->SetRota(XMVectorZero());
 	seaMesh->SetScale(XMVectorSet(10.0f, 1.0f, 10.0f, 0.0f));
-	seaMesh->m_tags.AddTag("SeaMesh");
+	seaMesh->m_tags.AddTag("SeaMesh");*/
 	
 	UI_Fade* ui_fade = dynamic_cast<UI_Fade*>(CreateObj("UI_Fade"));
 	ui_fade->Init(uiCamera, 1920.0f, 1080.0f);
