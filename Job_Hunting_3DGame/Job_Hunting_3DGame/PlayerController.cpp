@@ -111,6 +111,14 @@ void PlayerController::Init_Param()
 
 	m_CamOffset = initOffset;
 
+	m_SpringConstant = 350.0f;  
+	m_DampingConstant = 25.0f;
+	m_TurnOffsetMax = 1.0f;
+	m_TurnOffsetRate = 10.0f;
+
+	m_CurrentCamPos = XMVectorAdd(m_Position, m_CamOffset);
+	m_CurrentCamTarget = m_Position + m_ForwardVec * 15.0f;
+
 	m_Emitter_Splash = std::make_unique<ParticleEmitter_Splash>(m_Camera);
 	m_Emitter_Splash->Init();
 }
@@ -305,18 +313,47 @@ void PlayerController::Update_Camera(float _deltaTime)
 {
 	if (!m_Camera) return;
 
-	// 補間率
-	float interp = 1.0f - expf(-m_FollowSpeed * _deltaTime);
+	// 旋回オフセットの計算
+	XMVECTOR horizontalVelocity = XMVectorSet(
+		XMVectorGetX(m_Velocity), 0, XMVectorGetZ(m_Velocity), 0);
+	float speed = XMVectorGetX(XMVector3Length(horizontalVelocity));
 
-	// カメラの理想位置
+	// 進行方向とボートの向きを求める
+	XMVECTOR velocityDir = XMVector3Normalize(horizontalVelocity);
+	XMVECTOR forwardDir = XMVector3Normalize(m_ForwardVec);
+
+	// 速度と前方向の外積で左右旋回を判定
+	float rotationDiff = XMVectorGetY(XMVector3Cross(velocityDir, forwardDir));
+
+	float idealTurnOffset = rotationDiff * (speed / m_MaxSpeed) * m_TurnOffsetMax;
+	float currentRightOffset = XMVectorGetX(XMVector3Dot(m_CamOffset, m_RightVec));
+	
+	// 旋回オフセットを滑らかに補間
+	float newRightOffset = currentRightOffset;
+	newRightOffset = currentRightOffset + (idealTurnOffset - currentRightOffset) * m_TurnOffsetRate * _deltaTime;
+
+	// 新しいカメラオフセットを計算
+	XMVECTOR initialOffsetDirection = XMVector3Normalize(m_CamOffset - m_Position);
 	XMVECTOR idealCamPos = XMVectorAdd(m_Position, m_CamOffset);
-	// 現在のカメラ位置
-	XMVECTOR currentCamPos = m_Camera->GetPos();
-	// カメラ位置を補間
-	XMVECTOR newCamPos = XMVectorLerp(currentCamPos, idealCamPos, interp);
-	m_Camera->SetPos(newCamPos);
 
-	// カメラの注視点更新
+	// 右ベクトル方向の成分を取り除き、新しい右オフセットを加算
+	idealCamPos = idealCamPos - m_RightVec * currentRightOffset;
+	idealCamPos = idealCamPos + m_RightVec * newRightOffset;
+
+	// 理想的なカメラ位置
+	XMVECTOR targetPosition = idealCamPos;
+
+	// ばね・減衰によるカメラ位置の更新
+	XMVECTOR displacement = m_CurrentCamPos - targetPosition;
+	XMVECTOR springForce = -m_SpringConstant * displacement;
+	XMVECTOR dampingForce = -m_DampingConstant * m_CameraVelocity;
+	XMVECTOR accelaration = springForce + dampingForce;
+	
+	m_CameraVelocity += accelaration * _deltaTime;
+	m_CurrentCamPos += m_CameraVelocity * _deltaTime;
+
+	m_Camera->SetPos(m_CurrentCamPos);
+
 	XMVECTOR idealTarget = m_Position + m_ForwardVec * 15.0f;
 
 	// 水面の高さを取得して注視点に加算
@@ -327,10 +364,11 @@ void PlayerController::Update_Camera(float _deltaTime)
 		XMVectorGetY(idealTarget) + waveHeight * 0.3f);
 
 	// カメラ注視点更新
+	float interp = 1.0f - expf(-m_FollowSpeed * _deltaTime);
 	XMVECTOR currentTarget = m_Camera->GetTarget();
-	// 注視点の補間、新しい注視点の適用
 	XMVECTOR newCamTarget = XMVectorLerp(currentTarget, idealTarget, interp);
 	m_Camera->SetTarget(newCamTarget);
+	m_CurrentCamTarget = newCamTarget; // 次のフレームのために保存
 }
 
 void PlayerController::Update_WaterEffects(float _deltaTime)

@@ -55,22 +55,13 @@ void TitleScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	ui_logo->m_tags.AddTag("UI_Logo");
 
 	UI* ui_start = dynamic_cast<UI*>(CreateObj("UI"));
-	ui_start->Init(uiCamera, 720.0f, 300.0f, L"Assets/Texture/Title_Start.png");
+	ui_start->Init(uiCamera, 720.0f, 150.0f, L"Assets/Texture/Title_Start.png");
 	ui_start->SetPos(XMVectorSet(-550.0f, -250.0f, 0.0f, 0.0f));
 	ui_start->SetRota(XMVectorZero());
 	ui_start->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
 	ui_start->UpdateTransform();
 	ui_start->UpdateCameraMatrix(); 
 	ui_start->m_tags.AddTag("UI_Start");
-
-	UI* ui_con = dynamic_cast<UI*>(CreateObj("UI"));
-	ui_con->Init(uiCamera, 400.0f, 400.0f, L"Assets/Texture/Game_controller.png");
-	ui_con->SetPos(XMVectorSet(700.0f, 350.0f, 0.0f, 0.0f));
-	ui_con->SetRota(XMVectorZero());
-	ui_con->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
-	ui_con->UpdateTransform();
-	ui_con->UpdateCameraMatrix();
-	ui_con->m_tags.AddTag("UI_con");
 
 	/*SkyBox* sky = dynamic_cast<SkyBox*>(CreateObj("Sky"));
 	sky->Init(camera);

@@ -26,7 +26,7 @@ void Goal::Update()
 	{
 		XMVECTOR posGoal = GetPos();
 
-		XMVECTOR offset=XMVectorSet(0.0f,3.0f,0.0f,0.0f);
+		XMVECTOR offset=XMVectorSet(0.0f,5.0f,0.0f,0.0f);
 		m_Sphere->SetPos(posGoal + offset);
 		m_Sphere->Update();
 	}

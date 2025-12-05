@@ -26,6 +26,10 @@ private:
 	DirectX::XMVECTOR m_Velocity		= DirectX::XMVectorZero();	// 現在の移動速度ベクトル
 	DirectX::XMVECTOR m_VelocityY		= DirectX::XMVectorZero();	// 縦方向の速度(重力用)		
 	
+	DirectX::XMVECTOR m_CameraVelocity = DirectX::XMVectorZero();	// カメラの速度
+	DirectX::XMVECTOR m_CurrentCamTarget = DirectX::XMVectorZero();	// 現在のカメラ注視点
+	DirectX::XMVECTOR m_CurrentCamPos = DirectX::XMVectorZero();	// 現在のカメラ位置
+
 	bool m_Played = true;			// 操作可能フラグ
 
 	float m_RotateSpeed = 0.0f;		// 回転速度
@@ -43,6 +47,11 @@ private:
 	float m_MinDistance = 0.0f;		// 最小カメラ距離
 	float m_MaxDistance = 0.0f;		// 最大カメラ距離
 	float m_ZoomSpeed = 0.0f;		// ズーム速度
+
+	float m_SpringConstant = 0.0f;  // ばね定数
+	float m_DampingConstant = 0.0f; // 減衰定数
+	float m_TurnOffsetMax = 0.0f;	// 最大旋回オフセット
+	float m_TurnOffsetRate = 0.0f;	// 旋回オフセットの追従率
 
 	/// @brief パラメータの初期化
 	void Init_Param();

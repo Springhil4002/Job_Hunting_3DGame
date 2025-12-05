@@ -130,6 +130,15 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 		XMVectorSet(1.0f, 1.0, 1.0f, 0.0f), 1.0f);
 	ui_if->m_tags.AddTag("UI_If");
 
+	UI* ui_con = dynamic_cast<UI*>(CreateObj("UI"));
+	ui_con->Init(uiCamera, 600.0f, 100.0f, L"Assets/Texture/Game_controller.png");
+	ui_con->SetPos(XMVectorSet(-650.0f, -500.0f, 0.0f, 0.0f));
+	ui_con->SetRota(XMVectorZero());
+	ui_con->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	ui_con->UpdateTransform();
+	ui_con->UpdateCameraMatrix();
+	ui_con->m_tags.AddTag("UI_con");
+
 	UI_Timer* timer = dynamic_cast<UI_Timer*>(CreateObj("UI_Timer"));
 	timer->Init(uiCamera, 50.0f, 100.0f, L"Assets/Texture/Number.png");
 	timer->SetGame(game.get());
@@ -385,6 +394,8 @@ void GameScene::ImGui_Goal()
 			}
 			ImGui::TreePop();
 		}
+
+		goal->Draw_ImGui();
 	}
 	else
 	{
