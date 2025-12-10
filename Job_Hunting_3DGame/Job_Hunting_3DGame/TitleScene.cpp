@@ -2,6 +2,7 @@
 #include "SceneManager.h"
 #include "System/ImGui/imgui.h"
 #include "Debug_New.h"
+#include "DirectionalLight.h"
 
 using namespace DirectX;
 
@@ -33,17 +34,47 @@ void TitleScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	// プロトタイプ登録
 	prototypeManager->AddPrototype("UI", std::make_unique<UI>());
 	prototypeManager->AddPrototype("UI_Fade", std::make_unique<UI_Fade>());
+	prototypeManager->AddPrototype("UI_Flash", std::make_unique<UI_Flash>());
 	prototypeManager->AddPrototype("Sky", std::make_unique<SkyBox>());
+	prototypeManager->AddPrototype("WaterMesh", std::make_unique<WaterMesh>());
+	prototypeManager->AddPrototype("Player", std::make_unique<Player>());
 	//prototypeManager->AddPrototype("SeaMesh", std::make_unique<SeaMesh>());
 
-	UI* ui_bg = dynamic_cast<UI*>(CreateObj("UI"));
-	ui_bg->Init(uiCamera, 1920.0f, 1080.0f, L"Assets/Texture/Title_Bg.png");
-	ui_bg->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
-	ui_bg->SetRota(XMVectorZero());
-	ui_bg->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
-	ui_bg->UpdateTransform();
-	ui_bg->UpdateCameraMatrix();
-	ui_bg->m_tags.AddTag("UI_Bg");
+	// ライト設定
+	DirectionalLight::Instance().SetLightDir({ 0.35f,-1.0f,0.15f });
+	DirectionalLight::Instance().SetEnvStrength(0.65f);
+	DirectionalLight::Instance().SetLightColor({ 1.0f,1.0f,1.0f,1.0f });
+
+	SkyBox* sky = dynamic_cast<SkyBox*>(CreateObj("Sky"));
+	sky->Init(camera);
+	sky->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
+	sky->SetRota(XMVectorZero());
+	sky->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	sky->m_tags.AddTag("SkyDome");
+
+	WaterMesh* waterMesh = dynamic_cast<WaterMesh*>(CreateObj("WaterMesh"));
+	waterMesh->Init(camera);
+	waterMesh->SetPos(XMVectorZero());
+	waterMesh->SetRota(XMVectorZero());
+	waterMesh->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	waterMesh->m_tags.AddTag("WaterMesh");
+
+	Player* player = dynamic_cast<Player*>(CreateObj("Player"));
+	player->Init(camera);
+	player->SetPos(XMVectorSet(0.0f, 1.5f, 0.0f, 0.0f));
+	player->SetRota(XMVectorZero());
+	player->SetScale(XMVectorSet(0.01f, 0.01f, 0.01f, 0.0f));
+	player->m_tags.AddTag("Player");
+
+	autoPlayerCtrl = std::make_unique<AutoPlayerController>();
+	autoPlayerCtrl->Init(player, waterMesh, camera);
+
+	/*SeaMesh* seaMesh = dynamic_cast<SeaMesh*>(CreateObj("SeaMesh"));
+	seaMesh->Init(camera);
+	seaMesh->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
+	seaMesh->SetRota(XMVectorZero());
+	seaMesh->SetScale(XMVectorSet(10.0f, 1.0f, 10.0f, 0.0f));
+	seaMesh->m_tags.AddTag("SeaMesh");*/
 
 	UI* ui_logo = dynamic_cast<UI*>(CreateObj("UI"));
 	ui_logo->Init(uiCamera, 720.0f, 540.0f, L"Assets/Texture/Title_Logo.png");
@@ -54,7 +85,7 @@ void TitleScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	ui_logo->UpdateCameraMatrix();
 	ui_logo->m_tags.AddTag("UI_Logo");
 
-	UI* ui_start = dynamic_cast<UI*>(CreateObj("UI"));
+	UI_Flash* ui_start = dynamic_cast<UI_Flash*>(CreateObj("UI_Flash"));
 	ui_start->Init(uiCamera, 720.0f, 150.0f, L"Assets/Texture/Title_Start.png");
 	ui_start->SetPos(XMVectorSet(-550.0f, -250.0f, 0.0f, 0.0f));
 	ui_start->SetRota(XMVectorZero());
@@ -62,20 +93,6 @@ void TitleScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	ui_start->UpdateTransform();
 	ui_start->UpdateCameraMatrix(); 
 	ui_start->m_tags.AddTag("UI_Start");
-
-	/*SkyBox* sky = dynamic_cast<SkyBox*>(CreateObj("Sky"));
-	sky->Init(camera);
-	sky->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
-	sky->SetRota(XMVectorZero());
-	sky->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
-	sky->m_tags.AddTag("SkyDome");*/
-
-	/*SeaMesh* seaMesh = dynamic_cast<SeaMesh*>(CreateObj("SeaMesh"));
-	seaMesh->Init(camera);
-	seaMesh->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
-	seaMesh->SetRota(XMVectorZero());
-	seaMesh->SetScale(XMVectorSet(10.0f, 1.0f, 10.0f, 0.0f));
-	seaMesh->m_tags.AddTag("SeaMesh");*/
 	
 	UI_Fade* ui_fade = dynamic_cast<UI_Fade*>(CreateObj("UI_Fade"));
 	ui_fade->Init(uiCamera, 1920.0f, 1080.0f);
@@ -91,20 +108,34 @@ void TitleScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 void TitleScene::Update(float _deltaTime)
 {
 	Update_Input();
+	
+	autoPlayerCtrl->Update(_deltaTime);
+
+	DirectionalLight::Instance().UpdateLightFollowCamera(camera);
+
 	for (auto& obj : objectInstance)
 	{
 		obj->Update();
 	}
 
 	auto ui_fade = FindByTag<UI_Fade>("UI_Fade");
+	auto ui_start = FindByTag<UI_Flash>("UI_Start");
+
+	// シーン遷移開始で画面を暗く
 	if (ui_fade && ui_fade->GetState() == FADE_STATE::FADE_STATE_NONE)
 	{
 		if (input.GetKeyTrigger(VK_SPACE))
 		{
 			ui_fade->SetFadeIn();
+			if (ui_start)
+			{
+				ui_start->SetAlpha(1.0f);
+				ui_start->SetFlashNone();
+			}
 		}
 	}
 
+	// 画面暗くなったの確認後、遷移
 	if (ui_fade && ui_fade->IsFadeFinished() && ui_fade->GetAlpha() >= 1.0f)
 	{
 		SceneManager::ChangeScene(SCENE_ID_GAME, camera, uiCamera, hwnd);
@@ -185,7 +216,9 @@ void TitleScene::Update_MouseRotate(float _sensi)
 
 void TitleScene::Draw_ImGui()
 {
+#if _DEBUG
 	ImGui_Prop();
+#endif
 }
 
 void TitleScene::ImGui_Prop()

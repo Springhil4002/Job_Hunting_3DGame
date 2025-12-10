@@ -8,6 +8,7 @@
 #include "Goal.h"
 #include "UI.h"
 #include "UI_Fade.h"
+#include "UI_Flash.h"
 #include "UI_Timer.h"
 
 class PrototypeManager

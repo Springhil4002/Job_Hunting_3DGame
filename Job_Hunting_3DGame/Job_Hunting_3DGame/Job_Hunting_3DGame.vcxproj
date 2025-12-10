@@ -145,6 +145,7 @@
   <ItemGroup>
     <ClCompile Include="App.cpp" />
     <ClCompile Include="AssimpLoader.cpp" />
+    <ClCompile Include="AutoPlayerController.cpp" />
     <ClCompile Include="BaseScene.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Camera2D.cpp" />
@@ -208,6 +209,7 @@
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="UI.cpp" />
     <ClCompile Include="UI_Fade.cpp" />
+    <ClCompile Include="UI_Flash.cpp" />
     <ClCompile Include="UI_Timer.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="WaterMesh.cpp" />
@@ -215,6 +217,7 @@
   <ItemGroup>
     <ClInclude Include="App.h" />
     <ClInclude Include="AssimpLoader.h" />
+    <ClInclude Include="AutoPlayerController.h" />
     <ClInclude Include="BaseScene.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Camera2D.h" />
@@ -287,6 +290,8 @@
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="UI_Fade.h" />
+    <ClInclude Include="UI_FADE_STATE.h" />
+    <ClInclude Include="UI_Flash.h" />
     <ClInclude Include="UI_Timer.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="SceneFactory.h" />

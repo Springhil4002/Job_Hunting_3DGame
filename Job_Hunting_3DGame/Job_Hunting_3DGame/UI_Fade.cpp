@@ -11,6 +11,8 @@ std::unique_ptr<Object> UI_Fade::clone() const
 
 bool UI_Fade::Init(Camera2D* _cameraUI, float _width, float _height)
 {
+    m_FadeSpeed = 0.025f;
+
 	m_CameraUI = _cameraUI;
 	if (!m_CameraUI) return false;
 	m_SizeWidth = _width;
@@ -148,6 +150,16 @@ void UI_Fade::SetFadeIn()
 void UI_Fade::SetFadeOut()
 {
     m_State = FADE_STATE::FADE_STATE_OUT;
+}
+
+void UI_Fade::SetFadeNone()
+{
+    m_State = FADE_STATE::FADE_STATE_NONE;
+}
+
+void UI_Fade::SetFadeSpeed(float _speed)
+{
+    m_FadeSpeed = _speed;
 }
 
 bool UI_Fade::IsFadeFinished() const 

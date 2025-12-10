@@ -38,16 +38,17 @@ struct VS_Out
 
 VS_Out VS_Main(VS_Input vin)
 {
+    // ローカル座標の取得
     float3 localPos = vin.pos;
     
     // ローカル座標をワールド座標に変換
     float4 worldPos4 = mul(world, float4(localPos, 1.0f));
     float3 worldPos = worldPos4.xyz;
     
-    // 波による変位ベクトル(初期値ゼロ)
+    // Gerstner波による変位ベクトルを初期化
     float3 waveOffset = float3(0.0f, 0.0f, 0.0f);
     
-    // ゲルストナー波法線計算用の接線ベクトル
+    // Gerstner波の法線計算用の接線ベクトルの初期化
     float3 tangentX = float3(1, 0, 0);
     float3 tangentZ = float3(0, 0, 1);
     
@@ -56,7 +57,8 @@ VS_Out VS_Main(VS_Input vin)
     // z方向の接線ベクトルの傾き成分
     float3 dz = float3(0, 0, 0); 
     
-    // Gerstner波の計算(ワールド座標ベース)
+    // 複数のGerstner波の計算
+    [unroll]
     for (int i = 0; i < WAVE_COUNT; ++i)
     {
         // 頂点の位置を計算

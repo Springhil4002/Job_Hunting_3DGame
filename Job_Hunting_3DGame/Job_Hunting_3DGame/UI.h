@@ -57,7 +57,7 @@ public:
 	/// @brief ‰Šú‰»ˆ—
 	/// @return ‰Šú‰»ˆ—‚Ì¬”Û‚ğ•Ô‚µ‚Ü‚·
 	bool Init() { return true; }
-	bool Init(Camera2D* _cameraUI, float _width, float _height, 
+	virtual bool Init(Camera2D* _cameraUI, float _width, float _height, 
 		const std::wstring& _filePath);
 	/// @brief XVˆ—
 	virtual void Update()	override;

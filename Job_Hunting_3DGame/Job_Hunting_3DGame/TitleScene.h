@@ -1,6 +1,6 @@
 #pragma once
 #include "BaseScene.h"
-#include "PlayerController.h"
+#include "AutoPlayerController.h"
 #include "Game.h"
 #include "Camera2D.h"
 
@@ -10,6 +10,7 @@ private:
 	HWND hwnd;
 	Camera* camera;
 	Camera2D* uiCamera;
+	std::unique_ptr<AutoPlayerController> autoPlayerCtrl;
 public:
 	/// @brief コンストラクタ
 	TitleScene() = default;

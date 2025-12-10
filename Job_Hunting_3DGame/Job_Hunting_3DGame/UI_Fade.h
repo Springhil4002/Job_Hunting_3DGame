@@ -1,17 +1,11 @@
 #pragma once
 #include "UI.h"
-
-enum class FADE_STATE
-{
-	FADE_STATE_NONE,
-	FADE_STATE_IN,
-	FADE_STATE_OUT,
-};
+#include "UI_FADE_STATE.h"
 
 class UI_Fade : public UI
 {
 private:
-	float m_FadeSpeed = 0.025f;		// フェード速度	
+	float m_FadeSpeed = 0.0f;		// フェード速度	
 	bool m_FadeFinished = false;	// フェード完了フラグ
 	FADE_STATE m_State = FADE_STATE::FADE_STATE_NONE;
 public:
@@ -28,6 +22,8 @@ public:
 	void Update_Fade();
 	void SetFadeIn();
 	void SetFadeOut();
+	void SetFadeNone();
+	void SetFadeSpeed(float _speed);
 	bool IsFadeFinished() const;
 	FADE_STATE GetState() const;
 };
