@@ -11,12 +11,15 @@
 #include "TextureManager.h"
 #include "RootSignature_Manager.h"
 #include "PipelineState_Manager.h"
+#include "DirectionalLight.h"
 
 class Player : public Object
 {
 private:
 	// コンスタントバッファ
 	std::unique_ptr<ConstantBuffer> m_pConstantBuffer[DrawBase::FRAME_BUFFER_COUNT];
+	// ライトデータ用コンスタントバッファ
+	std::unique_ptr<ConstantBuffer> m_pLightConstantBuffer[DrawBase::FRAME_BUFFER_COUNT];
 	// ディスクリプタヒープ
 	std::unique_ptr<DescriptorHeap> m_pDescriptorHeap;
 	// ルートシグネチャ
@@ -24,7 +27,7 @@ private:
 	// パイプラインステート
 	PipelineState_General* m_pPipelineState = nullptr;
 	// ディスクリプタハンドル
-	std::shared_ptr<DescriptorHandle> m_pTexHandle;
+	std::vector<std::shared_ptr<DescriptorHandle>> m_pTexHandles;
 	// カメラ
 	Camera* m_camera = nullptr;
 	// モデルデータ配列

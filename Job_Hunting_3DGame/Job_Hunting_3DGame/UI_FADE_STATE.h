@@ -1,5 +1,4 @@
 #pragma once
-
 enum class FADE_STATE
 {
 	FADE_STATE_NONE,

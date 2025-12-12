@@ -16,6 +16,8 @@ PipelineState_SkyBox::PipelineState_SkyBox()
 	desc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
 	// カリングなし:両面描画
 	desc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+	// 描画モデルの埋め方
+	desc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
 	// ブレンドステート:デフォルト設定(不透明描画)
 	desc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
 	// 深度ステンシルステート:深度テストON・書きこみなし

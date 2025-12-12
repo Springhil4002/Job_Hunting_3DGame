@@ -28,6 +28,6 @@ VS_OUT VS_Main(VS_INPUT vin)
     vout.svpos = mul(proj, float4(viewDir, 1.0f));
     
     // キューブマップ参照用の方向ベクトル
-    vout.dir = float3(viewDir.x, -viewDir.y, viewDir.z);    
+    vout.dir = float3(vin.pos.x, vin.pos.y, vin.pos.z);
     return vout;
 }

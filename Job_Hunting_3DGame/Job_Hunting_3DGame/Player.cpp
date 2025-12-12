@@ -39,16 +39,47 @@ bool Player::Init(Camera* _camera)
 		ptr->proj = m_camera->GetProjMatrix();
 	}
 
+	for (size_t i = 0; i < DrawBase::FRAME_BUFFER_COUNT; ++i)
+	{
+		m_pLightConstantBuffer[i] = std::make_unique<ConstantBuffer>(sizeof(DirectionalLightData));
+		if (!m_pLightConstantBuffer[i]->IsValid())
+		{
+			printf("Player:ライトコンスタントバッファ生成失敗\n");
+			return false;
+		}
+	}
+
 	// ディスクリプタヒープの生成
 	m_pDescriptorHeap = std::make_unique<DescriptorHeap>();
 
-	auto tex = TextureManager::Instance().GetTexture(L"Assets/Texture/Player.png");
-	if (!tex)
+	for (const auto& mesh : m_meshes)
 	{
-		printf("Player:テクスチャ読み込み失敗\n");
-		return false;
+		std::wstring texPath = mesh.DiffuseMap;
+
+		if (texPath.find(L"..") != std::wstring::npos ||
+			texPath.find(L"Assets/Player/") != std::wstring::npos)
+		{
+			size_t lastSeparator = texPath.find_last_of(L"\\/");
+			std::wstring fileName = texPath.substr(lastSeparator == std::wstring::npos ? 0 : lastSeparator + 1);
+			
+			texPath = L"Assets/Texture/" + fileName;
+			printf("Player: テクスチャパスを強制的に正規化しました。 %ls\n", texPath.c_str());
+		}
+
+		if (texPath.empty())
+		{
+			printf("Player:メッシュにテクスチャパスが設定されていません\n");
+			m_pTexHandles.push_back(nullptr);
+			continue;
+		}
+
+		auto tex = TextureManager::Instance().GetTexture(texPath);
+		if (!tex)
+		{
+			printf("Player:テクスチャ読み込み失敗:%ls\n", texPath.c_str());
+		}
+		m_pTexHandles.push_back(m_pDescriptorHeap->Register(tex.get()));
 	}
-	m_pTexHandle = m_pDescriptorHeap->Register(tex.get());
 
 	// マネージャー経由でルートシグネチャを取得
 	auto& rootManager = RootSignatureManager::GetInstance();
@@ -71,11 +102,11 @@ bool Player::Init(Camera* _camera)
 		m_pPipelineState->SetRootSignature(m_pRootSignature->Get());
 		// VS/PSの設定
 #ifdef _DEBUG	// DEBUG
-		m_pPipelineState->SetVS(L"../x64/Debug/VS_Simple.cso");
-		m_pPipelineState->SetPS(L"../x64/Debug/PS_Simple.cso");
+		m_pPipelineState->SetVS(L"../x64/Debug/VS_Player.cso");
+		m_pPipelineState->SetPS(L"../x64/Debug/PS_Player.cso");
 #else			// Release
-		m_pPipelineState->SetVS(L"../x64/Release/VS_Simple.cso");
-		m_pPipelineState->SetPS(L"../x64/Release/PS_Simple.cso");
+		m_pPipelineState->SetVS(L"../x64/Release/VS_Player.cso");
+		m_pPipelineState->SetPS(L"../x64/Release/PS_Player.cso");
 #endif 
 		// パイプラインステート作成
 		m_pPipelineState->Create();
@@ -107,7 +138,7 @@ void Player::Draw()
 	auto materialHeap = m_pDescriptorHeap->GetHeap();
 
 	//　メッシュの数だけインデックス分の描画を行う
-	for (size_t i = 0; i < m_meshes.size(); i++)
+	for (size_t i = 0; i < m_meshes.size(); ++i)
 	{
 		// メッシュに対応する頂点バッファ
 		auto vbView = m_pVertexBuffers[i]->View();
@@ -118,15 +149,21 @@ void Player::Draw()
 		commandList->SetPipelineState(m_pPipelineState->Get());
 		commandList->SetGraphicsRootConstantBufferView(
 			0, m_pConstantBuffer[currentIndex]->GetAddress());
-
+		commandList->SetGraphicsRootConstantBufferView(
+			2, m_pLightConstantBuffer[currentIndex]->GetAddress());
 		commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		commandList->IASetVertexBuffers(0, 1, &vbView);
 		commandList->IASetIndexBuffer(&ibView);
 
+		auto pCurrentTexHandle = m_pTexHandles[i];
 		// 使用するディスクリプタヒープをセット
 		commandList->SetDescriptorHeaps(1, &materialHeap);
 		// テクスチャをセット
-		commandList->SetGraphicsRootDescriptorTable(1, m_pTexHandle->handleGPU);
+		if (pCurrentTexHandle && pCurrentTexHandle->handleGPU.ptr != 0)
+		{
+			commandList->SetGraphicsRootDescriptorTable(1, pCurrentTexHandle->handleGPU);
+		}
+		
 		// インデックスの数分描画
 		commandList->DrawIndexedInstanced(static_cast<UINT>(m_meshes[i].Indices.size()), 
 			1, 0, 0, 0);
@@ -137,9 +174,11 @@ void Player::Uninit()
 	m_camera = nullptr;
 	for(auto& cb : m_pConstantBuffer)
 		cb.reset();
+	for (auto& cb : m_pLightConstantBuffer)
+		cb.reset();
 	m_pDescriptorHeap.reset();
 	m_pRootSignature.reset();
-	m_pTexHandle.reset();
+	m_pTexHandles.clear();
 }
 
 void Player::Update_Transform()
@@ -168,4 +207,9 @@ void Player::Update_CameraMatrix()
 	XMFLOAT3 camPos;
 	XMStoreFloat3(&camPos, camPosVec);
 	ptr->cameraPos = camPos;
+
+	// ライトデータの更新処理
+	const auto& lightData = DirectionalLight::Instance().GetLightData();
+	auto ptrLight = m_pLightConstantBuffer[currentIndex]->GetPtr<DirectionalLightData>();
+	*ptrLight = lightData;
 }

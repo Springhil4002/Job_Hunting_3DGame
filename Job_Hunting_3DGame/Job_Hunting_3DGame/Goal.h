@@ -12,6 +12,7 @@
 #include "RootSignature_Manager.h"
 #include "PipelineState_Manager.h"
 #include "Debug_Sphere.h"
+#include "DirectionalLight.h"
 
 class Goal : public Object
 {
@@ -22,6 +23,8 @@ private:
 	std::unique_ptr<IndexBuffer> m_pIndexBuffer;
 	// コンスタントバッファ
 	std::unique_ptr<ConstantBuffer> m_pConstantBuffer[DrawBase::FRAME_BUFFER_COUNT];
+	// ライトデータ用コンスタントバッファ
+	std::unique_ptr<ConstantBuffer> m_pLightConstantBuffer[DrawBase::FRAME_BUFFER_COUNT];
 	// ディスクリプタヒープ
 	std::unique_ptr<DescriptorHeap> m_pDescriptorHeap;
 	// ルートシグネチャ

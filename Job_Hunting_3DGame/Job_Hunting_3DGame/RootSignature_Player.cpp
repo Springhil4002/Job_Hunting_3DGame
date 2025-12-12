@@ -21,12 +21,13 @@ RootSignature_Player::RootSignature_Player()
 	texRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
 
 	// ルートパラメータ設定
-	CD3DX12_ROOT_PARAMETER rootParam[2] = {};
+	CD3DX12_ROOT_PARAMETER rootParam[3] = {};
 	// b0:定数バッファを設定、全てのシェーダーから見えるようにする
 	rootParam[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
 	// t1:SRVを設定、ピクセルシェーダーから見えるようにする
 	rootParam[1].InitAsDescriptorTable(1,&texRange[0], D3D12_SHADER_VISIBILITY_PIXEL);
-
+	// b1:ライトデータ
+	rootParam[2].InitAsConstantBufferView(1, 0, D3D12_SHADER_VISIBILITY_ALL);
 	// スタティックサンプラーの設定
 	auto sampler = CD3DX12_STATIC_SAMPLER_DESC(0, D3D12_FILTER_MIN_MAG_MIP_LINEAR);
 

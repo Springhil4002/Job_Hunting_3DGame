@@ -53,6 +53,8 @@ void Goal::Draw()
 		commandList->SetPipelineState(m_pPipelineState->Get());
 		commandList->SetGraphicsRootConstantBufferView(
 			0, m_pConstantBuffer[currentIndex]->GetAddress());
+		commandList->SetGraphicsRootConstantBufferView(
+			2, m_pLightConstantBuffer[currentIndex]->GetAddress());
 
 		commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		commandList->IASetVertexBuffers(0, 1, &vbView);
@@ -82,6 +84,8 @@ void Goal::Uninit()
 {
 	m_camera = nullptr;
 	for (auto& cb : m_pConstantBuffer)
+		cb.reset();
+	for (auto& cb : m_pLightConstantBuffer)
 		cb.reset();
 	m_pDescriptorHeap.reset();
 	m_pRootSignature.reset();
@@ -121,6 +125,16 @@ bool Goal::Init_PropGoal(Camera* _camera)
 		ptr->proj = m_camera->GetProjMatrix();
 	}
 
+	for (size_t i = 0; i < DrawBase::FRAME_BUFFER_COUNT; ++i)
+	{
+		m_pLightConstantBuffer[i] = std::make_unique<ConstantBuffer>(sizeof(DirectionalLightData));
+		if (!m_pLightConstantBuffer[i]->IsValid())
+		{
+			printf("Goal:ライトコンスタントバッファ生成失敗\n");
+			return false;
+		}
+	}
+
 	// ディスクリプタヒープの生成
 	m_pDescriptorHeap = std::make_unique<DescriptorHeap>();
 
@@ -151,11 +165,11 @@ bool Goal::Init_PropGoal(Camera* _camera)
 		m_pPipelineState->SetRootSignature(m_pRootSignature->Get());
 		// VS/PSの設定
 #ifdef _DEBUG	// DEBUG
-		m_pPipelineState->SetVS(L"../x64/Debug/VS_Simple.cso");
-		m_pPipelineState->SetPS(L"../x64/Debug/PS_Simple.cso");
+		m_pPipelineState->SetVS(L"../x64/Debug/VS_Goal.cso");
+		m_pPipelineState->SetPS(L"../x64/Debug/PS_Goal.cso");
 #else			// Release
-		m_pPipelineState->SetVS(L"../x64/Release/VS_Simple.cso");
-		m_pPipelineState->SetPS(L"../x64/Release/PS_Simple.cso");
+		m_pPipelineState->SetVS(L"../x64/Release/VS_Goal.cso");
+		m_pPipelineState->SetPS(L"../x64/Release/PS_Goal.cso");
 #endif 
 		// パイプラインステート作成
 		m_pPipelineState->Create();
@@ -211,6 +225,11 @@ void Goal::Update_CameraMatrix()
 	XMFLOAT3 camPos;
 	XMStoreFloat3(&camPos, camPosVec);
 	ptr->cameraPos = camPos;
+
+	// ライトデータの更新処理
+	const auto& lightData = DirectionalLight::Instance().GetLightData();
+	auto ptrLight = m_pLightConstantBuffer[currentIndex]->GetPtr<DirectionalLightData>();
+	*ptrLight = lightData;
 }
 
 void Goal::Draw_ImGui()

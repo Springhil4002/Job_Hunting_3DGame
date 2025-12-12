@@ -9,13 +9,19 @@ SceneResourceList GetSceneResourceList(SCENE_ID _ID)
 	{
 	case SCENE_ID_TITLE:
 		list.textures = {
-			{ L"Assets/Texture/Color_Black.png",	TEX_TYPE::TEX_TYPE_TEXTURE2D },
-			{ L"Assets/Texture/Title_Bg.png",		TEX_TYPE::TEX_TYPE_TEXTURE2D },
-			{ L"Assets/Texture/Title_Logo.png",		TEX_TYPE::TEX_TYPE_TEXTURE2D },
-			{ L"Assets/Texture/Title_Start.png",	TEX_TYPE::TEX_TYPE_TEXTURE2D },
+			{ L"Assets/Texture/SkyDome.dds",		 TEX_TYPE::TEX_TYPE_TEXTURE2D },
+			{ L"Assets/Texture/Color_Black.png",	 TEX_TYPE::TEX_TYPE_TEXTURE2D},
+			{ L"Assets/Texture/Color_Blue.png",		 TEX_TYPE::TEX_TYPE_TEXTURE2D},
+			{ L"Assets/Texture/Color_Red.png",		 TEX_TYPE::TEX_TYPE_TEXTURE2D},
+			{ L"Assets/Texture/Color_White.png",	 TEX_TYPE::TEX_TYPE_TEXTURE2D},
+			{ L"Assets/Texture/Color_Yellow.png",	 TEX_TYPE::TEX_TYPE_TEXTURE2D},
+			{ L"Assets/Texture/Title_Bg.png",		 TEX_TYPE::TEX_TYPE_TEXTURE2D },
+			{ L"Assets/Texture/Title_Logo.png",		 TEX_TYPE::TEX_TYPE_TEXTURE2D },
+			{ L"Assets/Texture/Title_Start.png",	 TEX_TYPE::TEX_TYPE_TEXTURE2D },
+			{ L"Assets/Texture/Particle_Splash.png", TEX_TYPE::TEX_TYPE_TEXTURE2D },
 			{ L"Assets/Texture/Game_controller.png", TEX_TYPE::TEX_TYPE_TEXTURE2D },
 			{ L"Assets/Texture/SkyDome.dds",		 TEX_TYPE::TEX_TYPE_CUBEMAP },
-			{ L"Assets/Texture/Player.png",			 TEX_TYPE::TEX_TYPE_TEXTURE2D },
+			{ L"Assets/Texture/SkyBox.dds",			 TEX_TYPE::TEX_TYPE_CUBEMAP },
 			{ L"Assets/Texture/SeaMesh_Normal.png",  TEX_TYPE::TEX_TYPE_TEXTURE2D },
 			{ L"Assets/Texture/SeaMesh_Normal_2.png", TEX_TYPE::TEX_TYPE_TEXTURE2D },
 		};
@@ -26,8 +32,11 @@ SceneResourceList GetSceneResourceList(SCENE_ID _ID)
 	case SCENE_ID_GAME:
 		list.textures = {
 			{ L"Assets/Texture/SkyDome.dds",		 TEX_TYPE::TEX_TYPE_TEXTURE2D },
-			{ L"Assets/Texture/Player.png",			 TEX_TYPE::TEX_TYPE_TEXTURE2D },
-			{ L"Assets/Texture/Color_Red.png",		 TEX_TYPE::TEX_TYPE_TEXTURE2D },
+			{ L"Assets/Texture/Color_Black.png",	 TEX_TYPE::TEX_TYPE_TEXTURE2D},
+			{ L"Assets/Texture/Color_Blue.png",		 TEX_TYPE::TEX_TYPE_TEXTURE2D},
+			{ L"Assets/Texture/Color_Red.png",		 TEX_TYPE::TEX_TYPE_TEXTURE2D},
+			{ L"Assets/Texture/Color_White.png",	 TEX_TYPE::TEX_TYPE_TEXTURE2D},
+			{ L"Assets/Texture/Color_Yellow.png",	 TEX_TYPE::TEX_TYPE_TEXTURE2D},
 			{ L"Assets/Texture/SkyDome.dds",		 TEX_TYPE::TEX_TYPE_CUBEMAP },
 			{ L"Assets/Texture/Particle_Splash.png", TEX_TYPE::TEX_TYPE_TEXTURE2D },
 			{ L"Assets/Texture/Game_if.png",		 TEX_TYPE::TEX_TYPE_TEXTURE2D },

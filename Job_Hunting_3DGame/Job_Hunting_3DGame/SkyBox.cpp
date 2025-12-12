@@ -62,7 +62,7 @@ bool SkyBox::Init(Camera* _camera)
 	m_pDescriptorHeap = std::make_unique<DescriptorHeap>();
 
 	// テクスチャの適用
-	auto tex = TextureManager::Instance().GetCubeMap(L"Assets/Texture/SkyDome.dds");
+	auto tex = TextureManager::Instance().GetCubeMap(L"Assets/Texture/SkyBox.dds");
 	if(!tex)
 	{
 		printf("SkyBox:テクスチャの取得失敗\n");
@@ -184,7 +184,6 @@ void SkyBox::CreateCubeMesh()
 
 void SkyBox::Update_Transform()
 {
-	// スカイボックスは回転・スケール不要、カメラ位置追従のみ
 	m_worldMatrix = XMMatrixTranslationFromVector(m_camera->GetPos());
 }
 

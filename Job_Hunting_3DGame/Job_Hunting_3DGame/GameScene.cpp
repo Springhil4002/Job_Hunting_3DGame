@@ -32,10 +32,6 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	camera->SetUp(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
 	uiCamera->Init(screenWidth, screenHeight);
 
-	XMVECTOR camPos = camera->GetPos();
-	XMFLOAT3 pos;
-	XMStoreFloat3(&pos, camPos);
-
 	// プロトタイプ登録
 	prototypeManager->AddPrototype("Sky", std::make_unique<SkyBox>());
 	prototypeManager->AddPrototype("Player", std::make_unique<Player>());
@@ -53,7 +49,7 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	// オブジェクト生成
 	SkyBox* sky = dynamic_cast<SkyBox*>(CreateObj("Sky"));
 	sky->Init(camera);
-	sky->SetPos(XMLoadFloat3(&pos));
+	sky->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
 	sky->SetRota(XMVectorZero());
 	sky->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
 	sky->m_tags.AddTag("SkyDome");

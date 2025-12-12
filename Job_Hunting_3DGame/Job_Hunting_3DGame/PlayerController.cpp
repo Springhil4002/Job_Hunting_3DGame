@@ -417,7 +417,7 @@ void PlayerController::Update_WaterEffects(float _deltaTime)
 
 		// ‘¬“x‚É‰ž‚¶‚½ƒhƒƒbƒv‚Ì”¼Œa‚Æ‹­‚³‚ðÝ’è
 		const float dropStrength = std::min(5.0f, speed * 0.05f);
-		const float radius = 3.0f;
+		const float radius = 2.0f;
 
 		// ”g–ä¶¬
 		m_WaterMesh->ApplyDrop(XMFLOAT2(u, v), dropStrength, radius);
