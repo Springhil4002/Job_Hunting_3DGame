@@ -169,7 +169,9 @@ void ResultScene::Update_MouseRotate(float _sensi)
 
 void ResultScene::Draw_ImGui()
 {
+#if _DEBUG
 	ImGui_Prop();
+#endif
 }
 
 void ResultScene::ImGui_Prop()

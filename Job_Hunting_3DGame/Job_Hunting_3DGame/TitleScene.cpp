@@ -107,7 +107,7 @@ void TitleScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 
 void TitleScene::Update(float _deltaTime)
 {
-	Update_Input();
+	//Update_Input();
 	
 	autoPlayerCtrl->Update(_deltaTime);
 
