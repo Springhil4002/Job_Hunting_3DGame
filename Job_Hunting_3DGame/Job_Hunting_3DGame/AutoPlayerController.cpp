@@ -96,6 +96,10 @@ void AutoPlayerController::Init_Param()
 	m_TurnOffsetMax = 1.0f;
 	m_TurnOffsetRate = 10.0f;
 
+	m_CurrentRoll = 0.0f;
+	m_MaxRollAngle = XMConvertToRadians(30.0f); 
+	m_RollInterpRate = 5.0f;                  
+
 	m_CurrentCamPos = XMVectorAdd(m_Position, m_CamOffset);
 	m_CurrentCamTarget = m_Position + m_ForwardVec * 15.0f;
 
@@ -171,6 +175,8 @@ void AutoPlayerController::Apply_Figure8(float _deltaTime)
 	XMVECTOR currentVelocity = (m_Position - prevPos) / _deltaTime;
 	m_Velocity = currentVelocity;
 
+	float prevAngleY = XMVectorGetY(m_Rotation);
+
 	// ‰ñ“]‚ÌŒvŽZ
 	XMVECTOR movementVec = XMVectorSet(
 		XMVectorGetX(currentVelocity), 0.0f, 
@@ -188,6 +194,24 @@ void AutoPlayerController::Apply_Figure8(float _deltaTime)
 		// ‰ñ“]Šp‚ð‘O•ûŒüƒxƒNƒgƒ‹‚©‚ç‹tŽZ
 		float angleY = std::atan2(XMVectorGetX(m_ForwardVec), XMVectorGetZ(m_ForwardVec));
 		m_Rotation = XMVectorSet(0, angleY, 0, 0);
+
+		// Šp‘¬“x‚Ì•Ï‰»—Ê‚ðŒvŽZ
+		float deltaAngleY = angleY - prevAngleY;
+		if (deltaAngleY > XM_PI)
+			deltaAngleY -= XM_2PI;
+		else if(deltaAngleY < -XM_PI)
+			deltaAngleY += XM_2PI;
+		// ù‰ñ‘¬“x
+		float angularVelocity = deltaAngleY / _deltaTime;
+		// ù‰ñ‘¬“x‚ÌÅ‘å’l‚ð³‹K‰»
+		const float maxAngularVelocity = 1.0f;
+		float targetRoll = -angularVelocity / maxAngularVelocity * m_MaxRollAngle;
+		// Å‘å’l‚ÉƒNƒ‰ƒ“ƒv
+		targetRoll = std::clamp(targetRoll, -m_MaxRollAngle, m_MaxRollAngle);
+
+		// •âŠÔ
+		float interpRate = (m_RollInterpRate * _deltaTime) / 5.0f;
+		m_CurrentRoll = m_CurrentRoll + (targetRoll - m_CurrentRoll) * interpRate;
 	}
 }
 
@@ -232,9 +256,16 @@ void AutoPlayerController::Apply_WaterPhysics(float _deltaTime)
 void AutoPlayerController::Update_Player()
 {
 	if (!m_Player) return;
-	// ƒvƒŒƒCƒ„[‚ÌˆÊ’uXV
+	
+	XMVECTOR totalRotation = XMVectorSet(
+		XMVectorGetX(m_Rotation),
+		XMVectorGetY(m_Rotation),
+		m_CurrentRoll,
+		0.0f
+	);
+
 	m_Player->SetPos(m_Position);
-	m_Player->SetRota(m_Rotation);
+	m_Player->SetRota(totalRotation);
 }
 
 void AutoPlayerController::Update_Camera(float _deltaTime)
