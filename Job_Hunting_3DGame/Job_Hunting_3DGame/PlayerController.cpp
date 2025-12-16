@@ -1,4 +1,5 @@
 #include "PlayerController.h"
+#include "System/ImGui/imgui.h"
 #include "Debug_New.h"
 
 using namespace DirectX;
@@ -45,6 +46,7 @@ void PlayerController::Update(float _deltaTime)
 
 void PlayerController::Draw()
 {
+	Draw_ImGui();
 	if (m_Emitter_Splash)
 	{
 		m_Emitter_Splash->Draw();
@@ -73,6 +75,18 @@ void PlayerController::Uninit()
 	m_LastPlayerPos = XMVectorZero();
 	m_Velocity = XMVectorZero();
 	m_VelocityY = XMVectorZero();
+}
+
+void PlayerController::Draw_ImGui()
+{
+	ImGui::Begin("Player Controller");
+	if (ImGui::CollapsingHeader("Player"))
+	{
+		float speed = XMVectorGetX(XMVector3Length(m_Velocity));
+		ImGui::Text("Current Speed: %.2f", speed);
+		ImGui::Text("Max Speed: %.2f", m_MaxSpeed);
+	}
+	ImGui::End();
 }
 
 void PlayerController::Init_Param()
@@ -108,13 +122,16 @@ void PlayerController::Init_Param()
 	
 	m_CurrentDistance = initDistance;
 	m_InitCamOffset = XMVector3Normalize(initOffset);
-
 	m_CamOffset = initOffset;
 
 	m_SpringConstant = 350.0f;  
 	m_DampingConstant = 25.0f;
 	m_TurnOffsetMax = 1.0f;
 	m_TurnOffsetRate = 10.0f;
+
+	m_CurrentRoll = 0.0f;
+	m_MaxRollAngle = XMConvertToRadians(30.0f);
+	m_RollInterpRate = 8.0f;
 
 	m_CurrentCamPos = XMVectorAdd(m_Position, m_CamOffset);
 	m_CurrentCamTarget = m_Position + m_ForwardVec * 15.0f;
@@ -151,12 +168,19 @@ void PlayerController::Init_CameraSet()
 
 void PlayerController::Apply_Rotate(float _deltaTime)
 {
+	float turnInput = 0.0f;
 	// 回転
 	if (m_Input->GetKeyPress(VK_A))
+	{
 		m_Rotation -= XMVectorSet(0, m_RotateSpeed * _deltaTime, 0, 0);
+		turnInput = 1.0f;
+	}
 	if (m_Input->GetKeyPress(VK_D))
+	{
 		m_Rotation += XMVectorSet(0, m_RotateSpeed * _deltaTime, 0, 0);
-	
+		turnInput = -1.0f;
+	}
+
 	// 回転角度から方向ベクトルを更新
 	XMMATRIX rotMat = XMMatrixRotationY(XMVectorGetY(m_Rotation));
 	m_ForwardVec = XMVector3TransformNormal(XMVectorSet(0, 0, 1, 0), rotMat);
@@ -165,6 +189,11 @@ void PlayerController::Apply_Rotate(float _deltaTime)
 	// カメラオフセットの更新
 	XMVECTOR rotateOffsetDir = XMVector3TransformNormal(m_InitCamOffset, rotMat);
 	m_CamOffset = rotateOffsetDir * m_CurrentDistance;
+
+	// 旋回時に船体が傾くように
+	float targetRoll = turnInput * m_MaxRollAngle;
+	float rollChange = ((targetRoll - m_CurrentRoll) * m_RollInterpRate * _deltaTime ) / 5.0f;
+	m_CurrentRoll += rollChange;
 }
 
 void PlayerController::Apply_Move(float _deltaTime)
@@ -272,9 +301,16 @@ void PlayerController::Apply_WaterPhysics(float _deltaTime)
 void PlayerController::Update_Player()
 {
 	if (!m_Player) return;
-	// プレイヤーの位置更新
+
+	XMVECTOR totalRotation = XMVectorSet(
+		XMVectorGetX(m_Rotation),
+		XMVectorGetY(m_Rotation),
+		m_CurrentRoll,
+		0.0f
+	);
+
 	m_Player->SetPos(m_Position);
-	m_Player->SetRota(m_Rotation);
+	m_Player->SetRota(totalRotation);
 }
 
 void PlayerController::Apply_CameraZoom(float _deltaTime)
@@ -417,7 +453,7 @@ void PlayerController::Update_WaterEffects(float _deltaTime)
 
 		// 速度に応じたドロップの半径と強さを設定
 		const float dropStrength = std::min(5.0f, speed * 0.05f);
-		const float radius = 2.0f;
+		const float radius = 2.5f;
 
 		// 波紋生成
 		m_WaterMesh->ApplyDrop(XMFLOAT2(u, v), dropStrength, radius);

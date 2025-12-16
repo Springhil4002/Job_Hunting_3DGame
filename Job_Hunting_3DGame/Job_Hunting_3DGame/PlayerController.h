@@ -53,6 +53,10 @@ private:
 	float m_TurnOffsetMax = 0.0f;	// 最大旋回オフセット
 	float m_TurnOffsetRate = 0.0f;	// 旋回オフセットの追従率
 
+	float m_CurrentRoll = 0.0f;		// 現在のロール角(Z軸回転)
+	float m_MaxRollAngle = 0.0f;	// 最大傾斜角度(ラジアン)
+	float m_RollInterpRate = 0.0f;	// ロール角の補間追従速度
+
 	/// @brief パラメータの初期化
 	void Init_Param();
 	/// @brief カメラ初期位置設定関数
@@ -92,6 +96,8 @@ public:
 	void Draw();
 	/// @brief 終了処理
 	void Uninit();
+	// ImGui描画関数
+	void Draw_ImGui();
 
 	// 各種ゲッター・セッター関数 
 	DirectX::XMVECTOR GetPosition() const { return m_Position; }
