@@ -290,7 +290,7 @@ void WaterMesh::Draw()
 	cmdList->DrawIndexedInstanced(m_IndexCount, 1, 0, 0, 0);
 }
 
-void WaterMesh::Uninit()
+void WaterMesh::UnInit()
 {
 	m_Camera = nullptr;
 	m_pVertexBuffer.reset();

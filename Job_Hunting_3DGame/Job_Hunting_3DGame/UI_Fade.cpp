@@ -107,9 +107,9 @@ void UI_Fade::Draw()
 	UI::Draw();
 }
 
-void UI_Fade::Uninit()
+void UI_Fade::UnInit()
 {
-	UI::Uninit();
+	UI::UnInit();
 }
 
 void UI_Fade::Update_Fade()

@@ -48,7 +48,7 @@ public:
 	// コンストラクタ
 	Goal() = default;
 	// デストラクタ
-	~Goal() { Uninit(); }
+	~Goal() { UnInit(); }
 
 	// クローンメソッド
 	std::unique_ptr<Object> clone() const override;
@@ -62,7 +62,7 @@ public:
 	/// @brief 描画処理
 	void Draw() override;
 	/// @brief 終了処理
-	void Uninit() override;
+	void UnInit() override;
 	/// @brief ゴールオブジェクトの初期化処理
 	/// @param _camera カメラ
 	/// @return 初期化成功の成否

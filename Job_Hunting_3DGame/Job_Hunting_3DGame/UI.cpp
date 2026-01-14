@@ -142,7 +142,7 @@ void UI::Draw()
     cmdList->DrawIndexedInstanced(6, 1, 0, 0, 0);
 }
 
-void UI::Uninit()
+void UI::UnInit()
 {
     m_CameraUI = nullptr;
     m_pVertexBuffer.reset();

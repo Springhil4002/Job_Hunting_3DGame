@@ -11,7 +11,7 @@ DirectionalLight& DirectionalLight::Instance()
 
 DirectionalLight::DirectionalLight()
 {
-	m_LightData.lightDir = XMFLOAT3(0.35f, -1.0f, 0.15f);
+	m_LightData.lightDir = XMFLOAT3(0.5f, -1.0f, 0.15f);
 	m_LightData.envStrength = 0.65f;
 	m_LightData.lightColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 }

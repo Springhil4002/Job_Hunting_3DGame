@@ -29,11 +29,35 @@ struct VS_OUT
     float3 worldBinormal : BINORMAL1;
 };
 
+SamplerState smp : register(s0);
+Texture2D normalTex : register(t1);
+Texture2D normalTex2 : register(t2);
+
 VS_OUT VS_Main(VS_IN vin)
 {
     VS_OUT vout;
 
-    float4 localPos = float4(vin.pos, 1.0f); 
+    float2 scrollUV1 = vin.uv;
+    float2 scrollUV2 = vin.uv;
+    scrollUV1.x += time * 0.005f;
+    scrollUV1.y += time * 0.005f;
+    scrollUV2.x += time * 0.005f;
+    scrollUV2.y -= time * 0.005f;
+    scrollUV2 *= 0.5f;
+    
+    // ノーマルマップのサンプリング
+    float3 normalMap1 = normalTex.SampleLevel(smp, scrollUV1, 0).xyz * 2.0f - 1.0f;
+    float3 normalMap2 = normalTex2.SampleLevel(smp, scrollUV2, 0).xyz * 2.0f - 1.0f;
+    
+    // 合成ノーマルマップ（変位量として使用）
+    float3 normalMap = normalize(normalMap1 + normalMap2);
+    float displacement = normalMap.y * 5.0f;
+    
+    // 頂点位置の変更
+    float3 pos = vin.pos;
+    pos.y += displacement; // 高さを変位させる
+    
+    float4 localPos = float4(pos, 1.0f); // 変更後の位置を使用
     float4 worldPos = mul(world, localPos);
     
     // 法線のワールド変換

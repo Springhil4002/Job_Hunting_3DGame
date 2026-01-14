@@ -36,6 +36,15 @@ private:
 	float m_alpha = 0.0f;
 	// 球体の半径
 	float m_radius = 5.0f;
+	/// @brief ワールド行列の更新
+	void Update_Transform();
+	/// @brief ビュー・プロジェクションの更新
+	void Update_CameraMatrix();
+	/// @brief 球体メッシュ作成関数
+	/// @param _stacks スタック数
+	/// @param _slices 分割数
+	/// @param _radius 半径
+	void Create_Sphere(int _stacks, int _slices, float _radius);
 public:
 	// ワールド行列更新操作用
 	DirectX::XMMATRIX m_worldMatrix = DirectX::XMMatrixIdentity();
@@ -59,16 +68,7 @@ public:
 	/// @brief 描画処理
 	void Draw() override;
 	/// @brief 終了処理
-	void Uninit() override;
-	/// @brief ワールド行列の更新
-	void Update_Transform();
-	/// @brief ビュー・プロジェクションの更新
-	void Update_CameraMatrix();
-	/// @brief 球体メッシュ作成関数
-	/// @param _stacks スタック数
-	/// @param _slices 分割数
-	/// @param _radius 半径
-	void Create_Sphere(int _stacks, int _slices, float _radius);
+	void UnInit() override;
 	
 	/// @brief 各種ゲッター・セッター
 	float GetAlpha() const { return m_alpha; }

@@ -11,6 +11,21 @@ bool AutoPlayerController::Init(Player* _player, WaterMesh* _waterMesh, Camera* 
 
 	m_Player = _player;
 	m_WaterMesh = _waterMesh;
+	m_SeaMesh = nullptr;
+	m_Camera = _camera;
+
+	Init_Param();
+	Init_CameraSet();
+	return true;
+}
+
+bool AutoPlayerController::Init(Player* _player, SeaMesh* _seaMesh, Camera* _camera)
+{
+	if (!_player || !_seaMesh || !_camera) return false;
+
+	m_Player = _player;
+	m_WaterMesh = nullptr;
+	m_SeaMesh = _seaMesh; 
 	m_Camera = _camera;
 
 	Init_Param();
@@ -20,7 +35,7 @@ bool AutoPlayerController::Init(Player* _player, WaterMesh* _waterMesh, Camera* 
 
 void AutoPlayerController::Update(float _deltaTime)
 {
-	Apply_SpeedControll(_deltaTime);
+	Apply_SpeedControl(_deltaTime);
 	Apply_Figure8(_deltaTime);
 	Apply_WaterPhysics(_deltaTime);
 
@@ -38,7 +53,7 @@ void AutoPlayerController::Draw()
 	}
 }
 
-void AutoPlayerController::Uninit()
+void AutoPlayerController::UnInit()
 {
 	// エミッタの終了処理
 	if (m_Emitter_Splash)
@@ -117,11 +132,11 @@ void AutoPlayerController::Init_CameraSet()
 		XMVECTOR idealTarget = m_Position + m_ForwardVec * 15.0f;
 
 		// 水面の高さを考慮した注視点の調整
-		if (m_WaterMesh)
+		if (m_WaterMesh || m_SeaMesh)
 		{
 			float fx = static_cast<float>(XMVectorGetX(m_Position));
 			float fz = static_cast<float>(XMVectorGetZ(m_Position));
-			float waveHeight = m_WaterMesh->GetHeightFieldHeight(fx, fz);
+			float waveHeight = Get_HeightFromMesh(fx, fz);
 			idealTarget = XMVectorSetY(idealTarget,
 				XMVectorGetY(idealTarget) + waveHeight * 0.3f);
 		}
@@ -135,7 +150,7 @@ void AutoPlayerController::Init_CameraSet()
 	}
 }
 
-void AutoPlayerController::Apply_SpeedControll(float _deltaTime)
+void AutoPlayerController::Apply_SpeedControl(float _deltaTime)
 {
 	// 目標速度に向かって加速する
 	if (m_CurrentSpeed < m_Speed)
@@ -217,7 +232,7 @@ void AutoPlayerController::Apply_Figure8(float _deltaTime)
 
 void AutoPlayerController::Apply_WaterPhysics(float _deltaTime)
 {
-	if (!m_WaterMesh) return;
+	if (!m_WaterMesh && !m_SeaMesh) return;
 
 	float fx = static_cast<float>(XMVectorGetX(m_Position));
 	float fz = static_cast<float>(XMVectorGetZ(m_Position));
@@ -225,7 +240,7 @@ void AutoPlayerController::Apply_WaterPhysics(float _deltaTime)
 	float y = XMVectorGetY(m_Position) - m_PlayerOffsetY;
 
 	// 浮力の基準となる高さ場の高さを取得
-	float waterHeight = m_WaterMesh->GetHeightFieldHeight(fx, fz);
+	float waterHeight = Get_HeightFromMesh(fx, fz);
 	// 水面からの沈み込み深さ
 	float depth = waterHeight - y;
 
@@ -316,13 +331,15 @@ void AutoPlayerController::Update_Camera(float _deltaTime)
 	// カメラ注視点更新
 	XMVECTOR idealTarget = m_Position + m_ForwardVec * 15.0f;
 
-	// 水面の高さを取得して注視点に加算
-	float fx = static_cast<float>(XMVectorGetX(m_Position));
-	float fz = static_cast<float>(XMVectorGetZ(m_Position));
-	float waveHeight = m_WaterMesh->GetHeightFieldHeight(fx, fz);
-	idealTarget = XMVectorSetY(idealTarget,
-		XMVectorGetY(idealTarget) + waveHeight * 0.3f);
-
+	if (m_WaterMesh || m_SeaMesh)
+	{
+		// 水面の高さを取得して注視点に加算
+		float fx = static_cast<float>(XMVectorGetX(m_Position));
+		float fz = static_cast<float>(XMVectorGetZ(m_Position));
+		float waveHeight = Get_HeightFromMesh(fx, fz);
+		idealTarget = XMVectorSetY(idealTarget,
+			XMVectorGetY(idealTarget) + waveHeight * 0.3f);
+	}
 	float interp = 1.0f - expf(-m_FollowSpeed * _deltaTime);
 	XMVECTOR currentTarget = m_Camera->GetTarget();
 	XMVECTOR newCamTarget = XMVectorLerp(currentTarget, idealTarget, interp);
@@ -332,7 +349,7 @@ void AutoPlayerController::Update_Camera(float _deltaTime)
 
 void AutoPlayerController::Update_WaterEffects(float _deltaTime)
 {
-	if (!m_Emitter_Splash || !m_WaterMesh) return;
+	if (!m_Emitter_Splash || (!m_WaterMesh && !m_SeaMesh)) return;
 
 	bool isMoving = false;
 
@@ -363,7 +380,7 @@ void AutoPlayerController::Update_WaterEffects(float _deltaTime)
 		fz += XMVectorGetZ(forwardVec) * offset;
 
 		// 水面メッシュのグリッドサイズを取得
-		const float gridSize = m_WaterMesh->GetGridSize();
+		const float gridSize = Get_GridSize();
 		const float halfSize = gridSize * 0.5f;
 
 		// ワールド座表をWaterMeshのUVに変換、Gridの中心がWaterMeshの中心になるように
@@ -379,6 +396,44 @@ void AutoPlayerController::Update_WaterEffects(float _deltaTime)
 		const float radius = 3.0f;
 
 		// 波紋生成
-		m_WaterMesh->ApplyDrop(XMFLOAT2(u, v), dropStrength, radius);
+		Apply_DropToMesh(XMFLOAT2(u, v), dropStrength, radius);
 	}
+}
+
+void AutoPlayerController::Apply_DropToMesh(const XMFLOAT2& _uv, float _strength, float _radius)
+{
+	if (m_WaterMesh)
+	{
+		m_WaterMesh->ApplyDrop(_uv, _strength, _radius);
+	}
+	else if (m_SeaMesh)
+	{
+		m_SeaMesh->Apply_Drop(_uv, _strength, _radius);
+	}
+}
+
+float AutoPlayerController::Get_HeightFromMesh(float _x, float _z)
+{
+	if (m_WaterMesh)
+	{
+		return m_WaterMesh->GetHeightFieldHeight(_x, _z);
+	}
+	else if (m_SeaMesh)
+	{
+		return m_SeaMesh->GetHeightFieldHeight(_x, _z);
+	}
+	return 0.0f;
+}
+
+float AutoPlayerController::Get_GridSize()
+{
+	if (m_WaterMesh)
+	{
+		return m_WaterMesh->GetGridSize();
+	}
+	else if (m_SeaMesh)
+	{
+		return m_SeaMesh->GetGridSize();
+	}
+	return 0.0f;
 }

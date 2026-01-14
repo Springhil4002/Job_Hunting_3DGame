@@ -113,16 +113,16 @@ void UI_Timer::Draw()
 	}
 }
 
-void UI_Timer::Uninit()
+void UI_Timer::UnInit()
 {
 	for (auto& digit : m_TimeDigits)
 	{
-		digit->Uninit();
+		digit->UnInit();
 		digit.reset();	
 	}
-	m_CountDownDigit->Uninit();
+	m_CountDownDigit->UnInit();
 	m_CountDownDigit.reset();
-	m_GoUI->Uninit();
+	m_GoUI->UnInit();
 	m_GoUI.reset();
 	m_Game = nullptr;
 }

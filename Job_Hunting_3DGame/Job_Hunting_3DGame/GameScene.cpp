@@ -35,12 +35,13 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	// プロトタイプ登録
 	prototypeManager->AddPrototype("Sky", std::make_unique<SkyBox>());
 	prototypeManager->AddPrototype("Player", std::make_unique<Player>());
-	prototypeManager->AddPrototype("WaterMesh", std::make_unique<WaterMesh>());
+	//prototypeManager->AddPrototype("WaterMesh", std::make_unique<WaterMesh>());
 	prototypeManager->AddPrototype("Goal", std::make_unique<Goal>());
 	prototypeManager->AddPrototype("UI", std::make_unique<UI>());
 	prototypeManager->AddPrototype("UI_Fade", std::make_unique<UI_Fade>());
 	prototypeManager->AddPrototype("UI_Timer", std::make_unique<UI_Timer>());
-	
+	prototypeManager->AddPrototype("SeaMesh", std::make_unique<SeaMesh>());
+
 	// ライト設定
 	DirectionalLight::Instance().SetLightDir({ 0.35f,-1.0f,0.15f });
 	DirectionalLight::Instance().SetEnvStrength(0.65f);
@@ -96,15 +97,22 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	goal5->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
 	goal5->m_tags.AddTag("Goal");
 
-	WaterMesh* waterMesh = dynamic_cast<WaterMesh*>(CreateObj("WaterMesh"));
+	/*WaterMesh* waterMesh = dynamic_cast<WaterMesh*>(CreateObj("WaterMesh"));
 	waterMesh->Init(camera);
 	waterMesh->SetPos(XMVectorZero());
 	waterMesh->SetRota(XMVectorZero());
 	waterMesh->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
-	waterMesh->m_tags.AddTag("WaterMesh");
+	waterMesh->m_tags.AddTag("WaterMesh");*/
+
+	SeaMesh* seaMesh = dynamic_cast<SeaMesh*>(CreateObj("SeaMesh"));
+	seaMesh->Init(camera);
+	seaMesh->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
+	seaMesh->SetRota(XMVectorZero());
+	seaMesh->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	seaMesh->m_tags.AddTag("SeaMesh");
 
 	playerCtrl = std::make_unique<PlayerController>();
-	playerCtrl->Init(player, waterMesh, camera, &BaseScene::input);
+	playerCtrl->Init(player, seaMesh, camera, &BaseScene::input);
 
 	std::vector<Goal*> goals;
 	for (auto& obj : objectInstance)
@@ -200,14 +208,14 @@ void GameScene::Draw()
 
 void GameScene::Uninit()
 {
-	playerCtrl->Uninit();
+	playerCtrl->UnInit();
 	playerCtrl.reset();
 	game->Uninit();
 	game.reset();
 
 	for (auto& obj : objectInstance)
 	{
-		obj->Uninit();
+		obj->UnInit();
 	}
 	objectInstance.clear();
 }

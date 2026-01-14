@@ -96,7 +96,7 @@ public:
 	/// @brief 描画関数
 	void Draw()		override;
 	/// @brief 終了関数
-	void Uninit()	override;
+	void UnInit()	override;
 	/// @brief 水面メッシュサイズ更新関数
 	/// @param _newGridSize グリッドサイズの大きさ
 	void Update_GridSize(float _newGridSize);

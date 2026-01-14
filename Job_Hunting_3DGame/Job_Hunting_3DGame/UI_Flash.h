@@ -18,7 +18,7 @@ public:
 		const std::wstring& _filePath) override;
 	void Update() override;
 	void Draw() override;
-	void Uninit() override;
+	void UnInit() override;
 
 	void Update_Flash();
 	void SetFlashIn();

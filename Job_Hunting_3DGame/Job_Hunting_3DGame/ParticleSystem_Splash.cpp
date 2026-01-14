@@ -10,7 +10,7 @@ ParticleSystem_Splash::ParticleSystem_Splash(Camera* _camera)
 
 ParticleSystem_Splash::~ParticleSystem_Splash()
 {
-	Uninit();
+	UnInit();
 }
 
 bool ParticleSystem_Splash::Init(Camera* _camera)
@@ -112,7 +112,7 @@ void ParticleSystem_Splash::Draw()
 	cmdList->DrawIndexedInstanced(6, m_ActiveInstanceCount, 0, 0, 0);
 }
 
-void ParticleSystem_Splash::Uninit()
+void ParticleSystem_Splash::UnInit()
 {
 	m_Camera = nullptr;
 	m_pVertexBuffer.reset();

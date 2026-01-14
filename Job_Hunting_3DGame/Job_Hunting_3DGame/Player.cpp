@@ -169,7 +169,7 @@ void Player::Draw()
 			1, 0, 0, 0);
 	}
 }
-void Player::Uninit()
+void Player::UnInit()
 {
 	m_camera = nullptr;
 	for(auto& cb : m_pConstantBuffer)

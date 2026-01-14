@@ -17,9 +17,10 @@ RootSignature_SeaMesh::RootSignature_SeaMesh()
 	// t2:ノーマルマップテクスチャ2
 	texRange[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 3, 0);
 
-	CD3DX12_ROOT_PARAMETER rootParam[3] = {};
+	CD3DX12_ROOT_PARAMETER rootParam[4] = {};
 	rootParam[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
-	rootParam[1].InitAsDescriptorTable(1, &texRange[0], D3D12_SHADER_VISIBILITY_PIXEL);
+	rootParam[1].InitAsDescriptorTable(1, &texRange[0], D3D12_SHADER_VISIBILITY_ALL);
+	rootParam[2].InitAsConstantBufferView(1, 0, D3D12_SHADER_VISIBILITY_ALL);
 
 	auto sampler = CD3DX12_STATIC_SAMPLER_DESC(
 		0,									
@@ -33,7 +34,7 @@ RootSignature_SeaMesh::RootSignature_SeaMesh()
 		D3D12_STATIC_BORDER_COLOR_OPAQUE_WHITE,
 		0.0f,								
 		D3D12_FLOAT32_MAX,					
-		D3D12_SHADER_VISIBILITY_PIXEL		
+		D3D12_SHADER_VISIBILITY_ALL	
 	);
 	
 	D3D12_ROOT_SIGNATURE_DESC desc = {};

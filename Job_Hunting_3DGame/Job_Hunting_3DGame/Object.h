@@ -30,7 +30,7 @@ public:
 	/// @brief •`‰æˆ—
 	virtual void Draw()   {};
 	/// @brief I—¹ˆ—
-	virtual void Uninit() {};
+	virtual void UnInit() {};
 
 	/// @brief À•Wæ“¾ŠÖ”
 	/// @return À•W‚ğ•Ô‚µ‚Ü‚·

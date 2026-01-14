@@ -27,7 +27,7 @@ public:
 		const std::wstring& _texPath);
 	void Update() override;
 	void Draw() override;
-	void Uninit() override;
+	void UnInit() override;
 
 	void SetTime(std::chrono::milliseconds _elapsed);
 	void SetDigit(UI* _digit, int number);

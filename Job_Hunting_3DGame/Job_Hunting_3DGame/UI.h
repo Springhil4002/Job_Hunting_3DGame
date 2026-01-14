@@ -64,7 +64,7 @@ public:
 	/// @brief •`‰æˆ—
 	virtual void Draw()		override;
 	/// @brief I—¹ˆ—
-	virtual void Uninit()	override;
+	virtual void UnInit()	override;
 
 	void SetTransform(
 		DirectX::XMVECTOR _pos,

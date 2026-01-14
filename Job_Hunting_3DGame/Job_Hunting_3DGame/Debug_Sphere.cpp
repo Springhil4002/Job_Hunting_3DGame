@@ -130,7 +130,7 @@ void Debug_Sphere::Draw()
     cmdList->DrawIndexedInstanced(static_cast<UINT>(indices.size()), 1, 0, 0, 0);
 }
 
-void Debug_Sphere::Uninit()
+void Debug_Sphere::UnInit()
 {
     m_camera = nullptr;
     m_pVertexBuffer.reset();

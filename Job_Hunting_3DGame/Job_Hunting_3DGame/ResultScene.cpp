@@ -107,7 +107,7 @@ void ResultScene::Uninit()
 {
 	for (auto& obj : objectInstance)
 	{
-		obj->Uninit();
+		obj->UnInit();
 	}
 	objectInstance.clear();
 }

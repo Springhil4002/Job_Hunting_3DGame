@@ -55,7 +55,7 @@ public:
 	/// @brief 描画処理
 	void Draw() override;
 	/// @brief 終了処理
-	void Uninit() override;
+	void UnInit() override;
 	/// @brief ワールド行列の更新
 	void Update_Transform();
 	/// @brief ビュー・プロジェクションの更新

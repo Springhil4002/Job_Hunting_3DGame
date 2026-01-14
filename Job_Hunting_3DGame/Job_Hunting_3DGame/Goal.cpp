@@ -80,7 +80,7 @@ void Goal::Draw()
 	//Draw_ImGui();
 }
 
-void Goal::Uninit()
+void Goal::UnInit()
 {
 	m_camera = nullptr;
 	for (auto& cb : m_pConstantBuffer)

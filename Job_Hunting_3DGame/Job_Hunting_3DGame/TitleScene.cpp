@@ -36,9 +36,9 @@ void TitleScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	prototypeManager->AddPrototype("UI_Fade", std::make_unique<UI_Fade>());
 	prototypeManager->AddPrototype("UI_Flash", std::make_unique<UI_Flash>());
 	prototypeManager->AddPrototype("Sky", std::make_unique<SkyBox>());
-	prototypeManager->AddPrototype("WaterMesh", std::make_unique<WaterMesh>());
+	//prototypeManager->AddPrototype("WaterMesh", std::make_unique<WaterMesh>());
 	prototypeManager->AddPrototype("Player", std::make_unique<Player>());
-	//prototypeManager->AddPrototype("SeaMesh", std::make_unique<SeaMesh>());
+	prototypeManager->AddPrototype("SeaMesh", std::make_unique<SeaMesh>());
 
 	// ƒ‰ƒCƒgÝ’è
 	DirectionalLight::Instance().SetLightDir({ 0.35f,-1.0f,0.15f });
@@ -52,12 +52,12 @@ void TitleScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	sky->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
 	sky->m_tags.AddTag("SkyDome");
 
-	WaterMesh* waterMesh = dynamic_cast<WaterMesh*>(CreateObj("WaterMesh"));
+	/*WaterMesh* waterMesh = dynamic_cast<WaterMesh*>(CreateObj("WaterMesh"));
 	waterMesh->Init(camera);
 	waterMesh->SetPos(XMVectorZero());
 	waterMesh->SetRota(XMVectorZero());
 	waterMesh->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
-	waterMesh->m_tags.AddTag("WaterMesh");
+	waterMesh->m_tags.AddTag("WaterMesh");*/
 
 	Player* player = dynamic_cast<Player*>(CreateObj("Player"));
 	player->Init(camera);
@@ -66,15 +66,15 @@ void TitleScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	player->SetScale(XMVectorSet(0.01f, 0.01f, 0.01f, 0.0f));
 	player->m_tags.AddTag("Player");
 
-	autoPlayerCtrl = std::make_unique<AutoPlayerController>();
-	autoPlayerCtrl->Init(player, waterMesh, camera);
-
-	/*SeaMesh* seaMesh = dynamic_cast<SeaMesh*>(CreateObj("SeaMesh"));
+	SeaMesh* seaMesh = dynamic_cast<SeaMesh*>(CreateObj("SeaMesh"));
 	seaMesh->Init(camera);
 	seaMesh->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
 	seaMesh->SetRota(XMVectorZero());
-	seaMesh->SetScale(XMVectorSet(10.0f, 1.0f, 10.0f, 0.0f));
-	seaMesh->m_tags.AddTag("SeaMesh");*/
+	seaMesh->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	seaMesh->m_tags.AddTag("SeaMesh");
+
+	autoPlayerCtrl = std::make_unique<AutoPlayerController>();
+	autoPlayerCtrl->Init(player, seaMesh, camera);
 
 	UI* ui_logo = dynamic_cast<UI*>(CreateObj("UI"));
 	ui_logo->Init(uiCamera, 720.0f, 540.0f, L"Assets/Texture/Title_Logo.png");
@@ -154,7 +154,7 @@ void TitleScene::Uninit()
 {
 	for (auto& obj : objectInstance)
 	{
-		obj->Uninit();
+		obj->UnInit();
 	}
 	objectInstance.clear();
 }

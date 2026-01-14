@@ -57,7 +57,7 @@ public:
 	/// @brief 描画処理
 	void Draw()		override;
 	/// @brief 終了処理
-	void Uninit()	override;
+	void UnInit()	override;
 
 	/// @brief 拡張子を置き換える関数
 	/// @param _origin ファイルパス

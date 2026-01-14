@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "Camera.h"
 #include "WaterMesh.h"
+#include "SeaMesh.h"
 #include "System/Input.h"
 #include "ParticleEmitter_Splash.h"
 
@@ -10,6 +11,7 @@ class PlayerController
 private:
 	Player* m_Player = nullptr;
 	WaterMesh* m_WaterMesh = nullptr;
+	SeaMesh* m_SeaMesh = nullptr;
 	Camera* m_Camera = nullptr;
 	Input* m_Input = nullptr;
 	std::unique_ptr<ParticleEmitter_Splash> m_Emitter_Splash;
@@ -83,19 +85,35 @@ private:
 	/// @brief エミッタの更新処理
 	/// @param _deltaTime 経過時間
 	void Update_WaterEffects(float _deltaTime);
+
+	// 波紋生成関数
+	void Apply_DropToMesh(const DirectX::XMFLOAT2& _uv, float _strength, float _radius);
+	// 高さ取得関数
+	float Get_HeightFromMesh(float _x, float _z);
+	// メッシュのサイズ取得関数
+	float Get_GridSize();
 public:
-	/// @brief 初期化処理
-	/// @param _player プレイヤーのポインタ変数 
-	/// @param _camera カメラのポインタ変数
-	/// @return 初期化処理の成否
+	/// @brief 初期化処理(WaterMesh)
+	/// @param _player プレイヤー
+	/// @param _waterMesh 水面メッシュ
+	/// @param _camera カメラ
+	/// @param _input 入力系統
+	/// @return 初期化の成否
 	bool Init(Player* _player, WaterMesh* _waterMesh, Camera* _camera, Input* _input);
+	/// @brief 初期化処理(SeaMesh)
+	/// @param _player プレイヤー
+	/// @param _seaMesh 海メッシュ
+	/// @param _camera カメラ
+	/// @param _input 入力系統
+	/// @return 初期化の成否
+	bool Init(Player* _player, SeaMesh* _seaMesh, Camera* _camera, Input* _input);
 	/// @brief 更新処理
 	/// @param _deltaTime 経過時間
 	void Update(float _deltaTime);
 	/// @brief 描画処理
 	void Draw();
 	/// @brief 終了処理
-	void Uninit();
+	void UnInit();
 	// ImGui描画関数
 	void Draw_ImGui();
 

@@ -38,9 +38,9 @@ void UI_Flash::Draw()
     UI::Draw();
 }
 
-void UI_Flash::Uninit()
+void UI_Flash::UnInit()
 {
-    UI::Uninit();
+    UI::UnInit();
 }
 
 void UI_Flash::Update_Flash()

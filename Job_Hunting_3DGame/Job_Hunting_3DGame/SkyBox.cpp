@@ -143,7 +143,7 @@ void SkyBox::Draw()
 	cmdList->DrawIndexedInstanced(static_cast<UINT>(indices.size()), 1, 0, 0, 0);
 }
 
-void SkyBox::Uninit()
+void SkyBox::UnInit()
 {
 	m_camera = nullptr;
 	m_pVertexBuffer.reset();

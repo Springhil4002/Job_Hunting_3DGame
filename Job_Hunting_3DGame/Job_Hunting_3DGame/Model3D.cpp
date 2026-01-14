@@ -165,7 +165,7 @@ void Model3D::Draw()
 	}
 }
 
-void Model3D::Uninit()
+void Model3D::UnInit()
 {
 	m_camera = nullptr;
 	m_pVertexBuffer.reset();
