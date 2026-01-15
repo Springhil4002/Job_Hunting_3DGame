@@ -63,7 +63,9 @@ void PlayerController::Update(float _deltaTime)
 
 void PlayerController::Draw()
 {
+#if _DEBUG
 	Draw_ImGui();
+#endif
 	if (m_Emitter_Splash)
 	{
 		m_Emitter_Splash->Draw();
