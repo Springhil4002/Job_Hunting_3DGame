@@ -22,6 +22,8 @@ void TitleScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 {
 	printf("ƒV[ƒ“–¼FTitleScene\n");
 
+	SceneManager::GetSound().Play(SOUND_LABEL_BGM_001);
+
 	hwnd = _hwnd;
 	camera = _camera;
 	uiCamera = _uiCamera;
@@ -36,7 +38,6 @@ void TitleScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	prototypeManager->AddPrototype("UI_Fade", std::make_unique<UI_Fade>());
 	prototypeManager->AddPrototype("UI_Flash", std::make_unique<UI_Flash>());
 	prototypeManager->AddPrototype("Sky", std::make_unique<SkyBox>());
-	//prototypeManager->AddPrototype("WaterMesh", std::make_unique<WaterMesh>());
 	prototypeManager->AddPrototype("Player", std::make_unique<Player>());
 	prototypeManager->AddPrototype("SeaMesh", std::make_unique<SeaMesh>());
 
@@ -51,13 +52,6 @@ void TitleScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	sky->SetRota(XMVectorZero());
 	sky->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
 	sky->m_tags.AddTag("SkyDome");
-
-	/*WaterMesh* waterMesh = dynamic_cast<WaterMesh*>(CreateObj("WaterMesh"));
-	waterMesh->Init(camera);
-	waterMesh->SetPos(XMVectorZero());
-	waterMesh->SetRota(XMVectorZero());
-	waterMesh->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
-	waterMesh->m_tags.AddTag("WaterMesh");*/
 
 	Player* player = dynamic_cast<Player*>(CreateObj("Player"));
 	player->Init(camera);
@@ -152,6 +146,9 @@ void TitleScene::Draw()
 
 void TitleScene::Uninit()
 {
+	// BGM’âŽ~
+	SceneManager::GetSound().Stop(SOUND_LABEL_BGM_001);
+
 	for (auto& obj : objectInstance)
 	{
 		obj->UnInit();

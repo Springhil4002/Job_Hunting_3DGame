@@ -6,7 +6,7 @@
 const UINT WINDOW_WIDTH = 1920;
 const UINT WINDOW_HEIGHT = 1080;
 
-class Application :public NonCopyable
+class Application : public NonCopyable
 {
 private:
 public:

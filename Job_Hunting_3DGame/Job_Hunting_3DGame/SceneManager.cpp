@@ -5,6 +5,7 @@
 
 std::unique_ptr<BaseScene> SceneManager::currentScene = nullptr;
 SceneFactory SceneManager::sceneFactory;
+SoundManager SceneManager::soundManager;
 
 void SceneManager::ChangeScene(
 	SCENE_ID _scene_ID, Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)

@@ -21,6 +21,8 @@ void ResultScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 {
 	printf("ƒV[ƒ“–¼FResultScene\n");
 
+	SceneManager::GetSound().Play(SOUND_LABEL_BGM_003);
+
 	hwnd = _hwnd;
 	camera = _camera;
 	uiCamera = _uiCamera;
@@ -105,6 +107,9 @@ void ResultScene::Draw()
 
 void ResultScene::Uninit()
 {
+	// BGM’âŽ~
+	SceneManager::GetSound().Stop(SOUND_LABEL_BGM_003);
+
 	for (auto& obj : objectInstance)
 	{
 		obj->UnInit();

@@ -22,6 +22,8 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 {
 	printf("シーン名：GameScene\n");
 
+	SceneManager::GetSound().Play(SOUND_LABEL_BGM_002);
+
 	hwnd = _hwnd;
 	camera = _camera;
 	uiCamera = _uiCamera;
@@ -35,7 +37,6 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	// プロトタイプ登録
 	prototypeManager->AddPrototype("Sky", std::make_unique<SkyBox>());
 	prototypeManager->AddPrototype("Player", std::make_unique<Player>());
-	//prototypeManager->AddPrototype("WaterMesh", std::make_unique<WaterMesh>());
 	prototypeManager->AddPrototype("Goal", std::make_unique<Goal>());
 	prototypeManager->AddPrototype("UI", std::make_unique<UI>());
 	prototypeManager->AddPrototype("UI_Fade", std::make_unique<UI_Fade>());
@@ -96,13 +97,6 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	goal5->SetRota(XMVectorSet(0.0f, XMConvertToRadians(70.0f), 0.0f, 0.0f));
 	goal5->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
 	goal5->m_tags.AddTag("Goal");
-
-	/*WaterMesh* waterMesh = dynamic_cast<WaterMesh*>(CreateObj("WaterMesh"));
-	waterMesh->Init(camera);
-	waterMesh->SetPos(XMVectorZero());
-	waterMesh->SetRota(XMVectorZero());
-	waterMesh->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
-	waterMesh->m_tags.AddTag("WaterMesh");*/
 
 	SeaMesh* seaMesh = dynamic_cast<SeaMesh*>(CreateObj("SeaMesh"));
 	seaMesh->Init(camera);
@@ -208,6 +202,9 @@ void GameScene::Draw()
 
 void GameScene::Uninit()
 {
+	// BGM停止
+	SceneManager::GetSound().Stop(SOUND_LABEL_BGM_002);
+
 	playerCtrl->UnInit();
 	playerCtrl.reset();
 	game->Uninit();

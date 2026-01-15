@@ -108,6 +108,12 @@ void MainLoop(const TCHAR* _appName)
 	// ImGuiの初期化
 	g_ImGuiManager.Init(g_hWnd, g_DrawBase);
 	
+	// SoundManagerの初期化
+	if (FAILED(SceneManager::GetSound().Init()))
+	{
+		printf("サウンド初期化失敗、音無しで起動します\n");
+	}
+
 	// シーン管理クラスの生成
 	auto sm = std::make_unique<SceneManager>(camera.get(), cameraUI.get(), g_hWnd);
 	
@@ -142,6 +148,7 @@ void MainLoop(const TCHAR* _appName)
 		}
 	}
 	sm->Uninit();
+	SceneManager::GetSound().UnInit();
 	delete g_DrawBase;
 	g_DrawBase = nullptr;
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include "SceneFactory.h"
 #include "SceneResource.h"
+#include "SoundManager.h"
 
 class SceneManager
 {
@@ -9,6 +10,8 @@ private:
 	static std::unique_ptr<BaseScene> currentScene;
 	/// @brief シーン生成ファクトリー
 	static SceneFactory sceneFactory;
+	// サウンドマネージャーのインスタンス
+	static SoundManager soundManager;
 public:
 	SceneManager() = default;
 	/// @brief コンストラクタ
@@ -26,6 +29,8 @@ public:
 		SCENE_ID _scene_ID, Camera* _camera, Camera2D* _uiCamera, HWND _hwnd);
 	/// @brief コンソール画面のログをクリア
 	static void ClearConsole();
+
+	static SoundManager& GetSound() { return soundManager; }
 
 	/// @brief 初期化処理
 	void Init();
