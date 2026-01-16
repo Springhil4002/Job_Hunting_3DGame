@@ -10,6 +10,7 @@
 #include "UI_Fade.h"
 #include "UI_Flash.h"
 #include "UI_Timer.h"
+#include "UI_Speed.h"
 
 class PrototypeManager
 {

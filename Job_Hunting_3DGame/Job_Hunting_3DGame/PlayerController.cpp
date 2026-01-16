@@ -219,32 +219,39 @@ void PlayerController::Apply_Move(float _deltaTime)
 {
 	XMVECTOR accelVec = XMVectorZero();
 
-	// 移動(W:前進、S:後退)
+	// 入力による前進移動
 	if (m_Input->GetKeyPress(VK_W))
 		accelVec += m_ForwardVec;
-	if (m_Input->GetKeyPress(VK_S))
-		accelVec -= m_ForwardVec;
+
+	// 現在の速度を取得
+	float currentSpeed = XMVectorGetX(XMVector3Length(m_Velocity));
 
 	if (!XMVector3Equal(accelVec, XMVectorZero()))
 	{
 		// 複数キー入力で動きが速くならないよう正規化
 		accelVec = XMVector3Normalize(accelVec);
 
-		// 加速度を加算
-		m_Velocity += accelVec * m_Acceleration * _deltaTime;
+		float speedRatio = currentSpeed / m_MaxSpeed;
+		float accelerationFactor = std::max(0.0f, 1.0f - (speedRatio * speedRatio));
+		
+		m_Velocity += accelVec * m_Acceleration * accelerationFactor * _deltaTime;
 	}
 	else
 	{
 		// 入力が無いときは減速
-		float speed = XMVectorGetX(XMVector3Length(m_Velocity));
-		if (speed > 0.0001f)
+		if (currentSpeed > 0.0001f)
 		{
-			XMVECTOR fricVec = XMVector3Normalize(m_Velocity) * -1.0f;
-			float friction = m_Friction * _deltaTime;
-			if (friction > speed)
+			// 抵抗力
+			float dragCoeff = 0.8f;
+			XMVECTOR dragVec = m_Velocity * dragCoeff * _deltaTime;
+			// 摩擦力
+			XMVECTOR fricVec = XMVector3Normalize(m_Velocity) * m_Friction * _deltaTime;
+			
+			// 現在の速度に減速を適用
+			m_Velocity -= (dragVec + fricVec);
+
+			if (XMVectorGetX(XMVector3Dot(m_Velocity, m_ForwardVec)) < 0)
 				m_Velocity = XMVectorZero();
-			else
-				m_Velocity += fricVec * friction;
 		}
 		else
 		{

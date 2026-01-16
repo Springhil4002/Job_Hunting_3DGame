@@ -41,6 +41,7 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	prototypeManager->AddPrototype("UI", std::make_unique<UI>());
 	prototypeManager->AddPrototype("UI_Fade", std::make_unique<UI_Fade>());
 	prototypeManager->AddPrototype("UI_Timer", std::make_unique<UI_Timer>());
+	prototypeManager->AddPrototype("UI_Speed", std::make_unique<UI_Speed>());
 	prototypeManager->AddPrototype("SeaMesh", std::make_unique<SeaMesh>());
 
 	// ƒ‰ƒCƒgÝ’è
@@ -141,6 +142,11 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	timer->Init(uiCamera, 50.0f, 100.0f, L"Assets/Texture/Number.png");
 	timer->SetGame(game.get());
 	timer->m_tags.AddTag("UI_Timer");
+	
+	UI_Speed* speed = dynamic_cast<UI_Speed*>(CreateObj("UI_Speed"));
+	speed->Init(uiCamera, 50.0f, 100.0f, L"Assets/Texture/Number.png", L"Assets/Texture/UI_Km.png");
+	speed->Set_PlayerController(playerCtrl.get());
+	speed->m_tags.AddTag("UI_Speed");
 
 	UI_Fade* ui_fade = dynamic_cast<UI_Fade*>(CreateObj("UI_Fade"));
 	ui_fade->Init(uiCamera, 1920.0f, 1080.0f);
