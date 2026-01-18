@@ -71,16 +71,15 @@ void UI_Timer::Update()
 	{
 		m_GoUI->Update();
 		m_GoAlpha -= m_GoFadeSpeed * (1.0f / 144.0f);
-		if (m_GoAlpha < 0.0f) m_GoAlpha = 0.0f;
-		m_GoUI->SetAlpha(m_GoAlpha);
+		m_GoUI->SetAlpha(std::max(0.0f, m_GoAlpha));
 
-		SetTime(m_Game->GetElapsedTime());
+		SetTime(m_Game->GetRemainingTime());
 		for (auto& digit : m_TimeDigits) digit->Update();
 		break;
 	}
 	case RACE_STATE::RACE_STATE_GOAL:
 	{
-		SetTime(m_Game->GetElapsedTime());
+		SetTime(m_Game->GetRemainingTime());
 		for (auto& digit : m_TimeDigits) digit->Update();
 		break;
 	}
@@ -138,7 +137,9 @@ void UI_Timer::SetDigit(UI* _digit, int _number)
 
 void UI_Timer::SetTime(std::chrono::milliseconds _elapsed)
 {
-	int totalMillis = static_cast<int>(_elapsed.count());
+	// ミリ秒未満にならないように
+	int totalMillis = std::max<int>(0, static_cast<int>(_elapsed.count()));
+	// 分、秒、センチに変換
 	int min = totalMillis / 60000;
 	int sec = (totalMillis / 1000) % 60;
 	int centi = (totalMillis % 1000) / 10;

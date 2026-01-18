@@ -21,6 +21,7 @@ Object* GameScene::CreateObj(const std::string& _objectID)
 void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 {
 	printf("シーン名：GameScene\n");
+	srand(static_cast<unsigned int>(time(NULL)));
 
 	SceneManager::GetSound().Play(SOUND_LABEL_BGM_002);
 
@@ -50,6 +51,8 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	DirectionalLight::Instance().SetLightColor({ 1.0f,1.0f,1.0f,1.0f });
 
 	// オブジェクト生成
+
+	// スカイボックス
 	SkyBox* sky = dynamic_cast<SkyBox*>(CreateObj("Sky"));
 	sky->Init(camera);
 	sky->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
@@ -57,48 +60,7 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	sky->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
 	sky->m_tags.AddTag("SkyDome");
 
-	Player* player = dynamic_cast<Player*>(CreateObj("Player"));
-	player->Init(camera);
-	player->SetPos(XMVectorSet(0.0f, 1.5f, 0.0f, 0.0f));
-	player->SetRota(XMVectorZero());
-	player->SetScale(XMVectorSet(0.01f, 0.01f, 0.01f, 0.0f));
-	player->m_tags.AddTag("Player");
-	
-	Goal* goal = dynamic_cast<Goal*>(CreateObj("Goal"));
-	goal->Init(camera);
-	goal->SetPos(XMVectorSet(50.0f, -1.0f, 100.0f, 0.0f));
-	goal->SetRota(XMVectorZero());
-	goal->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
-	goal->m_tags.AddTag("Goal");
-
-	Goal* goal2 = dynamic_cast<Goal*>(CreateObj("Goal"));
-	goal2->Init(camera);
-	goal2->SetPos(XMVectorSet(0.0f, -1.0f, 50.0f, 0.0f));
-	goal2->SetRota(XMVectorZero());
-	goal2->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
-	goal2->m_tags.AddTag("Goal");
-
-	Goal* goal3 = dynamic_cast<Goal*>(CreateObj("Goal"));
-	goal3->Init(camera);
-	goal3->SetPos(XMVectorSet(-50.0f, -1.0f, 100.0f, 0.0f));
-	goal3->SetRota(XMVectorSet(0.0f, XMConvertToRadians(90.0f), 0.0f, 0.0f));
-	goal3->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
-	goal3->m_tags.AddTag("Goal");
-
-	Goal* goal4 = dynamic_cast<Goal*>(CreateObj("Goal"));
-	goal4->Init(camera);
-	goal4->SetPos(XMVectorSet(-50.0f, -1.0f, -100.0f, 0.0f));
-	goal4->SetRota(XMVectorSet(0.0f, XMConvertToRadians(45.0f), 0.0f, 0.0f));
-	goal4->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
-	goal4->m_tags.AddTag("Goal");
-
-	Goal* goal5 = dynamic_cast<Goal*>(CreateObj("Goal"));
-	goal5->Init(camera);
-	goal5->SetPos(XMVectorSet(50.0f, -1.0f, -100.0f, 0.0f));
-	goal5->SetRota(XMVectorSet(0.0f, XMConvertToRadians(70.0f), 0.0f, 0.0f));
-	goal5->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
-	goal5->m_tags.AddTag("Goal");
-
+	// 水面メッシュ
 	SeaMesh* seaMesh = dynamic_cast<SeaMesh*>(CreateObj("SeaMesh"));
 	seaMesh->Init(camera);
 	seaMesh->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
@@ -106,18 +68,75 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	seaMesh->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
 	seaMesh->m_tags.AddTag("SeaMesh");
 
+	// プレイヤー
+	Player* player = dynamic_cast<Player*>(CreateObj("Player"));
+	player->Init(camera);
+	player->SetPos(XMVectorSet(0.0f, 1.5f, 0.0f, 0.0f));
+	player->SetRota(XMVectorZero());
+	player->SetScale(XMVectorSet(0.01f, 0.01f, 0.01f, 0.0f));
+	player->m_tags.AddTag("Player");
+	
+	// プレイヤー操作系
 	playerCtrl = std::make_unique<PlayerController>();
 	playerCtrl->Init(player, seaMesh, camera, &BaseScene::input);
 
+	// ゲームシステム
+	game = std::make_unique<Game>(5);
+	int CreateGoalNum = game->GetCreateGoalCount();
+	// Goalオブジェクト群
 	std::vector<Goal*> goals;
-	for (auto& obj : objectInstance)
+	
+	// 配置パラメータ
+	const float distance = 20.0f;
+	const float rangeX = 200.0f;
+	const float rangeZ = 200.0f;
+	std::vector<XMFLOAT3> goalPositions;
+
+	// プレイヤー位置
+	XMFLOAT3 playerPos;
+	XMStoreFloat3(&playerPos, player->GetPos());
+	goalPositions.push_back(playerPos);
+
+	for (int i = 0; i < CreateGoalNum; ++i)
 	{
-		if (obj->m_tags.SearchTag("Goal"))
+		float posX, posZ;		// X,Z
+		bool isFar = false;		// 一定距離離れているか
+		int trials = 0;			// 試行回数
+
+		while (!isFar && trials < 50)
 		{
-			goals.push_back(dynamic_cast<Goal*>(obj.get()));
+			posX = (static_cast<float>(rand()) / RAND_MAX) * (rangeX * 2.0f) - rangeX;
+			posZ = (static_cast<float>(rand()) / RAND_MAX) * (rangeZ * 2.0f) - rangeX;
+			
+			isFar = true;
+			for (const auto& p : goalPositions)
+			{
+				float dx = posX - p.x;
+				float dz = posZ - p.z;
+				float dist = dx * dx + dz * dz;
+
+				// 一定距離未満ならリテイク
+				if (dist < distance * distance)
+				{
+					isFar = false;
+					break;
+				}
+			}
+			trials++;
 		}
+		// 配置を確定
+		goalPositions.push_back({ posX,-1.0f,posZ });
+
+		Goal* goal = dynamic_cast<Goal*>(CreateObj("Goal"));
+		goal->Init(camera);
+		goal->SetPos(XMVectorSet(posX, -1.0f, posZ, 0.0f));
+		float rotaY = XMConvertToRadians((rand() % 8) * 45.0f);
+		goal->SetRota(XMVectorSet(0.0f, rotaY, 0.0f, 0.0f));
+		goal->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+		goal->m_tags.AddTag("Goal");
+
+		goals.push_back(goal);
 	}
-	game = std::make_unique<Game>();
 	game->Init(player, goals);
 
 	// UI系生成
@@ -162,6 +181,7 @@ void GameScene::Update(float _deltaTime)
 {
 	//Update_Input();
 	game->Update(_deltaTime);
+	// カウントダウン中はプレイヤー操作不可
 	if (game->GetState() == RACE_STATE::RACE_STATE_COUNTDOWN)
 		playerCtrl->SetPlayed(false);
 	else
@@ -170,20 +190,19 @@ void GameScene::Update(float _deltaTime)
 	playerCtrl->Update(_deltaTime);
 
 	DirectionalLight::Instance().UpdateLightFollowCamera(camera);
-
+	
+	// 全オブジェクト更新
 	for (auto& obj : objectInstance)
 	{
 		obj->Update();
 	}
 
-	auto timer = FindByTag<UI_Timer>("UI_Timer");
-	if (timer)
-		timer->SetTime(game->GetElapsedTime());
-	
 	auto ui_fade = FindByTag<UI_Fade>("UI_Fade");
 	if (ui_fade && ui_fade->GetState() == FADE_STATE::FADE_STATE_NONE)
 	{
-		if (input.GetKeyTrigger(VK_SPACE) || game->GetGoalFlag())
+		if (input.GetKeyTrigger(VK_SPACE) || 
+			game->GetGoalFlag() || 
+			game->GetTimeUpFlag())
 		{
 			ui_fade->SetFadeIn();
 			playerCtrl->SetPlayed(false);
@@ -213,7 +232,7 @@ void GameScene::Uninit()
 
 	playerCtrl->UnInit();
 	playerCtrl.reset();
-	game->Uninit();
+	game->UnInit();
 	game.reset();
 
 	for (auto& obj : objectInstance)
@@ -283,7 +302,7 @@ void GameScene::Draw_ImGui()
 #if _DEBUG
 	ImGui_Prop();
 	
-	//ImGui_PlayerController();
+	ImGui_PlayerController();
 	//ImGui_Goal();
 	//ImGui_WaterMesh();
 	//ImGui_Camera();
@@ -294,11 +313,6 @@ void GameScene::ImGui_Prop()
 {
 	ImGui::Begin("SceneName:GameScene");
 	ImGui::Text("FPS: %.2f", ImGui::GetIO().Framerate);
-
-	const auto& light = DirectionalLight::Instance().GetLightData();
-	ImGui::Text("LightDir: X=%.2f Y=%.2f Z=%.2f",
-		light.lightDir.x, light.lightDir.y, light.lightDir.z);
-
 	ImGui::Text("Press Enter to Result!");
 	ImGui::End();
 }

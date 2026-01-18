@@ -3,17 +3,25 @@
 
 using namespace DirectX;
 
+Game::Game(int _createGoalNum)
+	: m_CreateGoalCount(_createGoalNum)
+{
+}
+
 bool Game::Init(Player* _player, std::vector<Goal*> _goals)
 {
-	goalFlag = false;
-	clearCount = 5;
-	player = _player;
-	goals = _goals;
-	if (!player || goals.empty()) return false;
+	m_CountDownTime = 3;
+	m_ClearCount = 5;
+	m_LimitTime = std::chrono::seconds(60);
+	m_Player = _player;
+	m_Goals = _goals;
+	if (!m_Player || m_Goals.empty()) return false;
 	
-	insideFlags.resize(goals.size(), false);
-	countdownStart = std::chrono::steady_clock::now();
-	
+	m_InsideFlags.assign(m_Goals.size(), false);
+	m_RemainingTime = m_LimitTime;
+	m_CountdownStart = std::chrono::steady_clock::now();
+	m_State = RACE_STATE::RACE_STATE_COUNTDOWN;
+
 	printf("Game:初期化処理に成功\n");
 	return true;
 }
@@ -22,27 +30,34 @@ void Game::Update(float _deltaTime)
 {
 	auto now = std::chrono::steady_clock::now();
 
-	switch (state)
+	switch (m_State)
 	{
 	case RACE_STATE::RACE_STATE_COUNTDOWN:
 	{
 		// カウントダウン開始
-		auto countDownElapsed = std::chrono::duration_cast<std::chrono::seconds>(
-			now - countdownStart).count();
-		int remaingTime = countDownTime - static_cast<int>(countDownElapsed);
-
-		if (remaingTime <= 0)
+		auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(
+			now - m_CountdownStart).count();
+		if (static_cast<int>(elapsed) >= m_CountDownTime) 
 		{
-			state = RACE_STATE::RACE_STATE_RUNNING;
-			raceStartTime = std::chrono::steady_clock::now();
+			m_State = RACE_STATE::RACE_STATE_RUNNING;
+			m_RaceStartTime = std::chrono::steady_clock::now();
 		}
 		break;
 	}
 	case RACE_STATE::RACE_STATE_RUNNING:
 	{
-		// タイマー計測
-		elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(now - raceStartTime);
+		// 経過時間を計算
+		auto diff = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_RaceStartTime);
 		
+		// 残り時間を計算
+		m_RemainingTime = m_LimitTime - diff;
+		if (m_RemainingTime.count() <= 0)
+		{
+			m_RemainingTime = std::chrono::milliseconds(0);
+			m_TimeUp = true;
+			m_State = RACE_STATE::RACE_STATE_GOAL;
+		}
+
 		// ゴール判定
 		GoalCheck();
 		
@@ -55,19 +70,24 @@ void Game::Update(float _deltaTime)
 	}
 }
 
-void Game::Uninit()
+void Game::UnInit()
 {
-	player = nullptr;
-	goals.clear();
-	goalFlag = false;
-	state = RACE_STATE::RACE_STATE_COUNTDOWN;
+	m_Player = nullptr;
+	m_Goals.clear();
+	m_InsideFlags.clear();
+
+	m_GoalCount = 0;
+	m_GoalFlag = false;
+	m_TimeUp = false;
+	m_RemainingTime = std::chrono::milliseconds(0);
+	m_State = RACE_STATE::RACE_STATE_COUNTDOWN;
 }
 
 void Game::GoalCheck()
 {
-	for (size_t i = 0; i < goals.size(); i++)
+	for (size_t i = 0; i < m_Goals.size(); i++)
 	{
-		auto* goal = goals[i];
+		auto* goal = m_Goals[i];
 		if (!goal) continue;
 
 		// プレイヤーとゴールの距離
@@ -75,7 +95,7 @@ void Game::GoalCheck()
 		XMFLOAT3 SpherePos;
 		XMStoreFloat3(&SpherePos, pos);
 
-		XMVECTOR playerPosVec = player->GetPos();
+		XMVECTOR playerPosVec = m_Player->GetPos();
 		XMFLOAT3 playerPos;
 		XMStoreFloat3(&playerPos, playerPosVec);
 
@@ -88,19 +108,19 @@ void Game::GoalCheck()
 		// ゴール内部チェック
 		if (distance <= radius * radius)
 		{
-			insideFlags[i] = true; // ゴール内にいる
+			m_InsideFlags[i] = true; // ゴール内にいる
 		}
 		else
 		{
-			if (insideFlags[i])
+			if (m_InsideFlags[i])
 			{
-				goalCount++;
-				insideFlags[i] = false;
+				m_GoalCount++;
+				m_InsideFlags[i] = false;
 
-				if (goalCount >= clearCount)
+				if (m_GoalCount >= m_ClearCount)
 				{
-					goalFlag = true;
-					state = RACE_STATE::RACE_STATE_GOAL;
+					m_GoalFlag = true;
+					m_State = RACE_STATE::RACE_STATE_GOAL;
 				}
 			}
 		}
