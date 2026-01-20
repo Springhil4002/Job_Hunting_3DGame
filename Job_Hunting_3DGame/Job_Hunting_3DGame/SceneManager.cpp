@@ -6,6 +6,16 @@
 std::unique_ptr<BaseScene> SceneManager::currentScene = nullptr;
 SceneFactory SceneManager::sceneFactory;
 SoundManager SceneManager::soundManager;
+GameStatus SceneManager::gameStatus;
+
+GameStatus::GameStatus()
+	: score(0)
+	, createGoalCount(20)
+	, limitTime(30)
+	, maxSpeed(40.0f)
+	, accelSpeed(5.0f)
+{
+}
 
 void SceneManager::ChangeScene(
 	SCENE_ID _scene_ID, Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)

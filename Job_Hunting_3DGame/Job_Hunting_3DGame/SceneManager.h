@@ -2,6 +2,7 @@
 #include "SceneFactory.h"
 #include "SceneResource.h"
 #include "SoundManager.h"
+#include "GameStatus.h"
 
 class SceneManager
 {
@@ -12,6 +13,8 @@ private:
 	static SceneFactory sceneFactory;
 	// サウンドマネージャーのインスタンス
 	static SoundManager soundManager;
+	// ゲームステータスのインスタンス
+	static GameStatus gameStatus;
 public:
 	SceneManager() = default;
 	/// @brief コンストラクタ
@@ -30,7 +33,12 @@ public:
 	/// @brief コンソール画面のログをクリア
 	static void ClearConsole();
 
+	/// @brief サウンドマネージャーを取得する関数
+	/// @return サウンドマネージャー
 	static SoundManager& GetSound() { return soundManager; }
+	/// @brief ゲームステータスを取得する関数
+	/// @return ゲームステータス
+	static GameStatus& GetGameStatus() { return gameStatus; }
 
 	/// @brief 初期化処理
 	void Init();

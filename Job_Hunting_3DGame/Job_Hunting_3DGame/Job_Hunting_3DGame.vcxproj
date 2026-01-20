@@ -158,6 +158,7 @@
     <ClCompile Include="DrawBase.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameScene.cpp" />
+    <ClCompile Include="GameStatus.cpp" />
     <ClCompile Include="Goal.cpp" />
     <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />
@@ -234,6 +235,7 @@
     <ClInclude Include="DrawBase.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameScene.h" />
+    <ClInclude Include="GameStatus.h" />
     <ClInclude Include="Goal.h" />
     <ClInclude Include="ImGuiManager.h" />
     <ClInclude Include="IndexBuffer.h" />

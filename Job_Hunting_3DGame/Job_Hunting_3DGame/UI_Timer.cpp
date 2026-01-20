@@ -77,12 +77,6 @@ void UI_Timer::Update()
 		for (auto& digit : m_TimeDigits) digit->Update();
 		break;
 	}
-	case RACE_STATE::RACE_STATE_GOAL:
-	{
-		SetTime(m_Game->GetRemainingTime());
-		for (auto& digit : m_TimeDigits) digit->Update();
-		break;
-	}
 	default:
 		break;
 	}
@@ -95,8 +89,10 @@ void UI_Timer::Draw()
 	switch (state)
 	{
 	case RACE_STATE::RACE_STATE_COUNTDOWN:
+	{
 		m_CountDownDigit->Draw();
 		break;
+	}
 	case RACE_STATE::RACE_STATE_RUNNING:
 	{
 		if(m_GoAlpha > 0.0f)
@@ -105,10 +101,6 @@ void UI_Timer::Draw()
 			digit->Draw();
 		break;
 	}
-	case RACE_STATE::RACE_STATE_GOAL:
-		for (auto& digit : m_TimeDigits)
-			digit->Draw();
-		break;
 	}
 }
 

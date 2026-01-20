@@ -345,6 +345,9 @@
     <ClCompile Include="UI_Speed.cpp">
       <Filter>ソース ファイル\UI</Filter>
     </ClCompile>
+    <ClCompile Include="GameStatus.cpp">
+      <Filter>ソース ファイル\Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h">
@@ -586,6 +589,9 @@
     </ClInclude>
     <ClInclude Include="UI_Speed.h">
       <Filter>ヘッダー ファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="GameStatus.h">
+      <Filter>ヘッダー ファイル\Game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

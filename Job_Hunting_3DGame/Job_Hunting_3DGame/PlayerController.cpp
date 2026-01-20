@@ -121,9 +121,7 @@ void PlayerController::Init_Param()
 	m_LastPlayerPos = m_Position;
 
 	m_RotateSpeed = XMConvertToRadians(45.0f);	// 回転速度
-	m_Acceleration = 5.0f;	// 加速度
 	m_Friction = 3.0f;		// 摩擦力
-	m_MaxSpeed = 40.0f;		// 最大速度
 
 	m_Gravity = -9.8f;		// 重力
 	m_Buoyancy = 10.0f;		// 浮力

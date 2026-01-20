@@ -35,7 +35,7 @@ public:
 	}
 
 	/// @brief ‰Šú‰»ˆ—
-	virtual void Init() = 0;
+	virtual void Init() {};
 	/// @brief XVˆ—
 	virtual void Update(float _deltaTime) = 0;
 	/// @brief •`‰æˆ—

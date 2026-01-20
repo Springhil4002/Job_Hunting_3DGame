@@ -25,7 +25,6 @@ public:
 	Object* CreateObj(const std::string& _objectID) override;
 
 	/// @brief ‰Šú‰»ˆ—
-	void Init() {};
 	void Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd);
 	/// @brief XVˆ—
 	void Update(float _deltaTime) override;

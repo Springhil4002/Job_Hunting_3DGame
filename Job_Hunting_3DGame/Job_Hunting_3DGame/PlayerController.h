@@ -130,5 +130,6 @@ public:
 	void SetPlayed(bool _played) { m_Played = _played; }
 	void SetPosition(DirectX::XMVECTOR _pos) { m_Position = _pos; }
 	void SetMaxSpeed(float _maxSpeed) { m_MaxSpeed = _maxSpeed; }
+	void SetAcceleration(float _accel) { m_Acceleration = _accel; }
 	void SetFollowSpeed(float _followSpeed) { m_FollowSpeed = _followSpeed; }
 };

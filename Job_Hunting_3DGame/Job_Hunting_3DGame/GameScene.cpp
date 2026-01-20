@@ -50,7 +50,10 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	DirectionalLight::Instance().SetEnvStrength(0.65f);
 	DirectionalLight::Instance().SetLightColor({ 1.0f,1.0f,1.0f,1.0f });
 
-	// オブジェクト生成
+	// ゲームステータス
+	GameStatus currentStatus = SceneManager::GetGameStatus();
+
+	//===========================オブジェクト生成==============================//
 
 	// スカイボックス
 	SkyBox* sky = dynamic_cast<SkyBox*>(CreateObj("Sky"));
@@ -79,9 +82,12 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	// プレイヤー操作系
 	playerCtrl = std::make_unique<PlayerController>();
 	playerCtrl->Init(player, seaMesh, camera, &BaseScene::input);
-
+	playerCtrl->SetAcceleration(currentStatus.accelSpeed);
+	playerCtrl->SetMaxSpeed(currentStatus.maxSpeed);
+	
 	// ゲームシステム
-	game = std::make_unique<Game>(5);
+	game = std::make_unique<Game>();
+	game->SetGameStatus(currentStatus);
 	int CreateGoalNum = game->GetCreateGoalCount();
 	// Goalオブジェクト群
 	std::vector<Goal*> goals;
@@ -138,6 +144,8 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 		goals.push_back(goal);
 	}
 	game->Init(player, goals);
+
+	//================================UI生成================================//
 
 	// 操作方法UI
 	UI* ui_con = dynamic_cast<UI*>(CreateObj("UI"));
@@ -196,7 +204,6 @@ void GameScene::Update(float _deltaTime)
 	if (ui_fade && ui_fade->GetState() == FADE_STATE::FADE_STATE_NONE)
 	{
 		if (input.GetKeyTrigger(VK_SPACE) || 
-			game->GetGoalFlag() || 
 			game->GetTimeUpFlag())
 		{
 			ui_fade->SetFadeIn();

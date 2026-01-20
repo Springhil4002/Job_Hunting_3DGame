@@ -3,23 +3,16 @@
 
 using namespace DirectX;
 
-Game::Game(int _createGoalNum)
-	: m_CreateGoalCount(_createGoalNum)
-{
-}
-
 bool Game::Init(Player* _player, std::vector<Goal*> _goals)
 {
-	m_CountDownTime = 3;
-	m_ClearCount = 5;
-	m_LimitTime = std::chrono::seconds(60);
 	m_Player = _player;
 	m_Goals = _goals;
 	if (!m_Player || m_Goals.empty()) return false;
-	
+
 	m_InsideFlags.assign(m_Goals.size(), false);
 	m_RemainingTime = m_LimitTime;
 	m_CountdownStart = std::chrono::steady_clock::now();
+	m_CountDownTime = 3;
 	m_State = RACE_STATE::RACE_STATE_COUNTDOWN;
 
 	printf("Game:初期化処理に成功\n");
@@ -55,7 +48,6 @@ void Game::Update(float _deltaTime)
 		{
 			m_RemainingTime = std::chrono::milliseconds(0);
 			m_TimeUp = true;
-			m_State = RACE_STATE::RACE_STATE_GOAL;
 		}
 
 		// ゴール判定
@@ -63,8 +55,6 @@ void Game::Update(float _deltaTime)
 		
 		break;
 	}
-	case RACE_STATE::RACE_STATE_GOAL:
-		break;
 	default:
 		break;
 	}
@@ -76,8 +66,6 @@ void Game::UnInit()
 	m_Goals.clear();
 	m_InsideFlags.clear();
 
-	m_GoalCount = 0;
-	m_GoalFlag = false;
 	m_TimeUp = false;
 	m_RemainingTime = std::chrono::milliseconds(0);
 	m_State = RACE_STATE::RACE_STATE_COUNTDOWN;
@@ -114,14 +102,10 @@ void Game::GoalCheck()
 		{
 			if (m_InsideFlags[i])
 			{
-				m_GoalCount++;
-				m_InsideFlags[i] = false;
+				// スコア加算
 
-				if (m_GoalCount >= m_ClearCount)
-				{
-					m_GoalFlag = true;
-					m_State = RACE_STATE::RACE_STATE_GOAL;
-				}
+				// フラグを戻す
+				m_InsideFlags[i] = false;
 			}
 		}
 	}
