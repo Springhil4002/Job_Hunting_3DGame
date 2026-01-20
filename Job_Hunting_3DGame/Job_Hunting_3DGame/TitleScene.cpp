@@ -71,7 +71,7 @@ void TitleScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	autoPlayerCtrl->Init(player, seaMesh, camera);
 
 	UI* ui_logo = dynamic_cast<UI*>(CreateObj("UI"));
-	ui_logo->Init(uiCamera, 720.0f, 540.0f, L"Assets/Texture/Title_Logo.png");
+	ui_logo->Init(uiCamera, 720.0f, 540.0f, L"Assets/Texture/UI_Title_Logo.png");
 	ui_logo->SetPos(XMVectorSet(-620.0f, 400.0f, 0.0f, 0.0f));
 	ui_logo->SetRota(XMVectorZero());
 	ui_logo->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
@@ -80,7 +80,7 @@ void TitleScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	ui_logo->m_tags.AddTag("UI_Logo");
 
 	UI_Flash* ui_start = dynamic_cast<UI_Flash*>(CreateObj("UI_Flash"));
-	ui_start->Init(uiCamera, 720.0f, 150.0f, L"Assets/Texture/Title_Start.png");
+	ui_start->Init(uiCamera, 720.0f, 150.0f, L"Assets/Texture/UI_Title_Start.png");
 	ui_start->SetPos(XMVectorSet(-550.0f, -250.0f, 0.0f, 0.0f));
 	ui_start->SetRota(XMVectorZero());
 	ui_start->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));

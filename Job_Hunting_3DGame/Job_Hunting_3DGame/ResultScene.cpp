@@ -46,7 +46,7 @@ void ResultScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	ui_test->m_tags.AddTag("UI");
 
 	UI* ui_clear = dynamic_cast<UI*>(CreateObj("UI"));
-	ui_clear->Init(uiCamera, 720.0f, 300.0f, L"Assets/Texture/Result_Logo.png");
+	ui_clear->Init(uiCamera, 720.0f, 300.0f, L"Assets/Texture/UI_Result_Logo.png");
 	ui_clear->SetPos(XMVectorSet(0.0f, 200.0f, 0.0f, 0.0f));
 	ui_clear->SetRota(XMVectorZero());
 	ui_clear->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
@@ -55,7 +55,7 @@ void ResultScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	ui_clear->m_tags.AddTag("UI");
 
 	UI* ui_logo = dynamic_cast<UI*>(CreateObj("UI"));
-	ui_logo->Init(uiCamera, 720.0f, 300.0f, L"Assets/Texture/Result_ToTitle.png");
+	ui_logo->Init(uiCamera, 720.0f, 300.0f, L"Assets/Texture/UI_Result_ToTitle.png");
 	ui_logo->SetPos(XMVectorSet(0.0f, -100.0f, 0.0f, 0.0f));
 	ui_logo->SetRota(XMVectorZero());
 	ui_logo->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));

@@ -139,17 +139,9 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	}
 	game->Init(player, goals);
 
-	// UI系生成
-	UI* ui_if = dynamic_cast<UI*>(CreateObj("UI"));
-	ui_if->Init(uiCamera, 500.0f, 200.0f, L"Assets/Texture/Game_if.png");
-	ui_if->SetTransform(
-		XMVectorSet(-740.0f, 450.0f, 0.0f, 0.0f),
-		XMVectorZero(),
-		XMVectorSet(1.0f, 1.0, 1.0f, 0.0f), 1.0f);
-	ui_if->m_tags.AddTag("UI_If");
-
+	// 操作方法UI
 	UI* ui_con = dynamic_cast<UI*>(CreateObj("UI"));
-	ui_con->Init(uiCamera, 600.0f, 100.0f, L"Assets/Texture/Game_controller.png");
+	ui_con->Init(uiCamera, 600.0f, 100.0f, L"Assets/Texture/UI_Game_controller.png");
 	ui_con->SetPos(XMVectorSet(-650.0f, -500.0f, 0.0f, 0.0f));
 	ui_con->SetRota(XMVectorZero());
 	ui_con->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
@@ -157,16 +149,19 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	ui_con->UpdateCameraMatrix();
 	ui_con->m_tags.AddTag("UI_con");
 
+	// タイマーUI
 	UI_Timer* timer = dynamic_cast<UI_Timer*>(CreateObj("UI_Timer"));
-	timer->Init(uiCamera, 50.0f, 100.0f, L"Assets/Texture/Number.png");
+	timer->Init(uiCamera, 50.0f, 100.0f, L"Assets/Texture/UI_Number.png");
 	timer->SetGame(game.get());
 	timer->m_tags.AddTag("UI_Timer");
 	
+	// スピードメーターUI
 	UI_Speed* speed = dynamic_cast<UI_Speed*>(CreateObj("UI_Speed"));
-	speed->Init(uiCamera, 50.0f, 100.0f, L"Assets/Texture/Number.png", L"Assets/Texture/UI_Km.png");
+	speed->Init(uiCamera, 50.0f, 100.0f, L"Assets/Texture/UI_Number.png", L"Assets/Texture/UI_Km.png");
 	speed->Set_PlayerController(playerCtrl.get());
 	speed->m_tags.AddTag("UI_Speed");
 
+	// フェード
 	UI_Fade* ui_fade = dynamic_cast<UI_Fade*>(CreateObj("UI_Fade"));
 	ui_fade->Init(uiCamera, 1920.0f, 1080.0f);
 	ui_fade->SetTransform(

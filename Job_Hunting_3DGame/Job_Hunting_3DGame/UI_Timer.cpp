@@ -43,7 +43,7 @@ bool UI_Timer::Init(Camera2D* _cameraUI, float _width, float _height,
 
 	// GoUIçÏê¨
 	m_GoUI = std::make_unique<UI>();
-	m_GoUI->Init(_cameraUI, _width, _height, L"Assets/Texture/GO.png");
+	m_GoUI->Init(_cameraUI, _width, _height, L"Assets/Texture/UI_Go.png");
 	m_GoUI->SetTransform(
 		XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f),
 		XMVectorZero(),

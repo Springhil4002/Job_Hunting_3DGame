@@ -313,7 +313,7 @@ bool SeaMesh::Init_Settings(Camera* _camera)
 
 	m_pDescriptorHeap = std::make_unique<DescriptorHeap>();
 
-	auto cubeTex = TextureManager::Instance().GetCubeMap(L"Assets/Texture/SkyDome.dds");
+	auto cubeTex = TextureManager::Instance().GetCubeMap(L"Assets/Texture/SkyBox.dds");
 	if (!cubeTex)
 	{
 		printf("SeaMesh:キューブマップ読み込み失敗\n");
