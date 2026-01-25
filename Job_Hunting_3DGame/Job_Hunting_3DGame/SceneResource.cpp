@@ -30,6 +30,7 @@ SceneResourceList GetSceneResourceList(SCENE_ID _ID)
 			{ L"Assets/Texture/UI_Number.png",			TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,êîéö(0,1,2,3,4,5,6,7,8,9,:)
 			{ L"Assets/Texture/UI_Go.png",				TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,ÉçÉS(GO)
 			{ L"Assets/Texture/UI_Km.png",				TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,íPà (Km)
+			{ L"Assets/Texture/UI_Score.png",			TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,íPà (Km)
 			{ L"Assets/Texture/UI_Game_controller.png", TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,ëÄçÏï˚ñ@
 		};
 		list.modelPaths = {

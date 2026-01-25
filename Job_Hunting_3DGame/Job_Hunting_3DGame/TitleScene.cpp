@@ -222,6 +222,5 @@ void TitleScene::ImGui_Prop()
 {
 	ImGui::Begin("SceneName:TitleScene");
 	ImGui::Text("FPS: %.2f", ImGui::GetIO().Framerate);
-	ImGui::Text("Press Enter to Game!");
 	ImGui::End();
 }

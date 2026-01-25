@@ -63,9 +63,6 @@ void PlayerController::Update(float _deltaTime)
 
 void PlayerController::Draw()
 {
-#if _DEBUG
-	Draw_ImGui();
-#endif
 	if (m_Emitter_Splash)
 	{
 		m_Emitter_Splash->Draw();
@@ -101,9 +98,35 @@ void PlayerController::Draw_ImGui()
 	ImGui::Begin("Player Controller");
 	if (ImGui::CollapsingHeader("Player"))
 	{
+		// Playerの座標
+		XMVECTOR position = GetPosition();
+		XMFLOAT3 pos;
+		XMStoreFloat3(&pos, position);
+		// Playerの前方向ベクトル
+		XMVECTOR forwardVec = GetForwardVec();
+		XMFLOAT3 forward;
+		XMStoreFloat3(&forward, forwardVec);
+		// Playerの現在速度
 		float speed = XMVectorGetX(XMVector3Length(m_Velocity));
+		
+		ImGui::Text("Position:");
+		ImGui::Text("X: %.3f", pos.x);	ImGui::SameLine();
+		ImGui::Text("Y: %.3f", pos.y);	ImGui::SameLine();
+		ImGui::Text("Z: %.3f", pos.z);
+		ImGui::Text("ForwardVec:");
+		ImGui::Text("X: %.3f", forward.x);	ImGui::SameLine();
+		ImGui::Text("Y: %.3f", forward.y);	ImGui::SameLine();
+		ImGui::Text("Z: %.3f", forward.z);
 		ImGui::Text("Current Speed: %.2f", speed);
 		ImGui::Text("Max Speed: %.2f", m_MaxSpeed);
+	}
+
+	if (ImGui::CollapsingHeader("Camera"))
+	{
+		// カメラの追尾速度
+		float followSpeed = GetFollowSpeed();
+		
+		ImGui::Text("Follow Speed: %.2f", followSpeed);
 	}
 	ImGui::End();
 }

@@ -213,6 +213,7 @@
     <ClCompile Include="UI.cpp" />
     <ClCompile Include="UI_Fade.cpp" />
     <ClCompile Include="UI_Flash.cpp" />
+    <ClCompile Include="UI_Score.cpp" />
     <ClCompile Include="UI_Speed.cpp" />
     <ClCompile Include="UI_Timer.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
@@ -299,6 +300,7 @@
     <ClInclude Include="UI_Fade.h" />
     <ClInclude Include="UI_FADE_STATE.h" />
     <ClInclude Include="UI_Flash.h" />
+    <ClInclude Include="UI_Score.h" />
     <ClInclude Include="UI_Speed.h" />
     <ClInclude Include="UI_Timer.h" />
     <ClInclude Include="VertexBuffer.h" />

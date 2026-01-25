@@ -9,11 +9,11 @@ SoundManager SceneManager::soundManager;
 GameStatus SceneManager::gameStatus;
 
 GameStatus::GameStatus()
-	: score(0)
-	, createGoalCount(20)
-	, limitTime(30)
-	, maxSpeed(40.0f)
-	, accelSpeed(5.0f)
+	: score(0)				// スコア
+	, createGoalCount(20)	// ゴール生成数
+	, limitTime(30)			// 制限時間(秒数)
+	, maxSpeed(40.0f)		// 上限速度
+	, accelSpeed(5.0f)		// 加速度
 {
 }
 

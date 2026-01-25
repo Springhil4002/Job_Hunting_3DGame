@@ -17,9 +17,8 @@ private:
 	Player* m_Player = nullptr;			// 参照用プレイヤーポインタ
 	std::vector<Goal*> m_Goals;			// 参照用ゴールポインタ配列
 	std::vector<bool> m_InsideFlags;	// 各ゴールのフラグ配列
-
-	bool m_TimeUp = false;			// タイムアップフラグ 
-
+	
+	bool m_TimeUp = false;		// タイムアップフラグ 
 	std::chrono::steady_clock::time_point m_CountdownStart;	// ゲーム開始前のカウントダウン
 	std::chrono::steady_clock::time_point m_RaceStartTime;	// ゲーム開始時間
 	std::chrono::milliseconds m_RemainingTime = std::chrono::milliseconds(0);	// 残り時間
@@ -40,6 +39,8 @@ public:
 	/// @brief 更新処理
 	/// @param _deltaTime 経過時間
 	void Update(float _deltaTime);
+	/// @brief ImGui描画関数
+	void Draw_ImGui();
 	/// @brief 終了処理
 	void UnInit();
 
@@ -77,7 +78,7 @@ public:
 
 	void SetGameStatus(const GameStatus& _status)
 	{
-		m_CreateGoalCount = _status.createGoalCount;
-		m_LimitTime = std::chrono::seconds(_status.limitTime);
+		m_CreateGoalCount = _status.createGoalCount;			// 鳥居オブジェクトの生成数
+		m_LimitTime = std::chrono::seconds(_status.limitTime);	// 制限時間
 	}
 };

@@ -11,6 +11,7 @@
 #include "UI_Flash.h"
 #include "UI_Timer.h"
 #include "UI_Speed.h"
+#include "UI_Score.h"
 
 class PrototypeManager
 {

@@ -1,4 +1,6 @@
 #include "Game.h"
+#include "SceneManager.h"
+#include "System/ImGui/imgui.h"
 #include "Debug_New.h"
 
 using namespace DirectX;
@@ -9,11 +11,12 @@ bool Game::Init(Player* _player, std::vector<Goal*> _goals)
 	m_Goals = _goals;
 	if (!m_Player || m_Goals.empty()) return false;
 
-	m_InsideFlags.assign(m_Goals.size(), false);
-	m_RemainingTime = m_LimitTime;
-	m_CountdownStart = std::chrono::steady_clock::now();
-	m_CountDownTime = 3;
-	m_State = RACE_STATE::RACE_STATE_COUNTDOWN;
+	m_InsideFlags.assign(m_Goals.size(), false);			// 各鳥居の内部判定フラグ
+	m_TimeUp = false;										// 時間切れのフラグ
+	m_RemainingTime = m_LimitTime;							// 残り時間
+	m_CountdownStart = std::chrono::steady_clock::now();	// カウントダウンの開始
+	m_CountDownTime = 3;									// カウントダウンの秒数
+	m_State = RACE_STATE::RACE_STATE_COUNTDOWN;				// ゲームの状態管理
 
 	printf("Game:初期化処理に成功\n");
 	return true;
@@ -60,6 +63,21 @@ void Game::Update(float _deltaTime)
 	}
 }
 
+void Game::Draw_ImGui()
+{
+	ImGui::Begin("Game");
+	if (ImGui::CollapsingHeader("Game Status"))
+	{
+		auto& m_Status = SceneManager::GetGameStatus();
+		ImGui::Text("Score: %d", m_Status.score);
+		ImGui::Text("CreateGoalCount: %d", m_Status.createGoalCount);
+		ImGui::Text("LimitTime: %d", m_Status.limitTime);
+		ImGui::Text("MaxSpeed: %f", m_Status.maxSpeed);
+		ImGui::Text("AccelSpeed: %f", m_Status.accelSpeed);
+	}
+	ImGui::End();
+}
+
 void Game::UnInit()
 {
 	m_Player = nullptr;
@@ -103,7 +121,7 @@ void Game::GoalCheck()
 			if (m_InsideFlags[i])
 			{
 				// スコア加算
-
+				SceneManager::GetGameStatus().score += 100;
 				// フラグを戻す
 				m_InsideFlags[i] = false;
 			}

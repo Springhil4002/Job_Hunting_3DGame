@@ -42,8 +42,4 @@ public:
 
 	// Imgui•`‰æŠÖ”ŒQ
 	void ImGui_Prop();
-	void ImGui_PlayerController();
-	void ImGui_Goal();
-	void ImGui_WaterMesh();
-	void ImGui_Camera();
 };

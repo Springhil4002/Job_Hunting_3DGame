@@ -43,6 +43,7 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	prototypeManager->AddPrototype("UI_Fade", std::make_unique<UI_Fade>());
 	prototypeManager->AddPrototype("UI_Timer", std::make_unique<UI_Timer>());
 	prototypeManager->AddPrototype("UI_Speed", std::make_unique<UI_Speed>());
+	prototypeManager->AddPrototype("UI_Score", std::make_unique<UI_Score>());
 	prototypeManager->AddPrototype("SeaMesh", std::make_unique<SeaMesh>());
 
 	// ライト設定
@@ -98,7 +99,7 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	const float rangeZ = 200.0f;
 	std::vector<XMFLOAT3> goalPositions;
 
-	// プレイヤー位置
+	// プレイヤー位置に重なり配置を防ぐために最初に登録
 	XMFLOAT3 playerPos;
 	XMStoreFloat3(&playerPos, player->GetPos());
 	goalPositions.push_back(playerPos);
@@ -168,6 +169,11 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	speed->Init(uiCamera, 50.0f, 100.0f, L"Assets/Texture/UI_Number.png", L"Assets/Texture/UI_Km.png");
 	speed->Set_PlayerController(playerCtrl.get());
 	speed->m_tags.AddTag("UI_Speed");
+
+	// スコアUI
+	UI_Score* score = dynamic_cast<UI_Score*>(CreateObj("UI_Score"));
+	score->Init(uiCamera, 50.0f, 100.0f, L"Assets/Texture/UI_Number.png",L"Assets/Texture/UI_Score.png");
+	score->m_tags.AddTag("UI_Score");
 
 	// フェード
 	UI_Fade* ui_fade = dynamic_cast<UI_Fade*>(CreateObj("UI_Fade"));
@@ -303,11 +309,8 @@ void GameScene::Draw_ImGui()
 {
 #if _DEBUG
 	ImGui_Prop();
-	
-	ImGui_PlayerController();
-	//ImGui_Goal();
-	//ImGui_WaterMesh();
-	//ImGui_Camera();
+	playerCtrl->Draw_ImGui();
+	game->Draw_ImGui();
 #endif
 }
 
@@ -315,166 +318,5 @@ void GameScene::ImGui_Prop()
 {
 	ImGui::Begin("SceneName:GameScene");
 	ImGui::Text("FPS: %.2f", ImGui::GetIO().Framerate);
-	ImGui::Text("Press Enter to Result!");
-	ImGui::End();
-}
-
-void GameScene::ImGui_PlayerController()
-{
-	ImGui::Begin("PlayerController");
-	// プレイヤーの状態
-	if (playerCtrl)
-	{
-		// プレイヤーの座標
-		XMVECTOR position = playerCtrl->GetPosition();
-		XMFLOAT3 pos;
-		XMStoreFloat3(&pos, position);
-
-		// プレイヤーの前方向ベクトル
-		XMVECTOR forwardVec = playerCtrl->GetForwardVec();
-		XMFLOAT3 forward;
-		XMStoreFloat3(&forward, forwardVec);
-
-		// プレイヤーの現在速度
-		float currentSpeed = XMVectorGetX(XMVector3Length(playerCtrl->GetVelocity()));
-		float maxSpeed = playerCtrl->GetMaxSpeed();
-
-		// カメラの追尾速度
-		float followSpeed = playerCtrl->GetFollowSpeed();
-
-		if (ImGui::CollapsingHeader("PlayerInfo", ImGuiTreeNodeFlags_DefaultOpen))
-		{
-			// プレイヤーの座標の表示＋編集
-			if (ImGui::TreeNodeEx("Position", ImGuiTreeNodeFlags_DefaultOpen))
-			{
-				float posArray[3] = { pos.x,pos.y,pos.z };
-				if (ImGui::DragFloat3("Player Position", posArray, 0.1f))
-				{
-					playerCtrl->SetPosition(XMVectorSet(
-						posArray[0], posArray[1], posArray[2], 0.0f));
-				}
-				ImGui::TreePop();
-			}
-
-			if (ImGui::TreeNodeEx("ForwardVec", ImGuiTreeNodeFlags_DefaultOpen))
-			{
-				ImGui::Text("X: %.3f", forward.x);	ImGui::SameLine();
-				ImGui::Text("Y: %.3f", forward.y);	ImGui::SameLine();
-				ImGui::Text("Z: %.3f", forward.z);
-				ImGui::TreePop();
-			}
-
-			// プレイヤーの速度(調節可能)
-			ImGui::Text("Player_CurrentSpeed: %.3f/%.3f", currentSpeed, maxSpeed);
-			ImGui::SliderFloat("Player_MaxSpeed", &maxSpeed, 1.0f, 200.0f);
-			playerCtrl->SetMaxSpeed(maxSpeed);
-
-			// カメラの追尾速度(調節可能)
-			ImGui::SliderFloat("Camera_FollowSpeed", &followSpeed, 10.0f, 200.0f);
-			playerCtrl->SetFollowSpeed(followSpeed);
-		}
-	}
-	ImGui::End();
-}
-
-void GameScene::ImGui_Goal()
-{
-	ImGui::Begin("Goal_Manager");
-
-	// ゴールオブジェクト一覧を作る
-	std::vector<Goal*> goals;
-	for (auto& obj : objectInstance)
-	{
-		if (obj->m_tags.SearchTag("Goal"))
-		{
-			goals.push_back(dynamic_cast<Goal*>(obj.get()));
-		}
-	}
-	// 選択中ゴールオブジェクトのインデックス
-	static int selectIndex = 0;
-	
-	// ゴールオブジェクトのリスト表示
-	if (!goals.empty())
-	{
-		ImGui::Text("Select Goal:");
-		for (int i = 0; i < goals.size(); ++i)
-		{
-			std::string label = "Goal" + std::to_string(i);
-			if (ImGui::Selectable(label.c_str(), selectIndex == i))
-				selectIndex = i;
-		}
-		// 選択されたゴールオブジェクトの座表表示＋編集
-		Goal* goal = goals[selectIndex];
-		XMVECTOR posVec = goal->GetPos();
-		XMFLOAT3 pos;
-		XMStoreFloat3(&pos, posVec);
-
-		if (ImGui::TreeNodeEx("Position", ImGuiTreeNodeFlags_DefaultOpen))
-		{
-			float posArray[3] = { pos.x,pos.y,pos.z };
-			if (ImGui::DragFloat3("Goal Position", posArray, 0.1f))
-			{
-				goal->SetPos(XMVectorSet(
-					posArray[0], posArray[1], posArray[2], 0.0f));
-			}
-			ImGui::TreePop();
-		}
-
-		goal->Draw_ImGui();
-	}
-	else
-	{
-		ImGui::Text("No Goals Create!");
-	}
-	ImGui::End();
-}
-
-void GameScene::ImGui_WaterMesh()
-{
-	ImGui::Begin("WaterMesh");
-	if (ImGui::CollapsingHeader("WaterMesh", ImGuiTreeNodeFlags_DefaultOpen))
-	{
-		WaterMesh* waterMesh = nullptr;
-		for (auto& obj : objectInstance)
-		{
-			if (obj->m_tags.SearchTag("WaterMesh"))
-			{
-				waterMesh = dynamic_cast<WaterMesh*>(obj.get());
-				break;
-			}
-		}
-
-		if (waterMesh)
-		{
-			static float gridSize = waterMesh->GetGridSize();
-			ImGui::DragFloat("GridSize", &gridSize, 2.0f, 64.0f, 1024.0f);
-			if (ImGui::Button("Apply Grid Size"))
-			{
-				waterMesh->Update_GridSize(gridSize);
-			}
-		}
-	}
-	ImGui::End();
-}
-
-void GameScene::ImGui_Camera()
-{
-	ImGui::Begin("Camera");
-	if (camera)
-	{
-		// 座表表示
-		XMVECTOR camPosVec = camera->GetPos();
-		XMFLOAT3 camPos;
-		XMStoreFloat3(&camPos, camPosVec);
-		ImGui::Text("Position:");
-		ImGui::Text("X:%.3f Y:%.3f Z:%.3f", camPos.x, camPos.y, camPos.z);
-
-		// 注視点表示
-		XMVECTOR camTargetVec = camera->GetTarget();
-		XMFLOAT3 camTarget;
-		XMStoreFloat3(&camTarget, camTargetVec);
-		ImGui::Text("Target:");
-		ImGui::Text("X:%.3f Y:%.3f Z:%.3f", camTarget.x, camTarget.y, camTarget.z);
-	}
 	ImGui::End();
 }
