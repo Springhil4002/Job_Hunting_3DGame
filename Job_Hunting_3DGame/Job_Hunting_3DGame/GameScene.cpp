@@ -206,6 +206,7 @@ void GameScene::Update(float _deltaTime)
 		obj->Update();
 	}
 
+	// シーン遷移開始で画面を暗く
 	auto ui_fade = FindByTag<UI_Fade>("UI_Fade");
 	if (ui_fade && ui_fade->GetState() == FADE_STATE::FADE_STATE_NONE)
 	{
@@ -217,6 +218,7 @@ void GameScene::Update(float _deltaTime)
 		}
 	}
 
+	// 画面暗くなったの確認後、遷移
 	if (ui_fade && ui_fade->IsFadeFinished() && ui_fade->GetAlpha() >= 1.0f)
 	{
 		SceneManager::ChangeScene(SCENE_ID_RESULT, camera, uiCamera, hwnd);

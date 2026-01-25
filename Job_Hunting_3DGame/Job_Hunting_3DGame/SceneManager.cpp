@@ -14,6 +14,11 @@ GameStatus::GameStatus()
 	, limitTime(30)			// 制限時間(秒数)
 	, maxSpeed(40.0f)		// 上限速度
 	, accelSpeed(5.0f)		// 加速度
+	, level_Speed(0)		// ステータスレベル(上限速度)
+	, level_Accel(0)		// ステータスレベル(加速度)			
+	, level_Time(0)			// ステータスレベル(制限時間)
+	, level_Goal(0)			// ステータスレベル(ゴール生成数)
+
 {
 }
 

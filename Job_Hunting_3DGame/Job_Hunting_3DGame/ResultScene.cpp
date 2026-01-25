@@ -36,6 +36,12 @@ void ResultScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	prototypeManager->AddPrototype("UI", std::make_unique<UI>());
 	prototypeManager->AddPrototype("UI_Fade", std::make_unique<UI_Fade>());
 
+	// ショップシステム
+	m_Shop = std::make_unique<Shop>();
+	m_Shop->Init();
+
+	//================================UI生成================================//
+
 	UI* ui_test = dynamic_cast<UI*>(CreateObj("UI"));
 	ui_test->Init(uiCamera, 1920.0f, 1080.0f, L"Assets/Texture/Result_Bg.png");
 	ui_test->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
@@ -77,11 +83,23 @@ void ResultScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 void ResultScene::Update(float _deltaTime)
 {
 	//Update_Input();
+
+	if (input.GetKeyTrigger(VK_UP)) m_Shop->PrevData();
+	if (input.GetKeyTrigger(VK_DOWN)) m_Shop->NextData();
+	if (input.GetKeyTrigger(VK_RETURN))
+	{
+		if (m_Shop->BuyUpgradeData())
+		{
+			// 強化成功SE再生予定
+		}
+	}
+
 	for (auto& obj : objectInstance)
 	{
 		obj->Update();
 	}
 
+	// シーン遷移開始で画面を暗く
 	auto ui_fade = FindByTag<UI_Fade>("UI_Fade");
 	if (ui_fade && ui_fade->GetState() == FADE_STATE::FADE_STATE_NONE)
 	{
@@ -91,6 +109,7 @@ void ResultScene::Update(float _deltaTime)
 		}
 	}
 
+	// 画面暗くなったの確認後、遷移
 	if (ui_fade && ui_fade->IsFadeFinished() && ui_fade->GetAlpha() >= 1.0f)
 	{
 		SceneManager::ChangeScene(SCENE_ID_TITLE, camera, uiCamera, hwnd);
@@ -177,11 +196,33 @@ void ResultScene::Draw_ImGui()
 #if _DEBUG
 	ImGui_Prop();
 #endif
+	//ImGui_Shop();
 }
 
 void ResultScene::ImGui_Prop()
 {
 	ImGui::Begin("SceneName:ResultScene");
 	ImGui::Text("FPS: %.2f", ImGui::GetIO().Framerate);
+	ImGui::End();
+}
+
+void ResultScene::ImGui_Shop()
+{
+	ImGui::Begin("Shop");
+	ImGui::Text("Current Score: %d", SceneManager::GetGameStatus().score);
+
+	auto& data = m_Shop->GetAllData();
+	int select = m_Shop->GetSelectIndex();
+
+	for (int i = 0; i < data.size(); ++i)
+	{
+		bool isSelected = (i == select);
+		if (isSelected) {
+			ImGui::Text(">> ");
+			ImGui::SameLine();
+		}
+		ImGui::Text("%s Lv:%d Cost:%d", data[i].name.c_str(), 
+			data[i].currentLevel, data[i].cost);
+	}
 	ImGui::End();
 }

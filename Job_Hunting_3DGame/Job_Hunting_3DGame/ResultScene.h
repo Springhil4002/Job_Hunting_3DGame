@@ -1,8 +1,7 @@
 #pragma once
 #include "BaseScene.h"
-#include "PlayerController.h"
-#include "Game.h"
 #include "Camera2D.h"
+#include "Shop.h"
 
 class ResultScene : public BaseScene
 {
@@ -10,6 +9,7 @@ private:
 	HWND hwnd;
 	Camera* camera;
 	Camera2D* uiCamera;
+	std::unique_ptr<Shop> m_Shop;
 public:
 	/// @brief コンストラクタ
 	ResultScene() = default;
@@ -39,4 +39,6 @@ public:
 	void Draw_ImGui() override;
 
 	void ImGui_Prop();
+
+	void ImGui_Shop();
 };

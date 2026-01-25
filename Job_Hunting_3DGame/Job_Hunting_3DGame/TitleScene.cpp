@@ -103,19 +103,20 @@ void TitleScene::Update(float _deltaTime)
 {
 	//Update_Input();
 	
+	// 自動操縦更新
 	autoPlayerCtrl->Update(_deltaTime);
-
+	// ライトをカメラ追従更新
 	DirectionalLight::Instance().UpdateLightFollowCamera(camera);
 
+	// シーン内の全オブジェクト更新
 	for (auto& obj : objectInstance)
 	{
 		obj->Update();
 	}
 
+	// シーン遷移開始で画面を暗く
 	auto ui_fade = FindByTag<UI_Fade>("UI_Fade");
 	auto ui_start = FindByTag<UI_Flash>("UI_Start");
-
-	// シーン遷移開始で画面を暗く
 	if (ui_fade && ui_fade->GetState() == FADE_STATE::FADE_STATE_NONE)
 	{
 		if (input.GetKeyTrigger(VK_SPACE))
@@ -123,6 +124,7 @@ void TitleScene::Update(float _deltaTime)
 			ui_fade->SetFadeIn();
 			if (ui_start)
 			{
+				// 遷移時、点滅なし
 				ui_start->SetAlpha(1.0f);
 				ui_start->SetFlashNone();
 			}
