@@ -35,6 +35,12 @@ void Camera::SetPerspective(float _fovY, float _aspect, float _nearZ, float _far
 	m_proj = XMMatrixPerspectiveFovLH(_fovY, _aspect, _nearZ, _farZ);
 }
 
+void Camera::SetRoll(float _roll)
+{
+	m_Roll = _roll;
+	UpdateViewMatrix();
+}
+
 const XMVECTOR& Camera::GetPos() const 
 {
 	return m_eye; 
@@ -67,7 +73,22 @@ XMVECTOR Camera::GetForward() const
 
 void Camera::UpdateViewMatrix()
 {
-	m_view = XMMatrixLookAtLH(m_eye, m_target, m_up);
+	if (m_Roll == 0.0f)
+	{
+		m_view = XMMatrixLookAtLH(m_eye, m_target, m_up);
+	}
+	else
+	{
+		// 視線方向を軸として計算
+		XMVECTOR forward = XMVector3Normalize(XMVectorSubtract(m_target, m_eye));
+
+		// 前方向を軸にしてUpベクトルを回転させる行列を作成
+		XMMATRIX rollMat = XMMatrixRotationAxis(forward, m_Roll);
+		XMVECTOR rolledUp = XMVector3TransformNormal(m_up, rollMat);
+
+		// 回転させたUpベクトルを使用してビュー行列を作成
+		m_view = XMMatrixLookAtLH(m_eye, m_target, rolledUp);
+	}
 }
 
 void Camera::Translate(const DirectX::XMVECTOR& _offset)

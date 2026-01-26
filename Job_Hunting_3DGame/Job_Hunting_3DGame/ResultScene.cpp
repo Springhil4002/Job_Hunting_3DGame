@@ -35,6 +35,8 @@ void ResultScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	// プロトタイプ登録
 	prototypeManager->AddPrototype("UI", std::make_unique<UI>());
 	prototypeManager->AddPrototype("UI_Fade", std::make_unique<UI_Fade>());
+	prototypeManager->AddPrototype("UI_Score", std::make_unique<UI_Score>());
+	prototypeManager->AddPrototype("UI_Shop", std::make_unique<UI_Shop>());
 
 	// ショップシステム
 	m_Shop = std::make_unique<Shop>();
@@ -42,32 +44,23 @@ void ResultScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 
 	//================================UI生成================================//
 
-	UI* ui_test = dynamic_cast<UI*>(CreateObj("UI"));
-	ui_test->Init(uiCamera, 1920.0f, 1080.0f, L"Assets/Texture/Result_Bg.png");
-	ui_test->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
-	ui_test->SetRota(XMVectorZero());
-	ui_test->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
-	ui_test->UpdateTransform();
-	ui_test->UpdateCameraMatrix();
-	ui_test->m_tags.AddTag("UI");
-
-	UI* ui_clear = dynamic_cast<UI*>(CreateObj("UI"));
-	ui_clear->Init(uiCamera, 720.0f, 300.0f, L"Assets/Texture/UI_Result_Logo.png");
-	ui_clear->SetPos(XMVectorSet(0.0f, 200.0f, 0.0f, 0.0f));
-	ui_clear->SetRota(XMVectorZero());
-	ui_clear->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
-	ui_clear->UpdateTransform();
-	ui_clear->UpdateCameraMatrix();
-	ui_clear->m_tags.AddTag("UI");
-
-	UI* ui_logo = dynamic_cast<UI*>(CreateObj("UI"));
-	ui_logo->Init(uiCamera, 720.0f, 300.0f, L"Assets/Texture/UI_Result_ToTitle.png");
-	ui_logo->SetPos(XMVectorSet(0.0f, -100.0f, 0.0f, 0.0f));
-	ui_logo->SetRota(XMVectorZero());
-	ui_logo->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
-	ui_logo->UpdateTransform();
-	ui_logo->UpdateCameraMatrix();
-	ui_logo->m_tags.AddTag("UI");
+	UI* ui_Bg = dynamic_cast<UI*>(CreateObj("UI"));
+	ui_Bg->Init(uiCamera, 1920.0f, 1080.0f, L"Assets/Texture/Result_Bg.png");
+	ui_Bg->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
+	ui_Bg->SetRota(XMVectorZero());
+	ui_Bg->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	ui_Bg->UpdateTransform();
+	ui_Bg->UpdateCameraMatrix();
+	ui_Bg->m_tags.AddTag("UI");
+	
+	// スコアUI
+	UI_Score* score = dynamic_cast<UI_Score*>(CreateObj("UI_Score"));
+	score->Init(uiCamera, 50.0f, 100.0f, L"Assets/Texture/UI_Number.png", L"Assets/Texture/UI_Score.png");
+	score->m_tags.AddTag("UI_Score");
+	
+	UI_Shop* shop = dynamic_cast<UI_Shop*>(CreateObj("UI_Shop"));
+	shop->Init(uiCamera, m_Shop.get());
+	shop->m_tags.AddTag("UI_Shop");
 
 	UI_Fade* ui_fade = dynamic_cast<UI_Fade*>(CreateObj("UI_Fade"));
 	ui_fade->Init(uiCamera, 1920.0f, 1080.0f);
@@ -83,36 +76,51 @@ void ResultScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 void ResultScene::Update(float _deltaTime)
 {
 	//Update_Input();
-
-	if (input.GetKeyTrigger(VK_UP)) m_Shop->PrevData();
-	if (input.GetKeyTrigger(VK_DOWN)) m_Shop->NextData();
-	if (input.GetKeyTrigger(VK_RETURN))
+	auto ui_fade = FindByTag<UI_Fade>("UI_Fade");
+	bool isFading = (ui_fade && ui_fade->GetState() != FADE_STATE::FADE_STATE_NONE);
+	if (!isFading)
 	{
-		if (m_Shop->BuyUpgradeData())
+		if (input.GetKeyTrigger(VK_UP))		m_Shop->Input_Up();
+		if (input.GetKeyTrigger(VK_DOWN))	m_Shop->Input_Down();
+		if (input.GetKeyTrigger(VK_LEFT))	m_Shop->Input_Left();
+		if (input.GetKeyTrigger(VK_RIGHT))	m_Shop->Input_Right();
+
+		if (input.GetKeyTrigger(VK_RETURN))
 		{
-			// 強化成功SE再生予定
+			if (m_Shop->GetFocus() == SHOP_FOCUS::FOCUS_UPGRADE)
+			{
+				if (m_Shop->BuyUpgradeData())
+				{
+					// 強化成功SE再生予定
+				}
+			}
+			else
+			{
+				// シーン遷移開始で画面を暗く
+				if (ui_fade && ui_fade->GetState() == FADE_STATE::FADE_STATE_NONE)
+				{
+					ui_fade->SetFadeIn();
+				}
+			}
 		}
 	}
-
+	
 	for (auto& obj : objectInstance)
 	{
 		obj->Update();
 	}
 
-	// シーン遷移開始で画面を暗く
-	auto ui_fade = FindByTag<UI_Fade>("UI_Fade");
-	if (ui_fade && ui_fade->GetState() == FADE_STATE::FADE_STATE_NONE)
-	{
-		if (input.GetKeyTrigger(VK_SPACE))
-		{
-			ui_fade->SetFadeIn();
-		}
-	}
-
 	// 画面暗くなったの確認後、遷移
 	if (ui_fade && ui_fade->IsFadeFinished() && ui_fade->GetAlpha() >= 1.0f)
 	{
-		SceneManager::ChangeScene(SCENE_ID_TITLE, camera, uiCamera, hwnd);
+		if (m_Shop->GetMenuIndex() == 0)
+		{
+			SceneManager::ChangeScene(SCENE_ID_GAME, camera, uiCamera, hwnd);
+		}
+		else
+		{
+			SceneManager::ChangeScene(SCENE_ID_TITLE, camera, uiCamera, hwnd);
+		}
 	}
 }
 
@@ -212,7 +220,7 @@ void ResultScene::ImGui_Shop()
 	ImGui::Text("Current Score: %d", SceneManager::GetGameStatus().score);
 
 	auto& data = m_Shop->GetAllData();
-	int select = m_Shop->GetSelectIndex();
+	int select = m_Shop->GetUpgradeIndex();
 
 	for (int i = 0; i < data.size(); ++i)
 	{

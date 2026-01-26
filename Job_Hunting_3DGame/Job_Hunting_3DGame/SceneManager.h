@@ -18,11 +18,7 @@ private:
 public:
 	SceneManager() = default;
 	/// @brief コンストラクタ
-	SceneManager(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
-	{
-		// 初期シーンのリソースをロード
-		ChangeScene(SCENE_ID_TITLE, _camera, _uiCamera, _hwnd);
-	}
+	SceneManager(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd);
 	/// @brief デストラクタ
 	~SceneManager() = default;
 

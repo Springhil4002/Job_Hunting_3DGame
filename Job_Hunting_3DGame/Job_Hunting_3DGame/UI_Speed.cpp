@@ -58,7 +58,7 @@ void UI_Speed::Update()
 	float speed = XMVectorGetX(XMVector3Length(velocity));
 
 	// ゲーム内速度をスケーリング
-	int displaySpeed = static_cast<int>(speed * 0.5f);
+	int displaySpeed = static_cast<int>(speed);
 	displaySpeed = std::clamp(displaySpeed, 0, 999);
 
 	// 3桁の数字に分解してセット

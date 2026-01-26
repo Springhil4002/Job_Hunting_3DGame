@@ -3,6 +3,12 @@
 #include <string>
 #include "GameStatus.h"
 
+enum class SHOP_FOCUS
+{
+	FOCUS_UPGRADE,	// 強化項目
+	FOCUS_MENU,		// 遷移先メニュー
+};
+
 /// @brief 強化するステータスの種類
 enum class UPGRADE_TYPE
 {
@@ -26,8 +32,12 @@ struct UpgradeData
 class Shop
 {
 private: 
-	/// @brief 選択項目のインデックス
-	int m_SelectIndex = 0;
+	/// @brief 強化項目のインデックス
+	int m_UpgradeIndex = 0;
+	/// @brief 遷移先メニューのインデックス
+	int m_MenuIndex = 0;
+	/// @brief 選択している項目
+	SHOP_FOCUS m_Focus = SHOP_FOCUS::FOCUS_UPGRADE;
 	/// @brief 強化するステータスの配列
 	std::vector<UpgradeData> m_Data;
 public:
@@ -38,21 +48,26 @@ public:
 
 	/// @brief 初期化関数
 	void Init();
-	/// @brief 次の選択項目へ移動する関数
-	void NextData();
-	/// @brief 前の選択項目へ移動する関数
-	void PrevData();
+	
+	// 操作用関数
+	void Input_Up();
+	void Input_Down();
+	void Input_Left();
+	void Input_Right();
+
 	/// @brief 選択項目を強化する関数
 	/// @return 強化成功の成否
 	bool BuyUpgradeData();
 
-	/// @brief 選択項目のインデックスを取得する関数
-	/// @return 選択項目のインデックス
-	int GetSelectIndex() const { return m_SelectIndex; }
-	/// @brief 選択項目のステータスを取得する関数
-	/// @param _index 選択項目のインデックス
-	/// @return 選択項目のステータス
-	const UpgradeData& GetSelectData(int _index) const { return m_Data[_index]; }
+	/// @brief 強化項目のインデックスを取得する関数
+	/// @return 強化項目のインデックス
+	int GetUpgradeIndex() const { return m_UpgradeIndex; }
+	/// @brief 遷移先メニューのインデックスを取得する関数
+	/// @return 遷移先メニューのインデックス
+	int GetMenuIndex() const { return m_MenuIndex; }
+	/// @brief 選択している項目を取得する関数
+	/// @return 選択している項目
+	SHOP_FOCUS GetFocus() const { return m_Focus; }
 	/// @brief 全てのステータスを取得する関数
 	/// @return 全てのステータス
 	const std::vector<UpgradeData>& GetAllData() const { return m_Data; }

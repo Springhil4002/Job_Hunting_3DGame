@@ -14,12 +14,18 @@ GameStatus::GameStatus()
 	, limitTime(30)			// 制限時間(秒数)
 	, maxSpeed(40.0f)		// 上限速度
 	, accelSpeed(5.0f)		// 加速度
-	, level_Speed(0)		// ステータスレベル(上限速度)
-	, level_Accel(0)		// ステータスレベル(加速度)			
-	, level_Time(0)			// ステータスレベル(制限時間)
-	, level_Goal(0)			// ステータスレベル(ゴール生成数)
+	, level_Speed(1)		// ステータスレベル(上限速度)
+	, level_Accel(1)		// ステータスレベル(加速度)			
+	, level_Time(1)			// ステータスレベル(制限時間)
+	, level_Goal(1)			// ステータスレベル(ゴール生成数)
 
 {
+}
+
+SceneManager::SceneManager(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
+{
+	// 初期シーンのリソースをロード
+	ChangeScene(SCENE_ID_TITLE, _camera, _uiCamera, _hwnd);
 }
 
 void SceneManager::ChangeScene(

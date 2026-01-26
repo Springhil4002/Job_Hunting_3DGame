@@ -13,13 +13,14 @@ private:
 
 	POINT m_lastMousePos;
 	void UpdateViewMatrix();
-
+	float m_Roll = 0.0f;
 public:
 	Camera();
 	void SetPos(const DirectX::XMVECTOR& _eye);
 	void SetTarget(const DirectX::XMVECTOR& _target);
 	void SetUp(const DirectX::XMVECTOR& _up);
 	void SetPerspective(float _fovY, float _aspect, float _nearZ, float _farZ);
+	void SetRoll(float _roll);
 
 	const DirectX::XMVECTOR& GetPos() const;
 	const DirectX::XMVECTOR& GetTarget() const;
@@ -27,6 +28,7 @@ public:
 	const DirectX::XMMATRIX& GetViewMatrix() const;
 	const DirectX::XMMATRIX& GetProjMatrix() const;
 	DirectX::XMVECTOR GetForward() const;
+	float GetRoll() const { return m_Roll; }
 
 	void Translate(const DirectX::XMVECTOR& _offset);
 	void MoveForward(float _distance);

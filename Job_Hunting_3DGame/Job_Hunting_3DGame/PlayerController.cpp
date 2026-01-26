@@ -203,6 +203,7 @@ void PlayerController::Init_CameraSet()
 		// カメラを理想位置に即座に設定 
 		m_Camera->SetPos(idealCamPos);
 		m_Camera->SetTarget(idealTarget);
+		m_Camera->SetRoll(0.0f);
 	}
 }
 
@@ -436,6 +437,12 @@ void PlayerController::Update_Camera(float _deltaTime)
 	m_CurrentCamPos += m_CameraVelocity * _deltaTime;
 
 	m_Camera->SetPos(m_CurrentCamPos);
+
+	// カメラを旋回方向に傾ける
+	float cameraRollFactor = 0.5f;
+	float speedRatio = speed / m_MaxSpeed;
+	float finalRoll = m_CurrentRoll * cameraRollFactor * speedRatio;
+	m_Camera->SetRoll(finalRoll);
 
 	XMVECTOR idealTarget = m_Position + m_ForwardVec * 15.0f;
 

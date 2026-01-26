@@ -30,7 +30,7 @@ SceneResourceList GetSceneResourceList(SCENE_ID _ID)
 			{ L"Assets/Texture/UI_Number.png",			TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,数字(0,1,2,3,4,5,6,7,8,9,:)
 			{ L"Assets/Texture/UI_Go.png",				TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,ロゴ(GO)
 			{ L"Assets/Texture/UI_Km.png",				TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,単位(Km)
-			{ L"Assets/Texture/UI_Score.png",			TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,単位(Km)
+			{ L"Assets/Texture/UI_Score.png",			TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,単位(Score)
 			{ L"Assets/Texture/UI_Game_controller.png", TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,操作方法
 		};
 		list.modelPaths = {
@@ -40,8 +40,17 @@ SceneResourceList GetSceneResourceList(SCENE_ID _ID)
 	case SCENE_ID_RESULT:
 		list.textures = {
 			{ L"Assets/Texture/Result_Bg.png",			TEX_TYPE::TEX_TYPE_TEXTURE2D },	// リザルト背景
-			{ L"Assets/Texture/UI_Result_Logo.png",		TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,ロゴ(Game Clear)
-			{ L"Assets/Texture/UI_Result_ToTitle.png",	TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,タイトルへ戻る
+			{ L"Assets/Texture/UI_MaxSpeed.png",		TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,上限速度
+			{ L"Assets/Texture/UI_Acceleration.png",	TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,加速度
+			{ L"Assets/Texture/UI_LimitTime.png",		TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,制限時間
+			{ L"Assets/Texture/UI_GoalCreate.png",		TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,ゴール生成数
+			{ L"Assets/Texture/UI_Level.png",			TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,レベル
+			{ L"Assets/Texture/UI_Cost.png",			TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,コスト
+			{ L"Assets/Texture/UI_Upgrade_Idle.png",	TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,強化(黒)
+			{ L"Assets/Texture/UI_CurrentSelect.png",	TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,選択中の枠
+			{ L"Assets/Texture/UI_Title.png",			TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,タイトルへ
+			{ L"Assets/Texture/UI_Replay.png",			TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,リプレイ
+
 		};
 		list.modelPaths = {
 		};
