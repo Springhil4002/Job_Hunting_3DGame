@@ -26,6 +26,9 @@ private:
 	
 	int m_CountDownTime = 0;		// ゲーム開始前のカウントダウン
 	int m_CreateGoalCount = 0;		// 生成するゴールオブジェクト数
+	int m_ComboCount = 0;			// コンボ数
+	float m_ComboTimer = 0.0f;		// コンボ受付の残り時間
+	float m_MaxComboTime = 0.0f;	// コンボ維持時間
 	RACE_STATE m_State = RACE_STATE::RACE_STATE_COUNTDOWN;	// 現在のレース状態
 public:
 	/// @brief デフォルトコンストラクタ

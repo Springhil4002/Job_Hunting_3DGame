@@ -5,6 +5,8 @@
 
 using namespace DirectX;
 
+
+
 bool Game::Init(Player* _player, std::vector<Goal*> _goals)
 {
 	m_Player = _player;
@@ -16,6 +18,7 @@ bool Game::Init(Player* _player, std::vector<Goal*> _goals)
 	m_RemainingTime = m_LimitTime;							// 残り時間
 	m_CountdownStart = std::chrono::steady_clock::now();	// カウントダウンの開始
 	m_CountDownTime = 3;									// カウントダウンの秒数
+	m_MaxComboTime = 3.0f;									// コンボ維持時間
 	m_State = RACE_STATE::RACE_STATE_COUNTDOWN;				// ゲームの状態管理
 
 	printf("Game:初期化処理に成功\n");
@@ -51,6 +54,19 @@ void Game::Update(float _deltaTime)
 		{
 			m_RemainingTime = std::chrono::milliseconds(0);
 			m_TimeUp = true;
+		}
+
+		// コンボシステムの更新
+		if (m_ComboTimer > 0.0f)
+		{
+
+			m_ComboTimer -= _deltaTime;
+			if (m_ComboTimer <= 0.0f)
+			{
+				// 時間切れでコンボリセット
+				m_ComboCount = 0;
+				m_ComboTimer = 0.0f;
+			}
 		}
 
 		// ゴール判定
@@ -121,8 +137,17 @@ void Game::GoalCheck()
 			if (m_InsideFlags[i])
 			{
 				auto& status = SceneManager::GetGameStatus();
+
+				// コンボ加算と受付時間のリセット
+				m_ComboCount++;
+				m_ComboTimer = m_MaxComboTime;
+
+				// コンボ倍率の計算
+				float combo = 1.0f + (std::max(0, m_ComboCount - 1) * 0.1f);
+				float baseScore = 100.0f * status.scoreUp;
+				int finalScore = static_cast<int>(baseScore * combo);
 				// スコア加算
-				status.score += static_cast<int>(100 * status.scoreUp);
+				status.score += finalScore;
 				// フラグを戻す
 				m_InsideFlags[i] = false;
 			}
