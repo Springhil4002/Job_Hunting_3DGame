@@ -41,7 +41,7 @@ bool UI_Shop::Init(Camera2D* _cameraUI, Shop* _shop)
 	std::wstring statusTexturePaths[] = {
 		L"Assets/Texture/UI_MaxSpeed.png",
 		L"Assets/Texture/UI_Acceleration.png",
-		L"Assets/Texture/UI_LimitTime.png",
+		L"Assets/Texture/UI_ScoreUp.png",
 		L"Assets/Texture/UI_GoalCreate.png",
 	};
 

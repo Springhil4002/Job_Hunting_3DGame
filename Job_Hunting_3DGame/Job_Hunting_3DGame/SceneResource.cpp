@@ -42,7 +42,7 @@ SceneResourceList GetSceneResourceList(SCENE_ID _ID)
 			{ L"Assets/Texture/Result_Bg.png",			TEX_TYPE::TEX_TYPE_TEXTURE2D },	// リザルト背景
 			{ L"Assets/Texture/UI_MaxSpeed.png",		TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,上限速度
 			{ L"Assets/Texture/UI_Acceleration.png",	TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,加速度
-			{ L"Assets/Texture/UI_LimitTime.png",		TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,制限時間
+			{ L"Assets/Texture/UI_ScoreUp.png",			TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,スコア増加
 			{ L"Assets/Texture/UI_GoalCreate.png",		TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,ゴール生成数
 			{ L"Assets/Texture/UI_Level.png",			TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,レベル
 			{ L"Assets/Texture/UI_Cost.png",			TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,コスト

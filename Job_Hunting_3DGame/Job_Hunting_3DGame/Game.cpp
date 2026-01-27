@@ -120,8 +120,9 @@ void Game::GoalCheck()
 		{
 			if (m_InsideFlags[i])
 			{
+				auto& status = SceneManager::GetGameStatus();
 				// スコア加算
-				SceneManager::GetGameStatus().score += 100;
+				status.score += static_cast<int>(100 * status.scoreUp);
 				// フラグを戻す
 				m_InsideFlags[i] = false;
 			}

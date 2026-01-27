@@ -10,13 +10,15 @@ GameStatus SceneManager::gameStatus;
 
 GameStatus::GameStatus()
 	: score(0)				// スコア
-	, createGoalCount(20)	// ゴール生成数
 	, limitTime(30)			// 制限時間(秒数)
 	, maxSpeed(40.0f)		// 上限速度
 	, accelSpeed(5.0f)		// 加速度
+	, scoreUp(1.0f)			// スコア増加
+	, createGoalCount(20)	// ゴール生成数
+
 	, level_Speed(1)		// ステータスレベル(上限速度)
 	, level_Accel(1)		// ステータスレベル(加速度)			
-	, level_Time(1)			// ステータスレベル(制限時間)
+	, level_ScoreUp(1)		// ステータスレベル(スコア増加)
 	, level_Goal(1)			// ステータスレベル(ゴール生成数)
 
 {

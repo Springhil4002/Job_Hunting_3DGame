@@ -14,7 +14,7 @@ enum class UPGRADE_TYPE
 {
 	TYPE_SPEED,
 	TYPE_ACCEL,
-	TYPE_TIME,
+	TYPE_SCOREUP,
 	TYPE_GOAL,
 	TYPE_COUNT,	// éÌóﬁÇÃëçêî
 };
