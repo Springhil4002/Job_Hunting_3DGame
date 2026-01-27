@@ -18,13 +18,13 @@ bool ParticleEmitter_Splash::Init()
 }
 
 void ParticleEmitter_Splash::Update(float _deltaTime, 
-	XMVECTOR _pos, XMVECTOR _rightVec, bool _moving)
+	XMVECTOR _pos, XMVECTOR _rightVec, XMVECTOR _velocity, bool _moving, float _state)
 {
 	m_Time += _deltaTime;
 
 	if (_moving && m_Time >= m_SpawnParticlesRate)
 	{
-		CreateParticles(_pos, _rightVec);
+		CreateParticles(_pos, _rightVec, _velocity, _state);
 		m_Time = 0.0f;
 	}
 	if (m_pParticleSystem)
@@ -66,36 +66,51 @@ void ParticleEmitter_Splash::Init_Param()
 	m_State = Active;
 }
 
-void ParticleEmitter_Splash::CreateParticles(XMVECTOR _centerPos, XMVECTOR _rightVec)
+void ParticleEmitter_Splash::CreateParticles(XMVECTOR _centerPos, 
+	XMVECTOR _rightVec, XMVECTOR _velocity, float _state)
 {
 	if (!m_pParticles) return;
 
 	int num = Rand_Int(m_Min_CreateParticles, m_Max_CreateParticles);
-	
-	// 生成範囲のスケール
-	const float areaX = 0.5f;
-	const float areaY = 0.1f;
-	const float areaZ = 0.5f;
+	float speed = XMVectorGetX(XMVector3Length(_velocity));
 
-	// 左右のオフセット位置
-	const float sideOffset = 1.0f;
-	XMVECTOR leftPos = _centerPos - _rightVec * sideOffset;
-	XMVECTOR rightPos = _centerPos + _rightVec * sideOffset;
-	
+	bool isTurning = (fabsf(_state) > 0.3f);
+
 	for (int i = 0; i < num; ++i)
 	{
 		// 奇数:左、偶数:右
-		XMVECTOR basePos = (i % 2 == 0) ? rightPos : leftPos;
-
-		XMVECTOR randOffset = XMVectorSet(
-			Rand_f(-areaX, areaX),
-			Rand_f(-areaY, areaY),
-			Rand_f(-areaZ, areaZ),
-			0.0f
-		);
-
-		XMVECTOR spawnPos = basePos + randOffset;
-
+		XMVECTOR basePos;
+		float sidePower;
+		
+		if (!isTurning)
+		{
+			// 直進時、左右から生成
+			sidePower = (i % 2 == 0) ? 1.0f : -1.0f;
+			basePos = _centerPos + _rightVec * (sidePower * 1.0f);
+		}
+		else
+		{
+			// 旋回時、外側のみ生成
+			sidePower = (_state > 0) ? -1.0f : 1.0f;
+			// 旋回時は後方に生成して水を掻き出す感じに
+			XMVECTOR backOffset = XMVector3Normalize(_velocity) * -1.0f;
+			basePos = _centerPos + backOffset + _rightVec * (sidePower * 1.4f);
+		}
+		
+		XMVECTOR spawnPos = basePos + XMVectorSet(Rand_f(-0.2f, 0.2f), Rand_f(-0.1f, 0.1f), Rand_f(-0.2f, 0.2f), 0);
+		XMVECTOR particleVelocity = _velocity * 0.6f;
+		
+		if (isTurning)
+		{
+			particleVelocity += _rightVec * sidePower * (speed * 0.6f + 2.0f);
+			particleVelocity += XMVectorSet(0.0f, Rand_f(2.0f, 4.0f) * (speed * 0.2f + 1.0f), 0, 0);
+		}
+		else
+		{
+			particleVelocity += _rightVec * sidePower * (speed * 0.1f + 0.8f);
+			particleVelocity += XMVectorSet(0, Rand_f(0.5f, 1.5f) * (speed * 0.1f + 0.5f), 0, 0);
+		}
+		
 		// 再利用できるパーティクルを探す
 		bool recycle = false;
 		for (auto& p : *m_pParticles)
@@ -103,7 +118,7 @@ void ParticleEmitter_Splash::CreateParticles(XMVECTOR _centerPos, XMVECTOR _righ
 			if (p.particleState == Stop)
 			{
 				p.position = spawnPos;
-				p.velocity = XMVectorSet(Rand_f(-0.5f, 0.5f), Rand_f(0.8f, 1.2f), Rand_f(-0.5f, 0.5f), 0.0f);
+				p.velocity = particleVelocity;
 				p.color = m_StartColor;
 				p.startColor = m_StartColor;
 				p.endColor = m_EndColor;
@@ -121,7 +136,7 @@ void ParticleEmitter_Splash::CreateParticles(XMVECTOR _centerPos, XMVECTOR _righ
 		{
 			Particle p;
 			p.position = spawnPos;
-			p.velocity = XMVectorSet(Rand_f(-0.5f, 0.5f), Rand_f(0.8f, 1.2f), Rand_f(-0.5f, 0.5f), 0.0f);
+			p.velocity = particleVelocity;
 			p.color = m_StartColor;
 			p.startColor = m_StartColor;
 			p.endColor = m_EndColor;

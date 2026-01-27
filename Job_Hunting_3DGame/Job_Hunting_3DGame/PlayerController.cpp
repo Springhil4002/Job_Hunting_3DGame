@@ -465,19 +465,26 @@ void PlayerController::Update_WaterEffects(float _deltaTime)
 {
 	if (!m_Emitter_Splash || (!m_WaterMesh && !m_SeaMesh)) return;
 
-	bool isMoving = false;
+	// 現在の旋回入力を判定
+	float turnState = 0.0f;
+	if (m_Input->GetKeyPress(VK_A))turnState = -1.0f;
+	if (m_Input->GetKeyPress(VK_D))turnState = 1.0f;
 
 	XMVECTOR horizontalVelocity = XMVectorSet(XMVectorGetX(m_Velocity), 0, XMVectorGetZ(m_Velocity), 0);
 	float speed = XMVectorGetX(XMVector3Length(horizontalVelocity));
-	if (speed > 0.1f) isMoving = true;
+	bool isMoving = (speed > 0.1f);
 	
-	const float splashOffsetY = -1.0f;
 	// Playerの先頭部分(中心座標＋進行方向のオフセット)
 	const float offsetLength = 2.0f;
 	XMVECTOR spawnPos = m_Position + m_ForwardVec * offsetLength;
-	spawnPos = XMVectorAdd(spawnPos, XMVectorSet(0, splashOffsetY, 0, 0));
+	spawnPos += XMVectorSet(0, -1.0f, 0, 0);
 
-	//m_Emitter_Splash->Update(_deltaTime, spawnPos, m_RightVec, isMoving);
+	// 傾いた右ベクトルを計算
+	XMMATRIX rollMat = XMMatrixRotationAxis(m_ForwardVec, m_CurrentRoll);
+	XMVECTOR rollRight = XMVector3TransformNormal(m_RightVec, rollMat);
+
+	m_Emitter_Splash->Update(_deltaTime, spawnPos, rollRight, 
+		m_Velocity, isMoving, turnState);
 	
 	// 移動時、波紋生成
 	if (speed > 0.05f)

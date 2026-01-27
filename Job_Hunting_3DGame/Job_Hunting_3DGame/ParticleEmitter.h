@@ -29,16 +29,16 @@ protected:
 	/// @return int型の乱数
 	int Rand_Int(int _min, int _max);
 public:
-	DirectX::XMVECTOR m_Position;		// 位置
-	DirectX::XMVECTOR m_Velocity;		// 速度
+	DirectX::XMVECTOR m_Position = DirectX::XMVectorZero();		// 位置
+	DirectX::XMVECTOR m_Velocity = DirectX::XMVectorZero();		// 速度
 	DirectX::XMFLOAT4 m_StartColor;		// 開始色
 	DirectX::XMFLOAT4 m_EndColor;		// 終了色
-	float m_ColorChangeRate;	// 色変化率
-	float m_Gravity;		// 重力	
-	float m_Min_LifeTime;	// 最小寿命
-	float m_Max_LifeTime;	// 最大寿命
-	ParticleState m_State;
-	Camera* m_Camera;		// カメラ
+	float m_ColorChangeRate = 0.0f;	// 色変化率
+	float m_Gravity=0.0f;		// 重力	
+	float m_Min_LifeTime=0.0f;	// 最小寿命
+	float m_Max_LifeTime=0.0f;	// 最大寿命
+	ParticleState m_State = ParticleState::Stop;
+	Camera* m_Camera = nullptr;		// カメラ
 
 	virtual bool Init() = 0;
 	virtual void Update() = 0;

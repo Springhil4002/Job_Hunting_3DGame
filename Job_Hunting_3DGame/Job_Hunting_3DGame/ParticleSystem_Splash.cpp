@@ -52,8 +52,8 @@ void ParticleSystem_Splash::Update(float _deltaTime)
 		// GPUへ送るデータ作成
 		InstanceData& instData = m_InstanceData[activeCount];
 		XMStoreFloat3(&instData.worldPos, p.position);
-		instData.scale = 0.03f;
-		instData.color = p.color;
+		instData.scale = 0.05f;		// パーティクルの大きさ
+		instData.color = p.color;	// パーティクルの色
 
 		++activeCount;
 	}

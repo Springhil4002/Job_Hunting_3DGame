@@ -20,7 +20,7 @@ struct Particle
 	float lifeTime = 0.0f;				// 寿命
 	float elapsedTime = 0.0f;			// 経過時間
 	float gravity = 0.0f;				// 重力
-	ParticleState particleState;		// 状態管理
+	ParticleState particleState = ParticleState::Stop;		// 状態管理
 	
 	/// @brief パーティクルのパラメータリセット
 	void Reset();

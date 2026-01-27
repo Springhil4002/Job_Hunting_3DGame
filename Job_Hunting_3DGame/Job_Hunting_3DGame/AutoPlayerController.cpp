@@ -148,6 +148,7 @@ void AutoPlayerController::Init_CameraSet()
 		m_CurrentCamPos = idealCamPos;
 		m_CurrentCamTarget = idealTarget;
 	}
+	m_Camera->SetRoll(0.0f);
 }
 
 void AutoPlayerController::Apply_SpeedControl(float _deltaTime)
@@ -363,7 +364,7 @@ void AutoPlayerController::Update_WaterEffects(float _deltaTime)
 	XMVECTOR spawnPos = m_Position + m_ForwardVec * offsetLength;
 	spawnPos = XMVectorAdd(spawnPos, XMVectorSet(0, splashOffsetY, 0, 0));
 
-	m_Emitter_Splash->Update(_deltaTime, spawnPos, m_RightVec, isMoving);
+	//m_Emitter_Splash->Update(_deltaTime, spawnPos, m_RightVec, isMoving);
 
 	// ˆÚ“®ŽžA”g–ä¶¬
 	if (speed > 0.05f)
