@@ -1,5 +1,6 @@
 #include "UI_Timer.h"
 #include "Debug_New.h"
+#include "Debug_Msg.h"
 
 using namespace DirectX;
 
@@ -49,7 +50,7 @@ bool UI_Timer::Init(Camera2D* _cameraUI, float _width, float _height,
 		XMVectorZero(),
 		XMVectorSet(4.0f, 3.0f, 1.0f, 0.0f), 1.0f);
 
-	printf("UI_Timer:‰Šú‰»ˆ—‚É¬Œ÷\n");
+	DEBUG_LOG(L"UI_Timer:‰Šú‰»ˆ—‚É¬Œ÷");
 	return true;
 }
 

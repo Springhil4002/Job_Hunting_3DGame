@@ -2,6 +2,7 @@
 #include "DrawBase.h"
 #include <d3dx12.h>
 #include "Debug_New.h"
+#include "Debug_Msg.h"
 
 RootSignature_Goal::RootSignature_Goal()
 {
@@ -55,7 +56,7 @@ RootSignature_Goal::RootSignature_Goal()
 		pErrorBlob.GetAddressOf());
 	if (FAILED(hr))
 	{
-		printf("Goal:ルートシグネチャシリアライズに失敗");
+		DEBUG_LOG_ERROR(L"Goal:ルートシグネチャシリアライズに失敗");
 		return;
 	}
 
@@ -67,7 +68,7 @@ RootSignature_Goal::RootSignature_Goal()
 		IID_PPV_ARGS(m_pRootSignature.GetAddressOf())); // ルートシグニチャ格納先のポインタ
 	if (FAILED(hr))
 	{
-		printf("Goal:ルートシグネチャの生成に失敗");
+		DEBUG_LOG_ERROR(L"Goal:ルートシグネチャの生成に失敗");
 		return;
 	}
 

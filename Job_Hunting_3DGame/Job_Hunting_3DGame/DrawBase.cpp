@@ -5,6 +5,7 @@
 #include <DirectXTex.h>
 #include <d3dx12.h>
 #include "Debug_New.h"
+#include "Debug_Msg.h"
 
 //-------------------------------------------------------------------
 // 自分が忘れないようすぐ見れるようにコメントを細かく書いてます
@@ -29,30 +30,30 @@ bool DrawBase::Init(HWND _hwnd, UINT _windowWidth, UINT _windowHeight)
 	
 	if (CreateDevice() == false)
 	{
-		printf("デバイスの生成に失敗\n");
+		DEBUG_LOG_ERROR("DrawBase:デバイスの生成に失敗");
 		return false;
 	}
 	if (CreateCommandQueue() == false)
 	{
-		printf("コマンドキューの生成に失敗\n");
+		DEBUG_LOG_ERROR("DrawBase:コマンドキューの生成に失敗");
 		return false;
 	}
 	
 	if (CreateSwapChain() == false)
 	{
-		printf("スワップチェーンの生成に失敗\n");
+		DEBUG_LOG_ERROR("DrawBase:スワップチェーンの生成に失敗");
 		return false;
 	}
 
 	if (CreateCommandList() == false)
 	{
-		printf("コマンドリストの生成に失敗\n");
+		DEBUG_LOG_ERROR("DrawBase:コマンドリストの生成に失敗");
 		return false;
 	}
 
 	if (CreateFence() == false)
 	{
-		printf("フェンスの生成に失敗\n");
+		DEBUG_LOG_ERROR("DrawBase:フェンスの生成に失敗");
 		return false;
 	}
 
@@ -62,17 +63,17 @@ bool DrawBase::Init(HWND _hwnd, UINT _windowWidth, UINT _windowHeight)
 
 	if (CreateRenderTarget() == false)
 	{
-		printf("レンダーターゲットの生成に失敗\n");
+		DEBUG_LOG_ERROR("DrawBase:レンダーターゲットの生成に失敗");
 		return false;
 	}
 
 	if (CreateDepthStencil() == false)
 	{
-		printf("深度ステンシルバッファの生成に失敗\n");
+		DEBUG_LOG_ERROR("DrawBase:深度ステンシルバッファの生成に失敗");
 		return false;
 	}
 
-	printf("描画基盤の初期化成功\n");
+	DEBUG_LOG("DrawBase:描画基盤の初期化成功");
 	return true;
 }
 
@@ -86,7 +87,7 @@ bool DrawBase::CreateDevice()
 	hr = m_pDevice->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS5, &features5, sizeof(D3D12_FEATURE_DATA_D3D12_OPTIONS5));
 	if (FAILED(hr) || features5.RaytracingTier == D3D12_RAYTRACING_TIER_NOT_SUPPORTED)
 	{
-		printf("レイトレーシング非対応\n");
+		DEBUG_LOG("DrawBase:レイトレーシング非対応");
 		return false;
 	}
 

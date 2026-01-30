@@ -1,5 +1,6 @@
 #include "ParticleSystem_Splash.h"
 #include "Debug_New.h"
+#include "Debug_Msg.h"
 
 using namespace DirectX;
 
@@ -168,7 +169,7 @@ bool ParticleSystem_Splash::CreateInstanceBuffer()
 
 	if (FAILED(hr))
 	{
-		printf("Particle_Splash:インスタンスバッファ生成失敗\n");
+		DEBUG_LOG_ERROR(L"Particle_Splash:インスタンスバッファ生成失敗");
 		return false;
 	}
 
@@ -193,7 +194,7 @@ bool ParticleSystem_Splash::Init_Prop(Camera* _camera)
 	m_pVertexBuffer = std::make_unique<VertexBuffer>(vertexSize, vertexStride, mesh.Vertices.data());
 	if (!m_pVertexBuffer->IsValid())
 	{
-		printf("Particle_Splash:頂点バッファ生成失敗\n");
+		DEBUG_LOG_ERROR(L"Particle_Splash:頂点バッファ生成失敗");
 		return false;
 	}
 
@@ -201,7 +202,7 @@ bool ParticleSystem_Splash::Init_Prop(Camera* _camera)
 	m_pIndexBuffer = std::make_unique<IndexBuffer>(indexSize, mesh.Indices.data());
 	if (!m_pIndexBuffer->IsValid())
 	{
-		printf("Particle_Splash:インデックスバッファ生成失敗\n");
+		DEBUG_LOG_ERROR(L"Particle_Splash:インデックスバッファ生成失敗");
 		return false;
 	}
 
@@ -210,7 +211,7 @@ bool ParticleSystem_Splash::Init_Prop(Camera* _camera)
 		m_pConstantBuffer[i] = std::make_unique<ConstantBuffer>(sizeof(Matrix));
 		if (!m_pConstantBuffer[i]->IsValid())
 		{
-			printf("Particle_Splash:コンスタントバッファ生成失敗\n");
+			DEBUG_LOG_ERROR(L"Particle_Splash:コンスタントバッファ生成失敗");
 			return false;
 		}
 
@@ -232,7 +233,7 @@ bool ParticleSystem_Splash::Init_Prop(Camera* _camera)
 	auto particleTex = TextureManager::Instance().GetTexture(L"Assets/Texture/Particle_Splash.png");
 	if (!particleTex)
 	{
-		printf("Particle_Splash:画像読み込み失敗\n");
+		DEBUG_LOG_ERROR(L"Particle_Splash:画像読み込み失敗");
 		return false;
 	}
 	m_pTexHandle = m_pDescriptorHeap->Register(particleTex.get());
@@ -241,7 +242,7 @@ bool ParticleSystem_Splash::Init_Prop(Camera* _camera)
 	m_pRootSignature = rootManager.GetRoot(Root_Type::ROOT_TYPE_SPLASH);
 	if (!m_pRootSignature->IsValid())
 	{
-		printf("Particle_Splash:ルートシグネチャの生成に失敗\n");
+		DEBUG_LOG_ERROR(L"Particle_Splash:ルートシグネチャの生成に失敗");
 		return false;
 	}
 
@@ -263,11 +264,11 @@ bool ParticleSystem_Splash::Init_Prop(Camera* _camera)
 
 	if (!m_pPipelineState->IsValid())
 	{
-		printf("Particle_Splash:パイプラインステート生成失敗\n");
+		DEBUG_LOG_ERROR(L"Particle_Splash:パイプラインステート生成失敗");
 		return false;
 	}
 
-	printf("Particle_Splash:初期化処理に成功\n\n");
+	DEBUG_LOG(L"Particle_Splash:初期化処理に成功");
 	return true;
 }
 

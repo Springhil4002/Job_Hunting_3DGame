@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "Debug_New.h"
+#include "Debug_Msg.h"
 
 using namespace DirectX;
 
@@ -16,7 +17,7 @@ bool Player::Init(Camera* _camera)
 	auto modelData = ModelManager::GetInstance().GetModel(L"Assets/Player/Player.FBX");
 	if (!modelData)
 	{
-		printf("Player:モデル読み込み失敗\n");
+		DEBUG_LOG_ERROR("Player:モデル読み込み失敗");
 		return false;
 	}
 	m_meshes = modelData->meshes;
@@ -28,7 +29,7 @@ bool Player::Init(Camera* _camera)
 		m_pConstantBuffer[i] = std::make_unique<ConstantBuffer>(sizeof(Matrix));
 		if (!m_pConstantBuffer[i]->IsValid())
 		{
-			printf("Player:コンスタントバッファ生成失敗\n");
+			DEBUG_LOG_ERROR("Player:コンスタントバッファ生成失敗");
 			return false;
 		}
 
@@ -44,7 +45,7 @@ bool Player::Init(Camera* _camera)
 		m_pLightConstantBuffer[i] = std::make_unique<ConstantBuffer>(sizeof(DirectionalLightData));
 		if (!m_pLightConstantBuffer[i]->IsValid())
 		{
-			printf("Player:ライトコンスタントバッファ生成失敗\n");
+			DEBUG_LOG_ERROR("Player:ライトコンスタントバッファ生成失敗");
 			return false;
 		}
 	}
@@ -63,12 +64,12 @@ bool Player::Init(Camera* _camera)
 			std::wstring fileName = texPath.substr(lastSeparator == std::wstring::npos ? 0 : lastSeparator + 1);
 			
 			texPath = L"Assets/Texture/" + fileName;
-			printf("Player: テクスチャパスを強制的に正規化しました。 %ls\n", texPath.c_str());
+			DEBUG_LOG("Player:テクスチャパス ({}) を正規化しました", texPath.c_str());
 		}
 
 		if (texPath.empty())
 		{
-			printf("Player:メッシュにテクスチャパスが設定されていません\n");
+			DEBUG_LOG_ERROR("Player:メッシュにテクスチャパスが設定されていません");
 			m_pTexHandles.push_back(nullptr);
 			continue;
 		}
@@ -76,7 +77,7 @@ bool Player::Init(Camera* _camera)
 		auto tex = TextureManager::Instance().GetTexture(texPath);
 		if (!tex)
 		{
-			printf("Player:テクスチャ読み込み失敗:%ls\n", texPath.c_str());
+			DEBUG_LOG_ERROR("Player:テクスチャ読み込み失敗");
 		}
 		m_pTexHandles.push_back(m_pDescriptorHeap->Register(tex.get()));
 	}
@@ -87,7 +88,7 @@ bool Player::Init(Camera* _camera)
 
 	if (!m_pRootSignature->IsValid())
 	{
-		printf("Player:ルートシグネチャの生成に失敗\n");
+		DEBUG_LOG_ERROR("Player:ルートシグネチャの生成に失敗");
 		return false;
 	}
 
@@ -114,11 +115,10 @@ bool Player::Init(Camera* _camera)
 
 	if (!m_pPipelineState->IsValid())
 	{
-		printf("Player:パイプラインステートの生成に失敗\n");
+		DEBUG_LOG_ERROR("Player:パイプラインステートの生成に失敗");
 		return false;
 	}
-
-	printf("Player:初期化処理に成功\n\n");
+	DEBUG_LOG("Player:初期化処理に成功");
 	return true;
 }
 

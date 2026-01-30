@@ -2,6 +2,7 @@
 #include "DrawBase.h"
 #include <d3dx12.h>
 #include "Debug_New.h"
+#include "Debug_Msg.h"
 
 RootSignature_Model3D::RootSignature_Model3D()
 {	
@@ -55,7 +56,7 @@ RootSignature_Model3D::RootSignature_Model3D()
 		pErrorBlob.GetAddressOf());
 	if (FAILED(hr))
 	{
-		printf("ルートシグネチャシリアライズに失敗");
+		DEBUG_LOG_ERROR(L"Model3D:ルートシグネチャシリアライズに失敗しました");
 		return;
 	}
 
@@ -67,7 +68,7 @@ RootSignature_Model3D::RootSignature_Model3D()
 		IID_PPV_ARGS(m_pRootSignature.GetAddressOf())); // ルートシグニチャ格納先のポインタ
 	if (FAILED(hr))
 	{
-		printf("ルートシグネチャの生成に失敗");
+		DEBUG_LOG_ERROR(L"Model3D:ルートシグネチャの生成に失敗しました");
 		return;
 	}
 

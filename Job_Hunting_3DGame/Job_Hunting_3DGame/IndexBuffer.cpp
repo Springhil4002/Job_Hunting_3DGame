@@ -2,6 +2,7 @@
 #include <d3dx12.h>
 #include "DrawBase.h"
 #include "Debug_New.h"
+#include "Debug_Msg.h"
 
 IndexBuffer::IndexBuffer(size_t _size, const uint32_t* _pInitData)
 {
@@ -20,7 +21,7 @@ IndexBuffer::IndexBuffer(size_t _size, const uint32_t* _pInitData)
 		IID_PPV_ARGS(m_pBuffer.GetAddressOf()));
 	if (FAILED(hr))
 	{
-		printf("[OnInit] インデックスバッファリソースの生成に失敗");
+		DEBUG_LOG_ERROR(L"IndexBuffer:インデックスバッファリソースの生成に失敗");
 		return;
 	}
 
@@ -37,7 +38,7 @@ IndexBuffer::IndexBuffer(size_t _size, const uint32_t* _pInitData)
 		hr = m_pBuffer->Map(0, nullptr, &ptr);
 		if (FAILED(hr))
 		{
-			printf("[OnInit] インデックスバッファマッピングに失敗");
+			DEBUG_LOG_ERROR(L"IndexBuffer:インデックスバッファマッピングに失敗");
 			return;
 		}
 

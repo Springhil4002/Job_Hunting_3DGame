@@ -1,5 +1,6 @@
 #include "ModelManager.h"
 #include "Debug_New.h"
+#include "Debug_Msg.h"
 
 ModelManager& ModelManager::GetInstance()
 {
@@ -12,10 +13,10 @@ std::shared_ptr<ModelData> ModelManager::GetModel(const std::wstring& _filePath)
     auto it = m_models.find(_filePath);
     if (it != m_models.end())
     {
-        printf("ModelManager:既存モデル %ls を再利用します\n",_filePath.c_str());
+        DEBUG_LOG(L"ModelManager:既存モデル ({}) を再利用します ", _filePath);
         return it->second;
     }
-    printf("ModelManager:未知モデル %ls 保存されていません\n", _filePath.c_str());
+    DEBUG_LOG(L"ModelManager:未知モデル ({}) 保存されていません ", _filePath);
     return nullptr;
 }
 
@@ -25,7 +26,7 @@ std::shared_ptr<ModelData> ModelManager::LoadModel(const std::wstring& _filePath
     auto it = m_models.find(_filePath);
     if (it != m_models.end())
     {
-        printf("ModelManager:既存モデル %ls を再利用します\n", _filePath.c_str());
+        DEBUG_LOG(L"ModelManager:既存モデル ({}) を再利用します ", _filePath);
         return it->second; // 登録済みのモデルを返す
     }
 
@@ -39,7 +40,7 @@ std::shared_ptr<ModelData> ModelManager::LoadModel(const std::wstring& _filePath
     AssimpLoader loader;
     if (!loader.Load(importSetting))
     {
-        printf("ModelManager:モデル読み込み失敗\n");
+        DEBUG_LOG_ERROR(L"ModelManager:モデル読み込み失敗 ({})", _filePath);
         return nullptr;
     }
 
@@ -53,7 +54,7 @@ std::shared_ptr<ModelData> ModelManager::LoadModel(const std::wstring& _filePath
         );
         if (!vb->IsValid())
         {
-            printf("ModelManager:頂点バッファの作成失敗\n");
+            DEBUG_LOG_ERROR(L"ModelManager:頂点バッファの作成失敗");
             return nullptr;
         }
         modelData->vertexBuffers.push_back(vb);
@@ -65,12 +66,12 @@ std::shared_ptr<ModelData> ModelManager::LoadModel(const std::wstring& _filePath
         );
         if (!ib->IsValid())
         {
-            printf("ModelManager:インデックスバッファの作成失敗\n");
+            DEBUG_LOG_ERROR(L"ModelManager:インデックスバッファの作成失敗");
             return nullptr;
         }
         modelData->indexBuffers.push_back(ib);
     }
-    printf("ModelManager:新規モデル %ls を読み込み成功\n", _filePath.c_str());
+    DEBUG_LOG(L"ModelManager:新規モデル ({}) 読み込み成功", _filePath);
     m_models[_filePath] = modelData;
     return modelData;
 }

@@ -2,6 +2,8 @@
 #include "DrawBase.h"
 #include <d3dx12.h>
 #include <d3dcompiler.h>
+#include "Debug_New.h"
+#include "Debug_Msg.h"
 
 #pragma comment(lib,"d3dcompiler.lib")
 
@@ -58,7 +60,7 @@ void PipelineState_General::SetVS(std::wstring filePath)
     HRESULT hr = D3DReadFileToBlob(filePath.c_str(), m_pVsBlob.GetAddressOf());
     if (FAILED(hr))
     {
-        printf("PipelineState_General: VS読み込み失敗\n");
+        DEBUG_LOG_ERROR(L"PSO_General:頂点シェーダーの読み込みに失敗");
         return;
     }
     desc.VS = CD3DX12_SHADER_BYTECODE(m_pVsBlob.Get());
@@ -69,7 +71,7 @@ void PipelineState_General::SetPS(std::wstring filePath)
     HRESULT hr = D3DReadFileToBlob(filePath.c_str(), m_pPSBlob.GetAddressOf());
     if (FAILED(hr))
     {
-        printf("PipelineState_General: PS読み込み失敗\n");
+        DEBUG_LOG_ERROR(L"PSO_General:ピクセルシェーダーの読み込みに失敗");
         return;
     }
     desc.PS = CD3DX12_SHADER_BYTECODE(m_pPSBlob.Get());
@@ -80,7 +82,7 @@ void PipelineState_General::Create()
     HRESULT hr = g_DrawBase->Device()->CreateGraphicsPipelineState(&desc, IID_PPV_ARGS(m_pPipelineState.ReleaseAndGetAddressOf()));
     if (FAILED(hr))
     {
-        printf("PipelineState_General: PSO生成失敗\n");
+        DEBUG_LOG_ERROR(L"PSO_General:パイプラインステートの生成に失敗");
         m_IsValid = false;
         return;
     }

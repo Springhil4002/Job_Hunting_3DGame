@@ -2,6 +2,7 @@
 #include "DrawBase.h"
 #include <d3dx12.h>
 #include "Debug_New.h"
+#include "Debug_Msg.h"
 
 RootSignature_WaterMesh::RootSignature_WaterMesh()
 {
@@ -52,7 +53,7 @@ RootSignature_WaterMesh::RootSignature_WaterMesh()
 		pErrorBlob.GetAddressOf());
 	if (FAILED(hr))
 	{
-		printf("WaterMesh:���[�g�V�O�l�`���V���A���C�Y�Ɏ��s");
+		//DEBUG_LOG_ERROR(L"UI:ルートシグネチャシリアライズに失敗");
 		return;
 	}
 
@@ -63,7 +64,7 @@ RootSignature_WaterMesh::RootSignature_WaterMesh()
 		IID_PPV_ARGS(m_pRootSignature.GetAddressOf())); 
 	if (FAILED(hr))
 	{
-		printf("WaterMesh:���[�g�V�O�l�`���̐����Ɏ��s");
+		//DEBUG_LOG_ERROR(L"UI:ルートシグネチャの生成に失敗");
 		return;
 	}
 

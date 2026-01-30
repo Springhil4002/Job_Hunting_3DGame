@@ -1,8 +1,9 @@
 #include "TitleScene.h"
 #include "SceneManager.h"
 #include "System/ImGui/imgui.h"
-#include "Debug_New.h"
 #include "DirectionalLight.h"
+#include "Debug_New.h"
+#include "Debug_Msg.h"
 
 using namespace DirectX;
 
@@ -20,7 +21,7 @@ Object* TitleScene::CreateObj(const std::string& _objectID)
 
 void TitleScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 {
-	printf("シーン名：TitleScene\n");
+	DEBUG_LOG(L"シーン名:TitleScene");
 
 	SceneManager::GetSound().Play(SOUND_LABEL_BGM_001);
 

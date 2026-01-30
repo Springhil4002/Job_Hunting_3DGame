@@ -1,6 +1,7 @@
 #include "ConstantBuffer.h"
 #include "DrawBase.h"
 #include "Debug_New.h"
+#include "Debug_Msg.h"
 
 ConstantBuffer::ConstantBuffer(size_t _size)
 {
@@ -23,14 +24,14 @@ ConstantBuffer::ConstantBuffer(size_t _size)
         IID_PPV_ARGS(m_pBuffer.GetAddressOf()));    // リソースを保持するポインタ
     if (FAILED(hr))
     {
-        printf("定数バッファリソースの生成に失敗\n");
+        DEBUG_LOG_ERROR(L"ConstantBuffer:定数バッファリソースの生成に失敗");
         return;
     }
     // バッファのマッピング
     hr = m_pBuffer->Map(0, nullptr, &m_pMappedPtr);
     if (FAILED(hr))
     {
-        printf("定数バッファのマッピングに失敗\n");
+        DEBUG_LOG_ERROR(L"ConstantBuffer:定数バッファのマッピングに失敗");
         return;
     }
     // 定数バッファビューの設定

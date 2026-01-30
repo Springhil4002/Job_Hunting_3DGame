@@ -1,5 +1,6 @@
 #include "UI_Flash.h"
 #include "Debug_New.h"
+#include "Debug_Msg.h"
 
 using namespace DirectX;
 
@@ -16,11 +17,11 @@ bool UI_Flash::Init(Camera2D* _cameraUI, float _width, float _height,
 
     if (!UI::Init(_cameraUI, _width, _height, _filePath))
     {
-        printf("UI_Flash:初期化処理に失敗\n\n");
+        DEBUG_LOG_ERROR("UI_Flash:初期化処理に失敗");
         return false;
     }
 
-    printf("UI_Flash:初期化処理に成功\n\n");
+    DEBUG_LOG("UI_Flash:初期化処理に成功");
     return true;
 }
 
@@ -52,7 +53,6 @@ void UI_Flash::Update_Flash()
         {
             m_Alpha = 1.0f;
             m_State = FADE_STATE::FADE_STATE_OUT;
-            //printf("UI_Flash:透明度減少開始\n");
         }
     }
     else if (m_State == FADE_STATE::FADE_STATE_OUT)
@@ -62,7 +62,6 @@ void UI_Flash::Update_Flash()
         {
             m_Alpha = 0.0f;
             m_State = FADE_STATE::FADE_STATE_IN;
-            //printf("UI_Fade:透明度上昇開始\n");
         }
     }
 

@@ -1,13 +1,15 @@
 #include "GameScene.h"
 #include "SceneManager.h"
 #include "System/ImGui/imgui.h"
-#include "Debug_New.h"
 #include "DirectionalLight.h"
+#include "Debug_New.h"
+#include "Debug_Msg.h"
 
 using namespace DirectX;
 
 Object* GameScene::CreateObj(const std::string& _objectID)
 {
+	// プロトタイプマネージャーにクローン作成を依頼
 	auto obj = prototypeManager->Create(_objectID);
 	if (obj)
 	{
@@ -20,7 +22,7 @@ Object* GameScene::CreateObj(const std::string& _objectID)
 
 void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 {
-	printf("シーン名：GameScene\n");
+	DEBUG_LOG(L"シーン名:GameScene");
 	srand(static_cast<unsigned int>(time(NULL)));
 
 	SceneManager::GetSound().Play(SOUND_LABEL_BGM_002);
@@ -36,15 +38,15 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	uiCamera->Init(screenWidth, screenHeight);
 
 	// プロトタイプ登録
-	prototypeManager->AddPrototype("Sky", std::make_unique<SkyBox>());
-	prototypeManager->AddPrototype("Player", std::make_unique<Player>());
-	prototypeManager->AddPrototype("Goal", std::make_unique<Goal>());
-	prototypeManager->AddPrototype("UI", std::make_unique<UI>());
-	prototypeManager->AddPrototype("UI_Fade", std::make_unique<UI_Fade>());
-	prototypeManager->AddPrototype("UI_Timer", std::make_unique<UI_Timer>());
-	prototypeManager->AddPrototype("UI_Speed", std::make_unique<UI_Speed>());
-	prototypeManager->AddPrototype("UI_Score", std::make_unique<UI_Score>());
-	prototypeManager->AddPrototype("SeaMesh", std::make_unique<SeaMesh>());
+	prototypeManager->AddPrototype("Sky",		std::make_unique<SkyBox>());
+	prototypeManager->AddPrototype("Player",	std::make_unique<Player>());
+	prototypeManager->AddPrototype("Goal",		std::make_unique<Goal>());
+	prototypeManager->AddPrototype("UI",		std::make_unique<UI>());
+	prototypeManager->AddPrototype("UI_Fade",	std::make_unique<UI_Fade>());
+	prototypeManager->AddPrototype("UI_Timer",	std::make_unique<UI_Timer>());
+	prototypeManager->AddPrototype("UI_Speed",	std::make_unique<UI_Speed>());
+	prototypeManager->AddPrototype("UI_Score",	std::make_unique<UI_Score>());
+	prototypeManager->AddPrototype("SeaMesh",	std::make_unique<SeaMesh>());
 
 	// ライト設定
 	DirectionalLight::Instance().SetLightDir({ 0.35f,-1.0f,0.15f });

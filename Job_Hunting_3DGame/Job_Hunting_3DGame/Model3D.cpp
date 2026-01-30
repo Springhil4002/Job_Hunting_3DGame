@@ -1,5 +1,6 @@
 #include "Model3D.h"
 #include "Debug_New.h"
+#include "Debug_Msg.h"
 
 std::wstring Model3D::ReplaceExtension(const std::wstring& _origin, const char* _ext)
 {
@@ -22,7 +23,7 @@ bool Model3D::Init(Camera* _camera)
 	auto modelData = ModelManager::GetInstance().GetModel(L"Assets/Alicia/FBX/Alicia_solid_Unity.FBX");
 	if (!modelData)
 	{
-		printf("Model3D:モデル読み込み失敗\n");
+		DEBUG_LOG_ERROR(L"Model3D:モデル読み込み失敗");
 		return false;
 	}
 
@@ -35,7 +36,7 @@ bool Model3D::Init(Camera* _camera)
 		m_pConstantBuffer[i] = std::make_unique<ConstantBuffer>(sizeof(Matrix));
 		if (!m_pConstantBuffer[i]->IsValid()) 
 		{
-			printf("コンスタントバッファ生成失敗\n");
+			DEBUG_LOG_ERROR(L"Model3D:コンスタントバッファ生成失敗");
 			return false;
 		}
 
@@ -59,12 +60,12 @@ bool Model3D::Init(Camera* _camera)
 		auto mainTex = Texture2D::Get(texPath);
 		if (!mainTex)
 		{
-			OutputDebugStringW((L"テクスチャが読み込めませんでした: " + texPath + L"\n").c_str());
+			DEBUG_LOG_ERROR(L"Model3D:コンスタントバッファ生成失敗");
 			continue;
 		}
 		if (!m_pDescriptorHeap)
 		{
-			OutputDebugStringA("descriptorHeap が初期化されていません。\n");
+			DEBUG_LOG_ERROR(L"Model3D:ディスクリプタヒープ設定失敗");
 			continue;
 		}
 		auto handle = m_pDescriptorHeap->Register(mainTex.get());
@@ -75,7 +76,7 @@ bool Model3D::Init(Camera* _camera)
 	m_pRootSignature = rootManager.GetRoot(Root_Type::ROOT_TYPE_MODEL3D);
 	if (!m_pRootSignature->IsValid())
 	{
-		printf("ルートシグネチャの生成に失敗\n");
+		DEBUG_LOG_ERROR(L"Model3D:ルートシグネチャの生成に失敗");
 		return false;
 	}
 
@@ -101,11 +102,11 @@ bool Model3D::Init(Camera* _camera)
 	}
 	if (!m_pPipelineState->IsValid())
 	{
-		printf("Model3D:パイプラインステートの生成に失敗\n");
+		DEBUG_LOG_ERROR(L"Model3D:パイプラインステートの生成に失敗");
 		return false;
 	}
 
-	printf("Model3Dの初期化処理に成功\n\n");
+	DEBUG_LOG_ERROR(L"Model3Dの初期化処理に成功");
 	return true;
 }
 

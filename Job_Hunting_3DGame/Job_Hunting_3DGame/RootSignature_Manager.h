@@ -13,6 +13,7 @@
 #include "RootSignature_DebugSphere.h"
 #include "RootSignature_SkyBox.h"
 #include "RootSignature_UI.h"
+#include "Debug_Msg.h"
 
 enum class Root_Type
 {
@@ -51,19 +52,19 @@ public:
         auto it = m_RootSignatures.find(_name);
         if (it != m_RootSignatures.end())
         {
-            printf("RootSignatureManager:%s のルートシグネチャを再利用します\n", _name.c_str());
+            DEBUG_LOG(L"RootSignatureManager:ルートシグネチャを再利用します");
             return std::dynamic_pointer_cast<T>(it->second);
         }
 
         auto root = std::make_shared<T>();
         if (!root->IsValid())
         {
-            printf("RootSignatureManager:%s の生成に失敗\n", _name.c_str());
+            DEBUG_LOG_ERROR(L"RootSignatureManager:ルートシグネチャの生成に失敗");
             return nullptr;
         }
 
         m_RootSignatures[_name] = root;
-        printf("RootSignatureManager:%s を新規生成\n", _name.c_str());
+        DEBUG_LOG(L"RootSignatureManager:ルートシグネチャを新規作成します");
         return root;
     }
 
@@ -110,7 +111,7 @@ public:
         case Root_Type::ROOT_TYPE_SKYBOX:      return GetRoot_SkyBox();
         case Root_Type::ROOT_TYPE_UI:          return GetRoot_UI();
         default:
-            printf("RootSignatureManager:不明なRoot_Typeです\n");
+            DEBUG_LOG(L"RootSignatureManager:不明なRoot_Typeです");
             assert(false);
             return nullptr;
         }
@@ -118,7 +119,7 @@ public:
 
     void Debug_RootSignatureList()
     {
-        printf("RootSignatureManager: 現在の生成済みルートシグネチャ一覧\n");
+        DEBUG_LOG(L"RootSignatureManager:現在の作成済みルートシグネチャ一覧");
         for (const auto& [_name, _] : m_RootSignatures)
         {
             printf("%s\n", _name.c_str());

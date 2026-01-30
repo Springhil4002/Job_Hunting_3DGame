@@ -1,6 +1,7 @@
 #include "UI_Shop.h"
 #include "SceneManager.h"
 #include "Debug_New.h"
+#include "Debug_Msg.h"
 
 namespace ShopLayout 
 {
@@ -104,6 +105,7 @@ bool UI_Shop::Init(Camera2D* _cameraUI, Shop* _shop)
 		return false;
 	}
 
+	DEBUG_LOG(L"UI_Shop:‰Šú‰»ˆ—‚É¬Œ÷");
 	return true;
 }
 

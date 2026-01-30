@@ -3,6 +3,7 @@
 #include <d3dx12.h>
 #include <d3dcompiler.h>
 #include "Debug_New.h"
+#include "Debug_Msg.h"
 
 #pragma comment(lib,"d3dcompiler.lib")
 
@@ -60,7 +61,7 @@ void PipelineState_SkyBox::SetVS(std::wstring filePath)
 	auto hr = D3DReadFileToBlob(filePath.c_str(), m_pVsBlob.GetAddressOf());
 	if (FAILED(hr))
 	{
-		printf("PSO_SkyBox:頂点シェーダーの読み込みに失敗\n");
+		DEBUG_LOG_ERROR(L"PSO_SkyBox:頂点シェーダーの読み込みに失敗");
 		return;
 	}
 
@@ -73,7 +74,7 @@ void PipelineState_SkyBox::SetPS(std::wstring filePath)
 	auto hr = D3DReadFileToBlob(filePath.c_str(), m_pPSBlob.GetAddressOf());
 	if (FAILED(hr))
 	{
-		printf("PSO_SkyBox:ピクセルシェーダーの読み込みに失敗\n");
+		DEBUG_LOG_ERROR(L"PSO_SkyBox:ピクセルシェーダーの読み込みに失敗");
 		return;
 	}
 
@@ -86,7 +87,7 @@ void PipelineState_SkyBox::Create()
 	auto hr = g_DrawBase->Device()->CreateGraphicsPipelineState(&desc, IID_PPV_ARGS(m_pPipelineState.ReleaseAndGetAddressOf()));
 	if (FAILED(hr))
 	{
-		printf("PSO_SkyBox:パイプラインステートの生成に失敗\n");
+		DEBUG_LOG_ERROR(L"PSO_SkyBox:パイプラインステートの生成に失敗");
 		return;
 	}
 

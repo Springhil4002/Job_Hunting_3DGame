@@ -81,11 +81,17 @@ public:
 		return objects;
 	}
 
+	/// @brief タグから、特定の型を持つオブジェクトを取得する関数
+	/// @tparam T 特定の型
+	/// @param _tag タグ名
+	/// @return 特定の型を持つオブジェクト
 	template <class T>
 	T* FindByTag(const std::string& _tag)
 	{
+		// シーン内の管理しているオブジェクトから探索
 		for (auto& obj : objectInstance)
 		{
+			// タグが一致してるなら型変換して返す
 			if (obj->m_tags.SearchTag(_tag))
 			{
 				return dynamic_cast<T*>(obj.get());

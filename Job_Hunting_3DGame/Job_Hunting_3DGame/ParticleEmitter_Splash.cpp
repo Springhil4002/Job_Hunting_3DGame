@@ -71,9 +71,11 @@ void ParticleEmitter_Splash::CreateParticles(XMVECTOR _centerPos,
 {
 	if (!m_pParticles) return;
 
+	// パーティクルの生成を決定
 	int num = Rand_Int(m_Min_CreateParticles, m_Max_CreateParticles);
+	// ボートの現在速度取得
 	float speed = XMVectorGetX(XMVector3Length(_velocity));
-
+	// 旋回しているか
 	bool isTurning = (fabsf(_state) > 0.3f);
 
 	for (int i = 0; i < num; ++i)
@@ -96,16 +98,17 @@ void ParticleEmitter_Splash::CreateParticles(XMVECTOR _centerPos,
 			XMVECTOR backOffset = XMVector3Normalize(_velocity) * -1.0f;
 			basePos = _centerPos + backOffset + _rightVec * (sidePower * 1.4f);
 		}
-		
+		// 生成位置を決定
 		XMVECTOR spawnPos = basePos + XMVectorSet(Rand_f(-0.2f, 0.2f), Rand_f(-0.1f, 0.1f), Rand_f(-0.2f, 0.2f), 0);
 		XMVECTOR particleVelocity = _velocity * 0.6f;
 		
+		// 旋回時
 		if (isTurning)
 		{
 			particleVelocity += _rightVec * sidePower * (speed * 0.6f + 2.0f);
 			particleVelocity += XMVectorSet(0.0f, Rand_f(2.0f, 4.0f) * (speed * 0.2f + 1.0f), 0, 0);
 		}
-		else
+		else // 直進時
 		{
 			particleVelocity += _rightVec * sidePower * (speed * 0.1f + 0.8f);
 			particleVelocity += XMVectorSet(0, Rand_f(0.5f, 1.5f) * (speed * 0.1f + 0.5f), 0, 0);

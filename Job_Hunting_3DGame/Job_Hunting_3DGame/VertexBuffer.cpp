@@ -2,6 +2,7 @@
 #include "VertexBuffer.h"
 #include "DrawBase.h"
 #include "Debug_New.h"
+#include "Debug_Msg.h"
 
 VertexBuffer::VertexBuffer(size_t _size, size_t _stride, const void* _pInitData)
 {
@@ -21,7 +22,7 @@ VertexBuffer::VertexBuffer(size_t _size, size_t _stride, const void* _pInitData)
 	// 失敗時のエラー出力
 	if (FAILED(hr))
 	{
-		printf("頂点バッファリソースの生成に失敗\n");
+		DEBUG_LOG_ERROR(L"VertexBuffer:頂点バッファリソースの生成に失敗");
 		return;
 	}
 
@@ -37,7 +38,7 @@ VertexBuffer::VertexBuffer(size_t _size, size_t _stride, const void* _pInitData)
 		hr = m_pBuffer->Map(0, nullptr, &ptr);
 		if (FAILED(hr))
 		{
-			printf("頂点バッファマッピングに失敗\n");
+			DEBUG_LOG_ERROR(L"VertexBuffer:頂点バッファマッピングに失敗");
 			return;
 		}
 
@@ -70,7 +71,7 @@ void VertexBuffer::Update(const void* _pData, size_t _dataSize)
 	HRESULT hr = m_pBuffer->Map(0, nullptr, &ptr);
 	if (FAILED(hr))
 	{
-		printf("VertexBuffer:頂点バッファマッピングに失敗\n");
+		DEBUG_LOG_ERROR(L"VertexBuffer:頂点バッファマッピングに失敗");
 		return;
 	}
 	memcpy(ptr, _pData, _dataSize);

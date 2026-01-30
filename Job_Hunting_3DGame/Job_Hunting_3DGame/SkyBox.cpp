@@ -1,5 +1,6 @@
 #include "SkyBox.h"
 #include "Debug_New.h"
+#include "Debug_Msg.h"
 
 using namespace DirectX;
 
@@ -14,7 +15,6 @@ bool SkyBox::Init(Camera* _camera)
 	m_camera = _camera;
 
 	// メッシュ生成
-	//CreateMesh(32, 64, 1000.0f);
 	CreateCubeMesh();
 
 	// 頂点バッファ生成
@@ -23,7 +23,7 @@ bool SkyBox::Init(Camera* _camera)
 	m_pVertexBuffer = std::make_unique<VertexBuffer>(vbSize, vbStride, vertices.data());
 	if (!m_pVertexBuffer->IsValid())
 	{
-		printf("SkyBox:頂点バッファ生成失敗\n");
+		DEBUG_LOG_ERROR(L"SkyBox:頂点バッファ生成失敗");
 		return false;
 	}
 
@@ -32,7 +32,7 @@ bool SkyBox::Init(Camera* _camera)
 	m_pIndexBuffer = std::make_unique<IndexBuffer>(ibSize, indices.data());
 	if (!m_pIndexBuffer->IsValid())
 	{
-		printf("SkyBox:インデックスバッファ生成失敗\n");
+		DEBUG_LOG_ERROR("SkyBox:インデックスバッファ生成失敗");
 		return false;
 	}
 
@@ -42,7 +42,7 @@ bool SkyBox::Init(Camera* _camera)
 		m_pConstantBuffer[i] = std::make_unique<ConstantBuffer>(sizeof(Matrix));
 		if (!m_pConstantBuffer[i]->IsValid())
 		{
-			printf("SkyBox:コンスタントバッファ生成失敗\n");
+			DEBUG_LOG_ERROR("SkyBox:コンスタントバッファ生成失敗");
 			return false;
 		}
 
@@ -65,7 +65,7 @@ bool SkyBox::Init(Camera* _camera)
 	auto tex = TextureManager::Instance().GetCubeMap(L"Assets/Texture/SkyBox.dds");
 	if(!tex)
 	{
-		printf("SkyBox:テクスチャの取得失敗\n");
+		DEBUG_LOG_ERROR("SkyBox:テクスチャの取得失敗");
 		return false;
 	}
 	m_pCubeTexHandle = m_pDescriptorHeap->Register(tex.get());
@@ -75,7 +75,7 @@ bool SkyBox::Init(Camera* _camera)
 	m_pRootSignature = rootManager.GetRoot(Root_Type::ROOT_TYPE_SKYBOX);
 	if (!m_pRootSignature->IsValid())
 	{
-		printf("SkyBox:ルートシグネチャ生成失敗\n");
+		DEBUG_LOG_ERROR("SkyBox:ルートシグネチャ生成失敗");
 		return false;
 	}
 
@@ -98,11 +98,11 @@ bool SkyBox::Init(Camera* _camera)
 
 	if (!m_pPipelineState->IsValid())
 	{
-		printf("SkyBox:パイプラインステートの生成に失敗\n");
+		DEBUG_LOG_ERROR("SkyBox:パイプラインステートの生成に失敗");
 		return false;
 	}
 
-	printf("SkyBox:初期化処理に成功\n\n");
+	DEBUG_LOG("SkyBox:初期化処理に成功");
 	return true;
 }
 

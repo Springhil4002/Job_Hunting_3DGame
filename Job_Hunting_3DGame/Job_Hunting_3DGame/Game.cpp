@@ -2,10 +2,9 @@
 #include "SceneManager.h"
 #include "System/ImGui/imgui.h"
 #include "Debug_New.h"
+#include "Debug_Msg.h"
 
 using namespace DirectX;
-
-
 
 bool Game::Init(Player* _player, std::vector<Goal*> _goals)
 {
@@ -21,7 +20,7 @@ bool Game::Init(Player* _player, std::vector<Goal*> _goals)
 	m_MaxComboTime = 3.0f;									// ƒRƒ“ƒ{ˆÛŠÔ
 	m_State = RACE_STATE::RACE_STATE_COUNTDOWN;				// ƒQ[ƒ€‚Ìó‘ÔŠÇ—
 
-	printf("Game:‰Šú‰»ˆ—‚É¬Œ÷\n");
+	DEBUG_LOG("Game:‰Šú‰»ˆ—‚É¬Œ÷");
 	return true;
 }
 

@@ -1,5 +1,6 @@
 #include "Debug_Sphere.h"
 #include "Debug_New.h"
+#include "Debug_Msg.h"
 
 using namespace DirectX;
 
@@ -23,7 +24,7 @@ bool Debug_Sphere::Init(Camera* _camera)
     m_pVertexBuffer = std::make_unique<VertexBuffer>(vbSize, vbStride, vertices.data());
     if (!m_pVertexBuffer->IsValid())
     {
-        printf("Sphere:頂点バッファ生成失敗\n");
+        DEBUG_LOG_ERROR("Sphere:頂点バッファ生成失敗");
         return false;
     }
 
@@ -32,7 +33,7 @@ bool Debug_Sphere::Init(Camera* _camera)
     m_pIndexBuffer = std::make_unique<IndexBuffer>(ibSize, indices.data());
     if (!m_pIndexBuffer->IsValid())
     {
-        printf("Sphere:インデックスバッファ生成失敗\n");
+        DEBUG_LOG_ERROR("Sphere:インデックスバッファ生成失敗");
         return false;
     }
 
@@ -42,7 +43,7 @@ bool Debug_Sphere::Init(Camera* _camera)
         m_pConstantBuffer[i] = std::make_unique<ConstantBuffer>(sizeof(Matrix));
         if (!m_pConstantBuffer[i]->IsValid())
         {
-            printf("Sphere:コンスタントバッファ生成失敗\n");
+            DEBUG_LOG_ERROR("Sphere:コンスタントバッファ生成失敗");
             return false;
         }
 
@@ -61,7 +62,7 @@ bool Debug_Sphere::Init(Camera* _camera)
     m_pRootSignature = rootManager.GetRoot(Root_Type::ROOT_TYPE_SPHERE);
     if (!m_pRootSignature->IsValid())
     {
-        printf("Sphere:ルートシグネチャ生成失敗\n");
+        DEBUG_LOG_ERROR("Sphere:ルートシグネチャ生成失敗");
         return false;
     }
 
@@ -87,11 +88,11 @@ bool Debug_Sphere::Init(Camera* _camera)
 
     if (!m_pPipelineState->IsValid())
     {
-        printf("Sphere:パイプラインステート生成失敗\n");
+        DEBUG_LOG_ERROR("Sphere:パイプラインステート生成失敗");
         return false;
     }
 
-    printf("Sphere:初期化処理に成功\n\n");
+    DEBUG_LOG("Sphere:初期化処理に成功");
     return true;
 }
 

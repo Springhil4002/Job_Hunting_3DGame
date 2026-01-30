@@ -2,6 +2,7 @@
 #include "DrawBase.h"
 #include <d3dx12.h>
 #include "Debug_New.h"
+#include "Debug_Msg.h"
 
 RootSignature_Splash::RootSignature_Splash()
 {
@@ -65,7 +66,7 @@ RootSignature_Splash::RootSignature_Splash()
 		pErrorBlob.GetAddressOf());
 	if (FAILED(hr))
 	{
-		printf("Particle Splash:ルートシグネチャシリアライズに失敗");
+		DEBUG_LOG_ERROR(L"ParticleSplash:ルートシグネチャシリアライズに失敗");
 		return;
 	}
 
@@ -77,7 +78,7 @@ RootSignature_Splash::RootSignature_Splash()
 		IID_PPV_ARGS(m_pRootSignature.GetAddressOf())); // ルートシグニチャ格納先のポインタ
 	if (FAILED(hr))
 	{
-		printf("Particle Splash:ルートシグネチャの生成に失敗");
+		DEBUG_LOG_ERROR(L"ParticleSplash:ルートシグネチャの生成に失敗");
 		return;
 	}
 

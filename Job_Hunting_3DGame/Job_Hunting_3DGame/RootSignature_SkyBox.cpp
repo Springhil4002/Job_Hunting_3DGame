@@ -2,6 +2,7 @@
 #include "DrawBase.h"
 #include <d3dx12.h>
 #include "Debug_New.h"
+#include "Debug_Msg.h"
 
 RootSignature_SkyBox::RootSignature_SkyBox()
 {
@@ -53,7 +54,7 @@ RootSignature_SkyBox::RootSignature_SkyBox()
 		pErrorBlob.GetAddressOf());
 	if (FAILED(hr))
 	{
-		printf("SkyBox:ルートシグネチャシリアライズに失敗");
+		DEBUG_LOG_ERROR(L"SkyBox:ルートシグネチャシリアライズに失敗");
 		return;
 	}
 
@@ -65,7 +66,7 @@ RootSignature_SkyBox::RootSignature_SkyBox()
 		IID_PPV_ARGS(m_pRootSignature.ReleaseAndGetAddressOf())); // ルートシグニチャ格納先のポインタ
 	if (FAILED(hr))
 	{
-		printf("SkyBox:ルートシグネチャの生成に失敗");
+		DEBUG_LOG_ERROR(L"SkyBox:ルートシグネチャの生成に失敗");
 		return;
 	}
 

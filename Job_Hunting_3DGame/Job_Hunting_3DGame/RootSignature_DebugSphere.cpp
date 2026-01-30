@@ -2,6 +2,7 @@
 #include "DrawBase.h"
 #include <d3dx12.h>
 #include "Debug_New.h"
+#include "Debug_Msg.h"
 
 RootSignature_DebugSphere::RootSignature_DebugSphere()
 {
@@ -47,7 +48,7 @@ RootSignature_DebugSphere::RootSignature_DebugSphere()
 		pErrorBlob.GetAddressOf());
 	if (FAILED(hr))
 	{
-		printf("Sphere:ルートシグネチャシリアライズに失敗");
+		DEBUG_LOG_ERROR(L"Sphere:ルートシグネチャシリアライズに失敗");
 		return;
 	}
 
@@ -59,7 +60,7 @@ RootSignature_DebugSphere::RootSignature_DebugSphere()
 		IID_PPV_ARGS(m_pRootSignature.GetAddressOf())); // ルートシグニチャ格納先のポインタ
 	if (FAILED(hr))
 	{
-		printf("Sphere:ルートシグネチャの生成に失敗");
+		DEBUG_LOG_ERROR(L"Sphere:ルートシグネチャの生成に失敗");
 		return;
 	}
 

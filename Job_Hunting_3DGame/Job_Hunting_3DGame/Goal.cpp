@@ -1,6 +1,7 @@
 #include "Goal.h"
 #include "System/ImGui/imgui.h"
 #include "Debug_New.h"
+#include "Debug_Msg.h"
 
 using namespace DirectX;
 
@@ -101,7 +102,7 @@ bool Goal::Init_PropGoal(Camera* _camera)
 	auto modelData = ModelManager::GetInstance().GetModel(L"Assets/Goal/GoalGate.fbx");
 	if (!modelData)
 	{
-		printf("Goal:モデル読み込み失敗\n");
+		DEBUG_LOG_ERROR("Goal:モデル読み込み失敗");
 		return false;
 	}
 	
@@ -114,7 +115,7 @@ bool Goal::Init_PropGoal(Camera* _camera)
 		m_pConstantBuffer[i] = std::make_unique<ConstantBuffer>(sizeof(Matrix));
 		if (!m_pConstantBuffer[i]->IsValid())
 		{
-			printf("Goal:コンスタントバッファ生成失敗\n");
+			DEBUG_LOG_ERROR(L"Goal:コンスタントバッファ生成失敗");
 			return false;
 		}
 
@@ -130,7 +131,7 @@ bool Goal::Init_PropGoal(Camera* _camera)
 		m_pLightConstantBuffer[i] = std::make_unique<ConstantBuffer>(sizeof(DirectionalLightData));
 		if (!m_pLightConstantBuffer[i]->IsValid())
 		{
-			printf("Goal:ライトコンスタントバッファ生成失敗\n");
+			DEBUG_LOG_ERROR(L"Goal:ライトコンスタントバッファ生成失敗");
 			return false;
 		}
 	}
@@ -141,7 +142,7 @@ bool Goal::Init_PropGoal(Camera* _camera)
 	auto tex = TextureManager::Instance().GetTexture(L"Assets/Texture/Color_Red.png");
 	if (!tex)
 	{
-		printf("Goal:テクスチャ読み込み失敗\n");
+		DEBUG_LOG_ERROR(L"Goal:テクスチャ読み込み失敗");
 		return false;
 	}
 	m_pTexHandle = m_pDescriptorHeap->Register(tex.get());
@@ -150,7 +151,7 @@ bool Goal::Init_PropGoal(Camera* _camera)
 	m_pRootSignature = rootManager.GetRoot(Root_Type::ROOT_TYPE_GOAL);
 	if (!m_pRootSignature->IsValid())
 	{
-		printf("Goal:ルートシグネチャの生成に失敗\n");
+		DEBUG_LOG_ERROR(L"Goal:ルートシグネチャの生成に失敗");
 		return false;
 	}
 
@@ -177,11 +178,11 @@ bool Goal::Init_PropGoal(Camera* _camera)
 
 	if (!m_pPipelineState->IsValid())
 	{
-		printf("Goal:パイプラインステートの生成に失敗\n");
+		DEBUG_LOG_ERROR(L"Goal:パイプラインステートの生成に失敗");
 		return false;
 	}
 
-	printf("Goal:初期化処理に成功\n\n");
+	DEBUG_LOG_ERROR(L"Goal:初期化処理に成功");
 	return true;
 }
 

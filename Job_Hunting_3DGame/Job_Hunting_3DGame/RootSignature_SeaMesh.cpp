@@ -2,6 +2,7 @@
 #include "DrawBase.h"
 #include <d3dx12.h>
 #include "Debug_New.h"
+#include "Debug_Msg.h"
 
 RootSignature_SeaMesh::RootSignature_SeaMesh()
 {
@@ -55,7 +56,7 @@ RootSignature_SeaMesh::RootSignature_SeaMesh()
 		pErrorBlob.GetAddressOf());
 	if (FAILED(hr))
 	{
-		printf("SeaMesh:ルートシグネチャシリアライズに失敗しました\n");
+		DEBUG_LOG_ERROR(L"SeaMesh:ルートシグネチャシリアライズに失敗しました");
 		return;
 	}
 
@@ -66,7 +67,7 @@ RootSignature_SeaMesh::RootSignature_SeaMesh()
 		IID_PPV_ARGS(m_pRootSignature.GetAddressOf())); 
 	if (FAILED(hr))
 	{
-		printf("SeaMesh:ルートシグネチャに生成に失敗\n");
+		DEBUG_LOG_ERROR(L"SeaMesh:ルートシグネチャの生成に失敗");
 		return;
 	}
 

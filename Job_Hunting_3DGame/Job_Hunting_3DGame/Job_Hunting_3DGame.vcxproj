@@ -229,6 +229,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Camera2D.h" />
     <ClInclude Include="ConstantBuffer.h" />
+    <ClInclude Include="Debug_Msg.h" />
     <ClInclude Include="Debug_New.h" />
     <ClInclude Include="Debug_Sphere.h" />
     <ClInclude Include="DescriptorHeap.h">

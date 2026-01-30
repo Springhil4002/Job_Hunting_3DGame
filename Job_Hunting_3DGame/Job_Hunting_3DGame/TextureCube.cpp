@@ -2,6 +2,7 @@
 #include "DrawBase.h"
 #include <DirectXTex.h>
 #include "Debug_New.h"
+#include "Debug_Msg.h"
 #pragma comment(lib, "DirectXTex.lib")
 
 // マルチバイト文字列をワイド文字列に変換
@@ -65,7 +66,7 @@ bool TextureCube::LoadFromFile(const std::wstring& _path)
 	// 失敗時エラー出力
 	if (FAILED(hr))
 	{
-		printf("TextureCube:読み込み失敗:%ls\n", _path.c_str());
+		DEBUG_LOG_ERROR(L"TextureCube:読み込み失敗");
 		return false;
 	}
 
@@ -91,7 +92,7 @@ bool TextureCube::LoadFromFile(const std::wstring& _path)
 	// 失敗時エラー出力
 	if (FAILED(hr))
 	{
-		printf("TextureCube:リソース生成失敗: % ls\n", _path.c_str());
+		DEBUG_LOG_ERROR(L"TextureCube:リソース生成失敗");
 		return false;
 	}
 
@@ -100,7 +101,7 @@ bool TextureCube::LoadFromFile(const std::wstring& _path)
 
 	if (!imgs || imageCount == 0)
 	{
-		printf("TextureCube:イメージの取得に失敗\n");
+		DEBUG_LOG_ERROR(L"TextureCube:イメージの取得に失敗");
 		return false;
 	}
 

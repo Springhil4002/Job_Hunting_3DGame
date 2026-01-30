@@ -1,8 +1,8 @@
-#define NOMINMAX
 #include "Texture2D.h"
 #include "DrawBase.h"
 #include <DirectXTex.h>
 #include "Debug_New.h"
+#include "Debug_Msg.h"
 #pragma comment(lib, "DirectXTex.lib")
 
 // マルチバイト文字列をワイド文字列に変換
@@ -66,7 +66,7 @@ bool Texture2D::LoadFromFile(const std::wstring& _path)
 	// 失敗時エラー出力
 	if (FAILED(hr))
 	{
-		printf("テクスチャ2D:読み込み失敗:%ls\n", _path.c_str());
+		DEBUG_LOG_ERROR(L"テクスチャ2D:読み込み失敗");
 		return false;
 	}
 
@@ -93,7 +93,7 @@ bool Texture2D::LoadFromFile(const std::wstring& _path)
 	// 失敗時エラー出力
 	if(FAILED(hr))
 	{
-		printf("テクスチャ2D:リソース生成失敗:%ls\n", _path.c_str());
+		DEBUG_LOG_ERROR(L"テクスチャ2D:リソース生成失敗");
 		return false;
 	}
 
@@ -108,7 +108,7 @@ bool Texture2D::LoadFromFile(const std::wstring& _path)
 	// 失敗時エラー出力
 	if (FAILED(hr))
 	{
-		printf("テクスチャ2D:GPUメモリ送信失敗\n");
+		DEBUG_LOG_ERROR(L"テクスチャ2D:GPUメモリ送信失敗");
 		return false;
 	}
 

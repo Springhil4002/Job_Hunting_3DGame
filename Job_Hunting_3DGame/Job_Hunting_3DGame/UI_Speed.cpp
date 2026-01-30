@@ -1,5 +1,6 @@
 #include "UI_Speed.h"
 #include "Debug_New.h"
+#include "Debug_Msg.h"
 
 using namespace DirectX;
 
@@ -46,6 +47,7 @@ bool UI_Speed::Init(Camera2D* _cameraUI, float _width, float _height,
 		XMVectorZero(),
 		XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f), 1.0f);
 	
+	DEBUG_LOG(L"UI_Speed:‰Šú‰»ˆ—‚É¬Œ÷");
 	return true;
 }
 

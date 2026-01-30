@@ -1,5 +1,6 @@
 #include "UI_Fade.h"
 #include "Debug_New.h"
+#include "Debug_Msg.h"
 
 using namespace DirectX;
 
@@ -25,14 +26,14 @@ bool UI_Fade::Init(Camera2D* _cameraUI, float _width, float _height)
     m_pVertexBuffer = std::make_unique<VertexBuffer>(vertexSize, vertexStride, mesh.vertices.data());
     if (!m_pVertexBuffer->IsValid()) 
     {
-        printf("UI_Fade:頂点バッファ生成失敗\n");
+        DEBUG_LOG_ERROR(L"UI_Fade:頂点バッファ生成失敗");
         return false;
     }
     auto indexSize = sizeof(uint32_t) * std::size(mesh.indices);
     m_pIndexBuffer = std::make_unique<IndexBuffer>(indexSize, mesh.indices.data());
     if (!m_pIndexBuffer->IsValid()) 
     {
-        printf("UI_Fade:インデックスバッファ生成失敗\n");
+        DEBUG_LOG_ERROR(L"UI_Fade:インデックスバッファ生成失敗");
         return false;
     }
     for (size_t i = 0; i < DrawBase::FRAME_BUFFER_COUNT; ++i)
@@ -40,7 +41,7 @@ bool UI_Fade::Init(Camera2D* _cameraUI, float _width, float _height)
         m_pConstantBuffer[i] = std::make_unique<ConstantBuffer>(sizeof(MatrixUI));
         if (!m_pConstantBuffer[i]->IsValid()) 
         {
-            printf("UI_Fade:コンスタントバッファ生成失敗\n");
+            DEBUG_LOG_ERROR(L"UI_Fade:コンスタントバッファ生成失敗");
             return false;
         }
         auto ptr = m_pConstantBuffer[i]->GetPtr<MatrixUI>();
@@ -55,7 +56,7 @@ bool UI_Fade::Init(Camera2D* _cameraUI, float _width, float _height)
     auto tex = TextureManager::Instance().GetTexture(L"Assets/Texture/Color_Black.png");
     if (!tex)
     {
-        printf("UI_Fade:画像読み込み失敗\n");
+        DEBUG_LOG_ERROR(L"UI_Fade:画像読み込み失敗");
         return false;
     }
 
@@ -65,7 +66,7 @@ bool UI_Fade::Init(Camera2D* _cameraUI, float _width, float _height)
     m_pRootSignature = rootManager.GetRoot(Root_Type::ROOT_TYPE_UI);
     if (!m_pRootSignature->IsValid())
     {
-        printf("UI_Fade:ルートシグネチャの生成に失敗\n");
+        DEBUG_LOG_ERROR(L"UI_Fade:ルートシグネチャの生成に失敗");
         return false;
     }
 
@@ -88,11 +89,11 @@ bool UI_Fade::Init(Camera2D* _cameraUI, float _width, float _height)
 
     if (!m_pPipelineState->IsValid())
     {
-        printf("UI_Fade:パイプラインステートの生成に失敗\n");
+        DEBUG_LOG_ERROR(L"UI_Fade:パイプラインステートの生成に失敗");
         return false;
     }
 
-    printf("UI_Fade:初期化処理に成功\n\n");
+    DEBUG_LOG(L"UI_Fade:初期化処理に成功");
     return true;
 }
 
@@ -122,7 +123,7 @@ void UI_Fade::Update_Fade()
         {
             m_Alpha = 1.0f;
             m_State = FADE_STATE::FADE_STATE_NONE;
-            printf("UI_Fade:フェードイン完了\n");
+            DEBUG_LOG("UI_Fade:フェードイン完了");
             m_FadeFinished = true;
         }
     }
@@ -133,7 +134,7 @@ void UI_Fade::Update_Fade()
         {
             m_Alpha = 0.0f;
             m_State = FADE_STATE::FADE_STATE_NONE;
-            printf("UI_Fade:フェードアウト完了\n");
+            DEBUG_LOG("UI_Fade:フェードアウト完了");
             m_FadeFinished = true;
         }
     }

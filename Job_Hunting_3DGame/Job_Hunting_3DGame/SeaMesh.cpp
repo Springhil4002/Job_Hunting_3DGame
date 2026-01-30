@@ -1,5 +1,6 @@
 #include "SeaMesh.h"
 #include "Debug_New.h"
+#include "Debug_Msg.h"
 
 using namespace DirectX;
 
@@ -10,7 +11,7 @@ bool SeaMesh::Init(Camera* _camera)
 	if (!Init_SimulationResources()) return false;
 	Init_Settings(m_Camera);
 
-	printf("SeaMesh:初期化処理に成功\n\n");
+	DEBUG_LOG(L"SeaMesh:初期化処理に成功");
 	return true;
 }
 
@@ -150,10 +151,9 @@ void SeaMesh::Apply_PendingDrops()
 		// UV座標をグリッド状のインデックスに変換
 		const int cx = static_cast<int>(drop.uv.x * m_GridX);
 		const int cz = static_cast<int>(drop.uv.y * m_GridZ);
-
 		const int radius = static_cast<int>(std::max(1.0f, drop.radius));
 
-		// 範囲内のグリッドを処理
+		// 範囲内のグリッドに対して、中心からの距離に応じた衝撃を加算
 		for (int z = -radius; z <= radius; ++z)
 		{
 			for (int x = -radius; x <= radius; ++x)
@@ -256,7 +256,7 @@ bool SeaMesh::Init_SimulationResources()
 	m_Height.assign(total, 0.0f);
 	m_Velocity.assign(total, 0.0f);
 
-	printf("SeaMesh:高さ場の初期化設定に成功\n");
+	DEBUG_LOG(L"SeaMesh:高さ場の初期化設定に成功");
 	return true;
 }
 
@@ -268,7 +268,7 @@ bool SeaMesh::Init_Settings(Camera* _camera)
 	m_pVertexBuffer = std::make_unique<VertexBuffer>(vertexSize, vertexStride, m_Vertices.data());
 	if (!m_pVertexBuffer->IsValid())
 	{
-		printf("SeaMesh:頂点バッファ生成失敗\n");
+		DEBUG_LOG_ERROR(L"SeaMesh:頂点バッファ生成失敗");
 		return false;
 	}
 
@@ -276,7 +276,7 @@ bool SeaMesh::Init_Settings(Camera* _camera)
 	m_pIndexBuffer = std::make_unique<IndexBuffer>(indexSize, mesh.Indices.data());
 	if (!m_pIndexBuffer->IsValid())
 	{
-		printf("SeaMesh:インデックスバッファ生成失敗\n");
+		DEBUG_LOG_ERROR(L"SeaMesh:インデックスバッファ生成失敗");
 		return false;
 	}
 
@@ -285,7 +285,7 @@ bool SeaMesh::Init_Settings(Camera* _camera)
 		m_pConstantBuffer[i] = std::make_unique<ConstantBuffer>(sizeof(Matrix));
 		if (!m_pConstantBuffer[i]->IsValid())
 		{
-			printf("SeaMesh:コンスタントバッファ生成失敗\n");
+			DEBUG_LOG_ERROR(L"SeaMesh:コンスタントバッファ生成失敗");
 			return false;
 		}
 
@@ -306,7 +306,7 @@ bool SeaMesh::Init_Settings(Camera* _camera)
 		m_pLightConstantBuffer[i] = std::make_unique<ConstantBuffer>(sizeof(DirectionalLightData));
 		if (!m_pLightConstantBuffer[i]->IsValid())
 		{
-			printf("Goal:ライトコンスタントバッファ生成失敗\n");
+			DEBUG_LOG_ERROR(L"SeaMesh:ライトコンスタントバッファ生成失敗");
 			return false;
 		}
 	}
@@ -316,7 +316,7 @@ bool SeaMesh::Init_Settings(Camera* _camera)
 	auto cubeTex = TextureManager::Instance().GetCubeMap(L"Assets/Texture/SkyBox.dds");
 	if (!cubeTex)
 	{
-		printf("SeaMesh:キューブマップ読み込み失敗\n");
+		DEBUG_LOG_ERROR(L"SeaMesh:キューブマップ読み込み失敗");
 		return false;
 	}
 	m_pSkyCubeTexHandle = m_pDescriptorHeap->Register(cubeTex.get());
@@ -324,7 +324,7 @@ bool SeaMesh::Init_Settings(Camera* _camera)
 	auto normalTex = TextureManager::Instance().GetTexture(L"Assets/Texture/SeaMesh_Normal.png");
 	if (!normalTex)
 	{
-		printf("SeaMesh:ノーマルマップ読み込み失敗\n");
+		DEBUG_LOG_ERROR(L"SeaMesh:ノーマルマップ読み込み失敗");
 		return false;
 	}
 	m_pNormalTexHandle = m_pDescriptorHeap->Register(normalTex.get());
@@ -332,7 +332,7 @@ bool SeaMesh::Init_Settings(Camera* _camera)
 	auto normalTex2 = TextureManager::Instance().GetTexture(L"Assets/Texture/SeaMesh_Normal_2.png");
 	if (!normalTex2)
 	{
-		printf("SeaMesh:ノーマルマップ2読み込み失敗\n");
+		DEBUG_LOG_ERROR(L"SeaMesh:ノーマルマップ2読み込み失敗");
 		return false;
 	}
 	m_pNormalTexHandle2 = m_pDescriptorHeap->Register(normalTex2.get());
@@ -341,7 +341,7 @@ bool SeaMesh::Init_Settings(Camera* _camera)
 	m_pRootSignature = rootManager.GetRoot(Root_Type::ROOT_TYPE_SEAMESH);
 	if (!m_pRootSignature->IsValid())
 	{
-		printf("SeaMesh:ルートシグネチャ生成失敗\n");
+		DEBUG_LOG_ERROR(L"SeaMesh:ルートシグネチャ生成失敗");
 		return false;
 	}
 
@@ -365,7 +365,7 @@ bool SeaMesh::Init_Settings(Camera* _camera)
 	}
 	if (!m_pPipelineState->IsValid())
 	{
-		printf("SeaMesh:パイプラインステート生成失敗\n");
+		DEBUG_LOG_ERROR(L"SeaMesh:パイプラインステート生成失敗");
 		return false;
 	}
 	return true;

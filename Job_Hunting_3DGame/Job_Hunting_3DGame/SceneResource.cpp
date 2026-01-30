@@ -1,5 +1,6 @@
 #include "SceneResource.h"
 #include "Debug_New.h"
+#include "Debug_Msg.h"
 
 SceneResourceList GetSceneResourceList(SCENE_ID _ID)
 {
@@ -56,7 +57,7 @@ SceneResourceList GetSceneResourceList(SCENE_ID _ID)
 		};
 		break;
 	default:
-		printf("SceneResource:SCENE_IDエラー\n");
+		DEBUG_LOG(L"SceneResource:SCENE_IDエラー");
 		break;
 	}
 	return list;

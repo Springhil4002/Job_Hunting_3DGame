@@ -7,6 +7,7 @@
 #include "PipelineState_SkyBox.h"
 #include "PipelineState_DebugSphere.h"
 #include "PipelineState_UI.h"
+#include "Debug_Msg.h"
 
 enum class PSO_Type
 {
@@ -54,7 +55,7 @@ private:
 		// キーに対応するPSOが存在するか確認
 		if (it != _psoMap.end())
 		{
-			printf("PSO_Manager:既存のPSOを返します\n");
+			DEBUG_LOG(L"PSO_Manager:既存のPSOを返します");
 			return it->second.get();
 		}
 			
@@ -62,7 +63,7 @@ private:
 		auto newPso = std::make_unique<T>();
 		T* psoPtr = newPso.get();
 		_psoMap[_key] = std::move(newPso);
-		printf("PSO_Manager:新規のPSOを生成しました\n");
+		DEBUG_LOG(L"PSO_Manager:新規のPSOを生成しました");
 		return psoPtr;
 	}
 

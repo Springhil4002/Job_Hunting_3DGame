@@ -428,14 +428,13 @@ void PlayerController::Update_Camera(float _deltaTime)
 	XMVECTOR targetPosition = idealCamPos;
 
 	// ばね・減衰によるカメラ位置の更新
-	XMVECTOR displacement = m_CurrentCamPos - targetPosition;
-	XMVECTOR springForce = -m_SpringConstant * displacement;
-	XMVECTOR dampingForce = -m_DampingConstant * m_CameraVelocity;
-	XMVECTOR accelaration = springForce + dampingForce;
+	XMVECTOR displacement = m_CurrentCamPos - targetPosition;		// 理想位置からのズレ
+	XMVECTOR springForce = -m_SpringConstant * displacement;		// フックの法則(F=-kx);
+	XMVECTOR dampingForce = -m_DampingConstant * m_CameraVelocity;	// 抵抗力
+	XMVECTOR acceleration = springForce + dampingForce;				// 加速度の決定
 	
-	m_CameraVelocity += accelaration * _deltaTime;
-	m_CurrentCamPos += m_CameraVelocity * _deltaTime;
-
+	m_CameraVelocity += acceleration * _deltaTime;		// 速度の更新
+	m_CurrentCamPos += m_CameraVelocity * _deltaTime;	// 最終カメラ位置
 	m_Camera->SetPos(m_CurrentCamPos);
 
 	// カメラを旋回方向に傾ける
@@ -451,9 +450,9 @@ void PlayerController::Update_Camera(float _deltaTime)
 	float fz = static_cast<float>(XMVectorGetZ(m_Position));
 	float waveHeight = Get_HeightFromMesh(fx, fz);
 	idealTarget = XMVectorSetY(idealTarget,
-		XMVectorGetY(idealTarget) + waveHeight * 0.3f);
+		XMVectorGetY(idealTarget) + waveHeight * 0.5f);
 
-	// カメラ注視点更新
+	// 滑らかな遅延追従
 	float interp = 1.0f - expf(-m_FollowSpeed * _deltaTime);
 	XMVECTOR currentTarget = m_Camera->GetTarget();
 	XMVECTOR newCamTarget = XMVectorLerp(currentTarget, idealTarget, interp);
@@ -489,22 +488,17 @@ void PlayerController::Update_WaterEffects(float _deltaTime)
 	// 移動時、波紋生成
 	if (speed > 0.05f)
 	{
+		const float offset = 2.0f;
+
 		// プレイヤーのワールド座表
 		float fx = XMVectorGetX(m_Position);
 		float fz = XMVectorGetZ(m_Position);
-		
-		XMVECTOR forwardVec = m_ForwardVec;
+		fx += XMVectorGetX(m_ForwardVec) * offset;
+		fz += XMVectorGetZ(m_ForwardVec) * offset;
 
-		const float offset = 2.0f;
-
-		fx += XMVectorGetX(forwardVec) * offset;
-		fz += XMVectorGetZ(forwardVec) * offset;
-
-		// 水面メッシュのグリッドサイズを取得
+		// ワールド座表を水面MeshのUVに変換(0.0～1.0)に変換
 		const float gridSize = Get_GridSize();
 		const float halfSize = gridSize * 0.5f;
-
-		// ワールド座表をWaterMeshのUVに変換、Gridの中心がWaterMeshの中心になるように
 		float u = (fx + halfSize) / gridSize;
 		float v = (fz + halfSize) / gridSize;
 
@@ -512,7 +506,7 @@ void PlayerController::Update_WaterEffects(float _deltaTime)
 		u = std::clamp(u, 0.0f, 1.0f);
 		v = std::clamp(v, 0.0f, 1.0f);
 
-		// 速度に応じたドロップの半径と強さを設定
+		// 速度に応じた衝撃の強さと範囲を設定
 		const float dropStrength = std::min(5.0f, speed * 0.05f);
 		const float radius = 2.5f;
 

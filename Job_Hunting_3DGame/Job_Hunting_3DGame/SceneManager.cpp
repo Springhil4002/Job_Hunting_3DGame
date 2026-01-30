@@ -2,6 +2,7 @@
 #include "TextureManager.h"
 #include "ModelManager.h"
 #include "Debug_New.h"
+#include "Debug_Msg.h"
 
 std::unique_ptr<BaseScene> SceneManager::currentScene = nullptr;
 SceneFactory SceneManager::sceneFactory;
@@ -60,11 +61,11 @@ void SceneManager::ChangeScene(
 			break;
 		}
 		default:
-			printf("SceneManager:未知のTEX_TYPE検出 %d\n", tex.type);
+			DEBUG_LOG_ERROR(L"SceneManager:未知のTEX_TYPE検出");
 			break;
 		}
 		if (!success)
-			printf("SceneManager:リソース読み込み失敗 %ls\n", tex.path.c_str());
+			DEBUG_LOG_ERROR(L"SceneManager:リソース読み込み失敗");
 	}
 
 	// モデルをまとめてロード
@@ -73,10 +74,10 @@ void SceneManager::ChangeScene(
 		auto model = ModelManager::GetInstance().LoadModel(path);
 		if (!model)
 		{
-			printf("SceneManager:モデル読み込み失敗 %ls\n", path.c_str());
+			DEBUG_LOG_ERROR("SceneManager:モデル読み込み失敗");
 		}
 	}
-	printf("SceneManager:リソース読み込み完了\n\n");
+	DEBUG_LOG("SceneManager:リソース読み込み完了");
 
 	// 新しいシーンを作成
 	currentScene.reset(sceneFactory.CreateScene(

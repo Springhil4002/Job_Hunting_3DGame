@@ -2,6 +2,7 @@
 #include "SceneManager.h"
 #include "System/ImGui/imgui.h"
 #include "Debug_New.h"
+#include "Debug_Msg.h"
 
 using namespace DirectX;
 
@@ -19,7 +20,7 @@ Object* ResultScene::CreateObj(const std::string& _objectID)
 
 void ResultScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 {
-	printf("シーン名：ResultScene\n");
+	DEBUG_LOG(L"シーン名:ResultScene");
 
 	SceneManager::GetSound().Play(SOUND_LABEL_BGM_003);
 
@@ -203,8 +204,8 @@ void ResultScene::Draw_ImGui()
 {
 #if _DEBUG
 	ImGui_Prop();
+	ImGui_Shop();
 #endif
-	//ImGui_Shop();
 }
 
 void ResultScene::ImGui_Prop()

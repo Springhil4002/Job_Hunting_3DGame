@@ -3,6 +3,7 @@
 #include <d3dx12.h>
 #include <d3dcompiler.h>
 #include "Debug_New.h"
+#include "Debug_Msg.h"
 
 #pragma comment(lib,"d3dcompiler.lib")
 
@@ -57,7 +58,7 @@ void PipelineState_Splash::SetVS(std::wstring filePath)
 	auto hr = D3DReadFileToBlob(filePath.c_str(), m_pVsBlob.GetAddressOf());
 	if (FAILED(hr))
 	{
-		printf("PSO_Splash:頂点シェーダーの読み込みに失敗\n");
+		DEBUG_LOG_ERROR(L"PSO_Splash:頂点シェーダーの読み込みに失敗");
 		return;
 	}
 
@@ -70,7 +71,7 @@ void PipelineState_Splash::SetPS(std::wstring filePath)
 	auto hr = D3DReadFileToBlob(filePath.c_str(), m_pPSBlob.GetAddressOf());
 	if (FAILED(hr))
 	{
-		printf("PSO_Splash:ピクセルシェーダーの読み込みに失敗\n");
+		DEBUG_LOG_ERROR(L"PSO_Splash:ピクセルシェーダーの読み込みに失敗");
 		return;
 	}
 
@@ -83,7 +84,7 @@ void PipelineState_Splash::Create()
 	auto hr = g_DrawBase->Device()->CreateGraphicsPipelineState(&desc, IID_PPV_ARGS(m_pPipelineState.ReleaseAndGetAddressOf()));
 	if (FAILED(hr))
 	{
-		printf("PSO_Splash:パイプラインステートの生成に失敗\n");
+		DEBUG_LOG_ERROR(L"PSO_Splash:パイプラインステートの生成に失敗");
 		return;
 	}
 

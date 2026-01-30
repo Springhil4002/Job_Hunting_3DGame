@@ -1,5 +1,6 @@
 #include "UI.h"
 #include "Debug_New.h"
+#include "Debug_Msg.h"
 
 using namespace DirectX;
 
@@ -25,7 +26,7 @@ bool UI::Init(Camera2D* _cameraUI, float _width, float _height,
     m_pVertexBuffer = std::make_unique<VertexBuffer>(vertexSize, vertexStride, mesh.vertices.data());
     if (!m_pVertexBuffer->IsValid())
     {
-        printf("UI:頂点バッファ生成失敗\n");
+        DEBUG_LOG_ERROR(L"UI:頂点バッファ生成失敗");
         return false;
     }
 
@@ -33,7 +34,7 @@ bool UI::Init(Camera2D* _cameraUI, float _width, float _height,
     m_pIndexBuffer = std::make_unique<IndexBuffer>(indexSize, mesh.indices.data());
     if (!m_pIndexBuffer->IsValid())
     {
-        printf("UI:インデックスバッファ生成失敗\n");
+        DEBUG_LOG_ERROR(L"UI:インデックスバッファ生成失敗");
         return false;
     }
 
@@ -42,7 +43,7 @@ bool UI::Init(Camera2D* _cameraUI, float _width, float _height,
         m_pConstantBuffer[i] = std::make_unique<ConstantBuffer>(sizeof(MatrixUI));
         if (!m_pConstantBuffer[i]->IsValid())
         {
-            printf("UI:コンスタントバッファ生成失敗\n");
+            DEBUG_LOG_ERROR(L"UI:コンスタントバッファ生成失敗");
             return false;
         }
 
@@ -61,7 +62,7 @@ bool UI::Init(Camera2D* _cameraUI, float _width, float _height,
     auto tex = TextureManager::Instance().GetTexture(_filePath);
     if (!tex)
     {
-        printf("UI:画像読み込み失敗\n");
+        DEBUG_LOG_ERROR(L"UI:UI画像読み込み失敗");
         return false;
     }
     m_pTexHandle = m_pDescriptorHeap->Register(tex.get());
@@ -70,7 +71,7 @@ bool UI::Init(Camera2D* _cameraUI, float _width, float _height,
     m_pRootSignature = rootManager.GetRoot(Root_Type::ROOT_TYPE_UI);
     if (!m_pRootSignature->IsValid())
     {
-        printf("UI:ルートシグネチャの生成に失敗\n");
+        DEBUG_LOG_ERROR(L"UI:ルートシグネチャの生成に失敗");
         return false;
     }
 
@@ -97,11 +98,11 @@ bool UI::Init(Camera2D* _cameraUI, float _width, float _height,
 
     if (!m_pPipelineState->IsValid())
     {
-        printf("UI:パイプラインステートの生成に失敗\n");
+        DEBUG_LOG_ERROR(L"UI:パイプラインステートの生成に失敗");
         return false;
     }
 
-    printf("UI:初期化処理に成功\n\n");
+    DEBUG_LOG(L"UI:初期化処理に成功");
     return true;
 }
 
