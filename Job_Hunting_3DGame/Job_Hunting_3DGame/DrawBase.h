@@ -1,137 +1,133 @@
-#pragma once
+ï»¿#pragma once
 #include <d3d12.h>
 #include <dxgi.h>
 #include <dxgi1_4.h>
 #include "System/ComPtr.h"
 
-#pragma comment(lib, "d3d12.lib")	// d3d12ƒ‰ƒCƒuƒ‰ƒŠ‚ğƒŠƒ“ƒN‚·‚é
-#pragma comment(lib, "dxgi.lib")	// dxgiƒ‰ƒCƒuƒ‰ƒŠ‚ğƒŠƒ“ƒN‚·‚é
+#pragma comment(lib, "d3d12.lib")	// d3d12ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã‚’ãƒªãƒ³ã‚¯ã™ã‚‹
+#pragma comment(lib, "dxgi.lib")	// dxgiãƒ©ã‚¤ãƒ–ãƒ©ãƒªã‚’ãƒªãƒ³ã‚¯ã™ã‚‹
 
 class DrawBase
 {
 public:
 	~DrawBase();
-
-	/// @brief ƒ_ƒuƒ‹ƒoƒbƒtƒ@ƒŠƒ“ƒO‚·‚é‚Ì‚Å2
-	enum { FRAME_BUFFER_COUNT = 2 }; 
-
-	/// @brief •`‰æŠî”Õ‚Ì‰Šú‰»
-	/// @param hwnd ƒEƒBƒ“ƒhƒEƒnƒ“ƒhƒ‹
-	/// @param windowWidth ƒEƒBƒ“ƒhƒE‚Ì‰¡•
-	/// @param windowHeight ƒEƒBƒ“ƒhƒE‚Ìc•
-	/// @return ‰Šú‰»‚Ì¬”Û
-	bool Init(HWND _hwnd, UINT _windowWidth, UINT _windowHeight); 
-
-	/// @brief •`‰æ‚ÌŠJnˆ—
+	/// @brief ãƒ€ãƒ–ãƒ«ãƒãƒƒãƒ•ã‚¡ãƒªãƒ³ã‚°ã™ã‚‹ã®ã§2
+	enum { FRAME_BUFFER_COUNT = 2 };
+	/// @brief æç”»åŸºç›¤ã®åˆæœŸåŒ–
+	/// @param hwnd ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
+	/// @param windowWidth ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®æ¨ªå¹…
+	/// @param windowHeight ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ç¸¦å¹…
+	/// @return åˆæœŸåŒ–ã®æˆå¦
+	bool Init(HWND _hwnd, UINT _windowWidth, UINT _windowHeight);
+	/// @brief æç”»ã®é–‹å§‹å‡¦ç†
 	void BeginRender();
-	/// @brief •`‰æ‚ÌI—¹ˆ—
-	void EndRender(); 
-	
-	/// @brief ŠO•”‚©‚çQÆ‚Å‚«‚é‚æ‚¤‚ÉƒQƒbƒ^[‚Æ‚µ‚ÄŒöŠJ‚·‚é
-	/// @return ID3D12Device‚Ìƒo[ƒWƒ‡ƒ“6‚Ìƒ|ƒCƒ“ƒ^
+	/// @brief æç”»ã®çµ‚äº†å‡¦ç†
+	void EndRender();
+	/// @brief å¤–éƒ¨ã‹ã‚‰å‚ç…§ã§ãã‚‹ã‚ˆã†ã«ã‚²ãƒƒã‚¿ãƒ¼ã¨ã—ã¦å…¬é–‹ã™ã‚‹
+	/// @return ID3D12Deviceã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³6ã®ãƒã‚¤ãƒ³ã‚¿
 	ID3D12Device6* Device();
-	/// @brief ŠO•”‚©‚çQÆ‚Å‚«‚é‚æ‚¤‚ÉƒQƒbƒ^[‚Æ‚µ‚ÄŒöŠJ‚·‚é
-	/// @return ID3D12GraphicsCommandList‚Ìƒ|ƒCƒ“ƒ^
+	/// @brief å¤–éƒ¨ã‹ã‚‰å‚ç…§ã§ãã‚‹ã‚ˆã†ã«ã‚²ãƒƒã‚¿ãƒ¼ã¨ã—ã¦å…¬é–‹ã™ã‚‹
+	/// @return ID3D12GraphicsCommandListã®ãƒã‚¤ãƒ³ã‚¿
 	ID3D12GraphicsCommandList* CommandList();
-	/// @brief ŠO•”‚©‚çQÆ‚Å‚«‚é‚æ‚¤‚ÉƒQƒbƒ^[‚Æ‚µ‚ÄŒöŠJ‚·‚é
-	/// @return UINT(unsigned intŒ^)
+	/// @brief å¤–éƒ¨ã‹ã‚‰å‚ç…§ã§ãã‚‹ã‚ˆã†ã«ã‚²ãƒƒã‚¿ãƒ¼ã¨ã—ã¦å…¬é–‹ã™ã‚‹
+	/// @return UINT(unsigned intå‹)
 	UINT CurrentBackBufferIndex();
-	/// @brief ŠO•”‚©‚çQÆ‚Å‚«‚é‚æ‚¤‚ÉƒQƒbƒ^[‚Æ‚µ‚ÄŒöŠJ‚·‚é
-	/// @return ID3D12CommandQueue‚Ìƒ|ƒCƒ“ƒ^
+	/// @brief å¤–éƒ¨ã‹ã‚‰å‚ç…§ã§ãã‚‹ã‚ˆã†ã«ã‚²ãƒƒã‚¿ãƒ¼ã¨ã—ã¦å…¬é–‹ã™ã‚‹
+	/// @return ID3D12CommandQueueã®ãƒã‚¤ãƒ³ã‚¿
 	ID3D12CommandQueue* CommandQueue();
 private: 
 	//==================================================================
-	// DirectX12‰Šú‰»‚Ég‚¤ŠÖ”ŒQ
+	// DirectX12åˆæœŸåŒ–ã«ä½¿ã†é–¢æ•°ç¾¤
 	//==================================================================
 
-	/// @brief ƒfƒoƒCƒX¶¬
-	/// @return ¶¬‚Ì¬”Û
+	/// @brief ãƒ‡ãƒã‚¤ã‚¹ç”Ÿæˆ
+	/// @return ç”Ÿæˆã®æˆå¦
 	bool CreateDevice();	
-	/// @brief ƒRƒ}ƒ“ƒhƒLƒ…[¶¬
-	/// @return ¶¬‚Ì¬”Û
+	/// @brief ã‚³ãƒãƒ³ãƒ‰ã‚­ãƒ¥ãƒ¼ç”Ÿæˆ
+	/// @return ç”Ÿæˆã®æˆå¦
 	bool CreateCommandQueue();	
-	/// @brief ƒXƒƒbƒvƒ`ƒFƒCƒ“¶¬
-	/// @return ¶¬‚Ì¬”Û
+	/// @brief ã‚¹ãƒ¯ãƒƒãƒ—ãƒã‚§ã‚¤ãƒ³ç”Ÿæˆ
+	/// @return ç”Ÿæˆã®æˆå¦
 	bool CreateSwapChain();		
-	/// @brief ƒRƒ}ƒ“ƒhƒŠƒXƒg‚ÆƒRƒ}ƒ“ƒhƒAƒƒP[ƒ^[¶¬
-	/// @return ¶¬‚Ì¬”Û
+	/// @brief ã‚³ãƒãƒ³ãƒ‰ãƒªã‚¹ãƒˆã¨ã‚³ãƒãƒ³ãƒ‰ã‚¢ãƒ­ã‚±ãƒ¼ã‚¿ãƒ¼ç”Ÿæˆ
+	/// @return ç”Ÿæˆã®æˆå¦
 	bool CreateCommandList();	
-	/// @brief ƒtƒFƒ“ƒX¶¬
-	/// @return ¶¬‚Ì¬”Û
+	/// @brief ãƒ•ã‚§ãƒ³ã‚¹ç”Ÿæˆ
+	/// @return ç”Ÿæˆã®æˆå¦
 	bool CreateFence();			
-	/// @brief ƒrƒ…[ƒ|[ƒg¶¬
+	/// @brief ãƒ“ãƒ¥ãƒ¼ãƒãƒ¼ãƒˆç”Ÿæˆ
 	void CreateViewPort();		
-	/// @brief ƒVƒU[‹éŒ`¶¬
+	/// @brief ã‚·ã‚¶ãƒ¼çŸ©å½¢ç”Ÿæˆ
 	void CreateScissorRect();	
 
 	//==================================================================
-	// •`‰æ‚Ég‚¤DirectX12‚ÌƒIƒuƒWƒFƒNƒgŒQ
+	// æç”»ã«ä½¿ã†DirectX12ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆç¾¤
 	//==================================================================
 	
-	// ƒEƒBƒ“ƒhƒEƒnƒ“ƒhƒ‹
+	// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
 	HWND m_hWnd;
-	// ƒtƒŒ[ƒ€ƒoƒbƒtƒ@‚Ì‰¡•
+	// ãƒ•ãƒ¬ãƒ¼ãƒ ãƒãƒƒãƒ•ã‚¡ã®æ¨ªå¹…
 	UINT m_FrameBufferWidth = 0;
-	// ƒtƒŒ[ƒ€ƒoƒbƒtƒ@‚Ìc•
+	// ãƒ•ãƒ¬ãƒ¼ãƒ ãƒãƒƒãƒ•ã‚¡ã®ç¸¦å¹…
 	UINT m_FrameBufferHeight = 0;
-	// Œ»İ‚ÌƒoƒbƒNƒoƒbƒtƒ@‚Ì”Ô†•Û•Ï”
+	// ç¾åœ¨ã®ãƒãƒƒã‚¯ãƒãƒƒãƒ•ã‚¡ã®ç•ªå·ä¿æŒå¤‰æ•°
 	UINT m_CurrentBackBufferIndex = 0;
 
-	// ƒfƒoƒCƒX
+	// ãƒ‡ãƒã‚¤ã‚¹
 	ComPtr<ID3D12Device6> m_pDevice = nullptr;		
-	// ƒRƒ}ƒ“ƒhƒLƒ…[
+	// ã‚³ãƒãƒ³ãƒ‰ã‚­ãƒ¥ãƒ¼
 	ComPtr<ID3D12CommandQueue> m_pQueue = nullptr;	
-	// ƒXƒƒbƒvƒ`ƒFƒCƒ“
+	// ã‚¹ãƒ¯ãƒƒãƒ—ãƒã‚§ã‚¤ãƒ³
 	ComPtr<IDXGISwapChain3> m_pSwapChain = nullptr; 
-	// ƒRƒ}ƒ“ƒhƒAƒƒP[ƒ^[
+	// ã‚³ãƒãƒ³ãƒ‰ã‚¢ãƒ­ã‚±ãƒ¼ã‚¿ãƒ¼
 	ComPtr<ID3D12CommandAllocator> m_pAllocator[FRAME_BUFFER_COUNT] = { nullptr };
-	// ƒRƒ}ƒ“ƒhƒŠƒXƒg
+	// ã‚³ãƒãƒ³ãƒ‰ãƒªã‚¹ãƒˆ
 	ComPtr<ID3D12GraphicsCommandList> m_pCommandList = nullptr; 
-	// ƒtƒFƒ“ƒX‚Åg‚¤ƒCƒxƒ“ƒg
+	// ãƒ•ã‚§ãƒ³ã‚¹ã§ä½¿ã†ã‚¤ãƒ™ãƒ³ãƒˆ
 	HANDLE m_fenceEvent = nullptr;				
-	// ƒtƒFƒ“ƒX
+	// ãƒ•ã‚§ãƒ³ã‚¹
 	ComPtr<ID3D12Fence> m_pFence = nullptr;		
-	// ƒtƒFƒ“ƒX‚Ì’lienum‚Åİ’è‚µ‚½”:2j
+	// ãƒ•ã‚§ãƒ³ã‚¹ã®å€¤ï¼ˆenumã§è¨­å®šã—ãŸæ•°:2ï¼‰
 	UINT64 m_fenceValue[FRAME_BUFFER_COUNT] = {};
-	// ƒrƒ…[ƒ|[ƒg
+	// ãƒ“ãƒ¥ãƒ¼ãƒãƒ¼ãƒˆ
 	D3D12_VIEWPORT m_Viewport = {};
-	// ƒVƒU[‹éŒ`
+	// ã‚·ã‚¶ãƒ¼çŸ©å½¢
 	D3D12_RECT m_Scissor = {};
 
 	//==================================================================
-	// •`‰æ‚Ég‚¤ƒIƒuƒWƒFƒNƒg‚Æ‚»‚Ì¶¬ŠÖ”‚½‚¿
+	// æç”»ã«ä½¿ã†ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã¨ãã®ç”Ÿæˆé–¢æ•°ãŸã¡
 	//==================================================================
 	
-	/// @brief ƒŒƒ“ƒ_[ƒ^[ƒQƒbƒg‚ğ¶¬
-	/// @return ¶¬‚Ì¬”Û
+	/// @brief ãƒ¬ãƒ³ãƒ€ãƒ¼ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚’ç”Ÿæˆ
+	/// @return ç”Ÿæˆã®æˆå¦
 	bool CreateRenderTarget(); 
-	/// @brief [“xƒXƒeƒ“ƒVƒ‹ƒoƒbƒtƒ@‚ğ¶¬
-	/// @return ¶¬‚Ì¬”Û
+	/// @brief æ·±åº¦ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ãƒãƒƒãƒ•ã‚¡ã‚’ç”Ÿæˆ
+	/// @return ç”Ÿæˆã®æˆå¦
 	bool CreateDepthStencil(); 
 
-	// ƒŒƒ“ƒ_[ƒ^[ƒQƒbƒgƒrƒ…[‚ÌƒfƒBƒXƒNƒŠƒvƒ^ƒTƒCƒY
+	// ãƒ¬ãƒ³ãƒ€ãƒ¼ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãƒ“ãƒ¥ãƒ¼ã®ãƒ‡ã‚£ã‚¹ã‚¯ãƒªãƒ—ã‚¿ã‚µã‚¤ã‚º
 	UINT m_RtvDescriptorSize = 0; 
-	// ƒŒƒ“ƒ_[ƒ^[ƒQƒbƒg‚ÌƒfƒBƒXƒNƒŠƒvƒ^ƒq[ƒv
+	// ãƒ¬ãƒ³ãƒ€ãƒ¼ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã®ãƒ‡ã‚£ã‚¹ã‚¯ãƒªãƒ—ã‚¿ãƒ’ãƒ¼ãƒ—
 	ComPtr<ID3D12DescriptorHeap> m_pRtvHeap = nullptr; 
-	// ƒŒƒ“ƒ_[ƒ^[ƒQƒbƒgiƒ_ƒuƒ‹ƒoƒbƒtƒ@—p‚Å2ŒÂj
+	// ãƒ¬ãƒ³ãƒ€ãƒ¼ã‚¿ãƒ¼ã‚²ãƒƒãƒˆï¼ˆãƒ€ãƒ–ãƒ«ãƒãƒƒãƒ•ã‚¡ç”¨ã§2å€‹ï¼‰
 	ComPtr<ID3D12Resource> m_pRenderTargets[FRAME_BUFFER_COUNT] = { nullptr }; 
 
-	// [“xƒXƒeƒ“ƒVƒ‹‚ÌƒfƒBƒXƒNƒŠƒvƒ^[ƒTƒCƒY
+	// æ·±åº¦ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã®ãƒ‡ã‚£ã‚¹ã‚¯ãƒªãƒ—ã‚¿ãƒ¼ã‚µã‚¤ã‚º
 	UINT m_DsvDescriptorSize = 0; 
-	// [“xƒXƒeƒ“ƒVƒ‹‚ÌƒfƒBƒXƒNƒŠƒvƒ^ƒq[ƒv
+	// æ·±åº¦ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ã®ãƒ‡ã‚£ã‚¹ã‚¯ãƒªãƒ—ã‚¿ãƒ’ãƒ¼ãƒ—
 	ComPtr<ID3D12DescriptorHeap> m_pDsvHeap = nullptr; 
-	// [“xƒXƒeƒ“ƒVƒ‹ƒoƒbƒtƒ@
+	// æ·±åº¦ã‚¹ãƒ†ãƒ³ã‚·ãƒ«ãƒãƒƒãƒ•ã‚¡
 	ComPtr<ID3D12Resource> m_pDepthStencilBuffer = nullptr; 
 
 	//==================================================================
-	// •`‰æƒ‹[ƒv‚Åg—p‚·‚é‚à‚Ì
+	// æç”»ãƒ«ãƒ¼ãƒ—ã§ä½¿ç”¨ã™ã‚‹ã‚‚ã®
 	//==================================================================
 	
-	// Œ»İ‚ÌƒtƒŒ[ƒ€‚ÌƒŒƒ“ƒ_[ƒ^[ƒQƒbƒg‚ğˆê“I‚É•Û‘¶‚µ‚Ä‚¨‚­ŠÖ”
+	// ç¾åœ¨ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã®ãƒ¬ãƒ³ãƒ€ãƒ¼ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã‚’ä¸€æ™‚çš„ã«ä¿å­˜ã—ã¦ãŠãé–¢æ•°
 	ID3D12Resource* m_currentRenderTarget = nullptr; 
 
-	/// @brief •`‰æŠ®—¹‚ğ‘Ò‚Âˆ—
+	/// @brief æç”»å®Œäº†ã‚’å¾…ã¤å‡¦ç†
 	void WaitRender(); 
 };
 
-extern DrawBase* g_DrawBase; // ‚Ç‚±‚©‚ç‚Å‚àQÆ‚µ‚½‚¢‚Ì‚ÅƒOƒ[ƒoƒ‹‚É‚·‚é
+extern DrawBase* g_DrawBase; // ã©ã“ã‹ã‚‰ã§ã‚‚å‚ç…§ã—ãŸã„ã®ã§ã‚°ãƒ­ãƒ¼ãƒãƒ«ã«ã™ã‚‹

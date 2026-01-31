@@ -75,8 +75,10 @@ bool TextureCube::LoadFromFile(const std::wstring& _path)
 	auto prop = CD3DX12_HEAP_PROPERTIES(D3D12_CPU_PAGE_PROPERTY_WRITE_BACK,
 		D3D12_MEMORY_POOL_L0);
 	auto desc = CD3DX12_RESOURCE_DESC::Tex2D(
-		meta.format, meta.width, meta.height,
-		static_cast<UINT16>(meta.arraySize), 
+		meta.format,
+		static_cast<UINT>(meta.width),  
+		static_cast<UINT>(meta.height),
+		static_cast<UINT16>(meta.arraySize),
 		static_cast<UINT16>(meta.mipLevels));
 
 	// テクスチャリソースを生成
@@ -170,7 +172,7 @@ std::shared_ptr<TextureCube> TextureCube::GetWhite()
 	return std::make_shared<TextureCube>(buff);
 }
 
-ID3D12Resource* TextureCube::GetDefaultResource(size_t _width, size_t _height)
+ID3D12Resource* TextureCube::GetDefaultResource(UINT _width, UINT _height)
 {
 	// テクスチャリソースの設定
 	auto resDesc = CD3DX12_RESOURCE_DESC::Tex2D(

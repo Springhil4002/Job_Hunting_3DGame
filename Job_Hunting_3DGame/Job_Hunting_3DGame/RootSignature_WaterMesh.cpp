@@ -53,7 +53,6 @@ RootSignature_WaterMesh::RootSignature_WaterMesh()
 		pErrorBlob.GetAddressOf());
 	if (FAILED(hr))
 	{
-		//DEBUG_LOG_ERROR(L"UI:ルートシグネチャシリアライズに失敗");
 		return;
 	}
 
@@ -64,7 +63,6 @@ RootSignature_WaterMesh::RootSignature_WaterMesh()
 		IID_PPV_ARGS(m_pRootSignature.GetAddressOf())); 
 	if (FAILED(hr))
 	{
-		//DEBUG_LOG_ERROR(L"UI:ルートシグネチャの生成に失敗");
 		return;
 	}
 

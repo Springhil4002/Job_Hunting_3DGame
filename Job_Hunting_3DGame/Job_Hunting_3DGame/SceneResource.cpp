@@ -40,18 +40,19 @@ SceneResourceList GetSceneResourceList(SCENE_ID _ID)
 		break;
 	case SCENE_ID_RESULT:
 		list.textures = {
-			{ L"Assets/Texture/Result_Bg.png",			TEX_TYPE::TEX_TYPE_TEXTURE2D },	// リザルト背景
-			{ L"Assets/Texture/UI_MaxSpeed.png",		TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,上限速度
-			{ L"Assets/Texture/UI_Acceleration.png",	TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,加速度
-			{ L"Assets/Texture/UI_ScoreUp.png",			TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,スコア増加
-			{ L"Assets/Texture/UI_GoalCreate.png",		TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,ゴール生成数
-			{ L"Assets/Texture/UI_Level.png",			TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,レベル
-			{ L"Assets/Texture/UI_Cost.png",			TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,コスト
-			{ L"Assets/Texture/UI_Upgrade_Idle.png",	TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,強化(黒)
-			{ L"Assets/Texture/UI_CurrentSelect.png",	TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,選択中の枠
-			{ L"Assets/Texture/UI_Title.png",			TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,タイトルへ
-			{ L"Assets/Texture/UI_Replay.png",			TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,リプレイ
-
+			{ L"Assets/Texture/Result_Bg.png",				TEX_TYPE::TEX_TYPE_TEXTURE2D },	// リザルト背景
+			{ L"Assets/Texture/UI_MaxSpeed.png",			TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,上限速度
+			{ L"Assets/Texture/UI_Acceleration.png",		TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,加速度
+			{ L"Assets/Texture/UI_ScoreUp.png",				TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,スコア増加
+			{ L"Assets/Texture/UI_GoalCreate.png",			TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,ゴール生成数
+			{ L"Assets/Texture/UI_Level.png",				TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,レベル
+			{ L"Assets/Texture/UI_Cost.png",				TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,コスト
+			{ L"Assets/Texture/UI_Upgrade_Idle.png",		TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,強化(黒)
+			{ L"Assets/Texture/UI_CurrentSelect.png",		TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,選択中の枠
+			{ L"Assets/Texture/UI_Title.png",				TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,タイトルへ
+			{ L"Assets/Texture/UI_Replay.png",				TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,リプレイ
+			{ L"Assets/Texture/UI_Result_controller.png",	TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,操作方法
+			{ L"Assets/Texture/UI_Result_controller2.png",	TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,操作方法
 		};
 		list.modelPaths = {
 		};

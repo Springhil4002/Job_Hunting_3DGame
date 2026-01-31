@@ -54,6 +54,24 @@ void ResultScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	ui_Bg->UpdateCameraMatrix();
 	ui_Bg->m_tags.AddTag("UI");
 	
+	UI* ui_con = dynamic_cast<UI*>(CreateObj("UI"));
+	ui_con->Init(uiCamera, 700.0f, 100.0f, L"Assets/Texture/UI_Result_controller.png");
+	ui_con->SetPos(XMVectorSet(-620.0f, -480.0f, 0.0f, 0.0f));
+	ui_con->SetRota(XMVectorZero());
+	ui_con->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	ui_con->UpdateTransform();
+	ui_con->UpdateCameraMatrix();
+	ui_con->m_tags.AddTag("UI_con");
+
+	UI* ui_con2 = dynamic_cast<UI*>(CreateObj("UI"));
+	ui_con2->Init(uiCamera, 300.0f, 100.0f, L"Assets/Texture/UI_Result_controller2.png");
+	ui_con2->SetPos(XMVectorSet(-100.0f, -480.0f, 0.0f, 0.0f));
+	ui_con2->SetRota(XMVectorZero());
+	ui_con2->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	ui_con2->UpdateTransform();
+	ui_con2->UpdateCameraMatrix();
+	ui_con2->m_tags.AddTag("UI_con");
+
 	// ÉXÉRÉAUI
 	UI_Score* score = dynamic_cast<UI_Score*>(CreateObj("UI_Score"));
 	score->Init(uiCamera, 50.0f, 100.0f, L"Assets/Texture/UI_Number.png", L"Assets/Texture/UI_Score.png");
@@ -81,10 +99,10 @@ void ResultScene::Update(float _deltaTime)
 	bool isFading = (ui_fade && ui_fade->GetState() != FADE_STATE::FADE_STATE_NONE);
 	if (!isFading)
 	{
-		if (input.GetKeyTrigger(VK_UP))		m_Shop->Input_Up();
-		if (input.GetKeyTrigger(VK_DOWN))	m_Shop->Input_Down();
-		if (input.GetKeyTrigger(VK_LEFT))	m_Shop->Input_Left();
-		if (input.GetKeyTrigger(VK_RIGHT))	m_Shop->Input_Right();
+		if (input.GetKeyTrigger(VK_W))		m_Shop->Input_Up();
+		if (input.GetKeyTrigger(VK_S))		m_Shop->Input_Down();
+		if (input.GetKeyTrigger(VK_A))		m_Shop->Input_Left();
+		if (input.GetKeyTrigger(VK_D))		m_Shop->Input_Right();
 
 		if (input.GetKeyTrigger(VK_RETURN))
 		{

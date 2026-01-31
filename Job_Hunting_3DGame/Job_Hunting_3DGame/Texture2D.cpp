@@ -75,7 +75,9 @@ bool Texture2D::LoadFromFile(const std::wstring& _path)
 	auto prop = CD3DX12_HEAP_PROPERTIES(D3D12_CPU_PAGE_PROPERTY_WRITE_BACK, 
 										D3D12_MEMORY_POOL_L0);
 	auto desc = CD3DX12_RESOURCE_DESC::Tex2D(
-		meta.format, meta.width, meta.height,
+		meta.format,
+		static_cast<UINT>(meta.width),
+		static_cast<UINT>(meta.height),
 		static_cast<UINT16>(std::min(meta.arraySize, static_cast<size_t>(UINT16_MAX))),
 		static_cast<UINT16>(std::min(meta.mipLevels, static_cast<size_t>(UINT16_MAX)))
 	);
@@ -152,7 +154,9 @@ std::shared_ptr<Texture2D> Texture2D::GetWhite()
 	std::vector<unsigned char> data(4 * 4 * 4);
 	std::fill(data.begin(), data.end(), 0xff);
 	// 作ったテクスチャをGPUにアップロード
-	auto hr = buff->WriteToSubresource(0, nullptr, data.data(), 4 * 4, data.size());
+	auto hr = buff->WriteToSubresource(0, nullptr, data.data(),
+		static_cast<UINT>(4 * 4),
+		static_cast<UINT>(data.size()));
 	if (FAILED(hr))
 	{
 		return nullptr;
@@ -161,7 +165,7 @@ std::shared_ptr<Texture2D> Texture2D::GetWhite()
 	return std::make_shared<Texture2D>(buff);
 }
 
-ID3D12Resource* Texture2D::GetDefaultResource(size_t _width, size_t _height)
+ID3D12Resource* Texture2D::GetDefaultResource(UINT _width, UINT _height)
 {
 	// テクスチャリソースの設定
 	auto resDesc = CD3DX12_RESOURCE_DESC::Tex2D(

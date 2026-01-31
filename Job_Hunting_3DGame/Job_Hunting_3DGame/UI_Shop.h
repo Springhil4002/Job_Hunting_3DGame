@@ -1,5 +1,6 @@
 #pragma once
 #include "UI.h"
+#include "UI_Flash.h"
 #include "Shop.h"
 #include <array>
 #include <memory>
@@ -24,7 +25,7 @@ private:
 	std::unique_ptr<UI> m_ReplayUI;
 	std::unique_ptr<UI> m_TitleUI;
 	// 選択中のカーソル
-	std::unique_ptr<UI> m_Cursor;
+	std::unique_ptr<UI_Flash> m_Cursor;
 
 	// 数字UIに値を設定する関数
 	void UpdateDigits(std::unique_ptr<UI>* _uiArray,

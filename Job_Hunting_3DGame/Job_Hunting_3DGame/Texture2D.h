@@ -25,7 +25,7 @@ private:
 	/// @param _width 横幅
 	/// @param _height 高さ
 	/// @return テクスチャリソースを返します
-	static ID3D12Resource* GetDefaultResource(size_t _width, size_t _height);
+	static ID3D12Resource* GetDefaultResource(UINT _width, UINT _height);
 
 	// コピー禁止
 	Texture2D(const Texture2D&) = delete;

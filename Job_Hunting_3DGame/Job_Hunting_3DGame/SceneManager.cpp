@@ -65,7 +65,9 @@ void SceneManager::ChangeScene(
 			break;
 		}
 		if (!success)
+		{
 			DEBUG_LOG_ERROR(L"SceneManager:リソース読み込み失敗");
+		}
 	}
 
 	// モデルをまとめてロード

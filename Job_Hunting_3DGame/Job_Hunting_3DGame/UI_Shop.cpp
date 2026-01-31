@@ -99,7 +99,7 @@ bool UI_Shop::Init(Camera2D* _cameraUI, Shop* _shop)
 	m_TitleUI->SetPos(DirectX::XMVectorSet(ShopLayout::UI_TITLE, ShopLayout::MENU_POS_Y, 0, 0));
 
 	// ‘I‘ð’†‚Ì˜gUI
-	m_Cursor = std::make_unique<UI>();
+	m_Cursor = std::make_unique<UI_Flash>();
 	if (!m_Cursor->Init(_cameraUI, 160.0f, 80.0f, L"Assets/Texture/UI_CurrentSelect.png"))
 	{
 		return false;
