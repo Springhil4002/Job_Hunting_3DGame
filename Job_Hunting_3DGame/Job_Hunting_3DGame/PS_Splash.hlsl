@@ -12,7 +12,10 @@ float4 PS_Main(PS_IN pin) : SV_Target
 {
     // テクスチャカラー取得
     float4 texColor = tex.Sample(smp, pin.uv);
+    float4 finalColor;
+    finalColor.rgb = pin.color.rgb;
+    finalColor.a = texColor.a * pin.color.a;
     
     // 頂点カラーと掛け合わせ
-    return texColor * pin.color;
+    return finalColor;
 }

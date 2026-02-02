@@ -31,13 +31,30 @@ void ResultScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	camera->SetPos(XMVectorSet(0.0f, 2.5f, 0.0f, 1.0f));
 	camera->SetTarget(XMVectorSet(0.0f, -15.0f, 50.0f, 0.0f));
 	camera->SetUp(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
+	camera->SetRoll(0.0f);
 	uiCamera->Init(screenWidth, screenHeight);
 
 	// プロトタイプ登録
+	prototypeManager->AddPrototype("Sky", std::make_unique<SkyBox>());
+	prototypeManager->AddPrototype("SeaMesh", std::make_unique<SeaMesh>());
 	prototypeManager->AddPrototype("UI", std::make_unique<UI>());
 	prototypeManager->AddPrototype("UI_Fade", std::make_unique<UI_Fade>());
 	prototypeManager->AddPrototype("UI_Score", std::make_unique<UI_Score>());
 	prototypeManager->AddPrototype("UI_Shop", std::make_unique<UI_Shop>());
+
+	SkyBox* sky = dynamic_cast<SkyBox*>(CreateObj("Sky"));
+	sky->Init(camera);
+	sky->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
+	sky->SetRota(XMVectorZero());
+	sky->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	sky->m_tags.AddTag("SkyDome");
+
+	SeaMesh* seaMesh = dynamic_cast<SeaMesh*>(CreateObj("SeaMesh"));
+	seaMesh->Init(camera);
+	seaMesh->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
+	seaMesh->SetRota(XMVectorZero());
+	seaMesh->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
+	seaMesh->m_tags.AddTag("SeaMesh");
 
 	// ショップシステム
 	m_Shop = std::make_unique<Shop>();
@@ -45,15 +62,6 @@ void ResultScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 
 	//================================UI生成================================//
 
-	UI* ui_Bg = dynamic_cast<UI*>(CreateObj("UI"));
-	ui_Bg->Init(uiCamera, 1920.0f, 1080.0f, L"Assets/Texture/Result_Bg.png");
-	ui_Bg->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
-	ui_Bg->SetRota(XMVectorZero());
-	ui_Bg->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
-	ui_Bg->UpdateTransform();
-	ui_Bg->UpdateCameraMatrix();
-	ui_Bg->m_tags.AddTag("UI");
-	
 	UI* ui_con = dynamic_cast<UI*>(CreateObj("UI"));
 	ui_con->Init(uiCamera, 700.0f, 100.0f, L"Assets/Texture/UI_Result_controller.png");
 	ui_con->SetPos(XMVectorSet(-620.0f, -480.0f, 0.0f, 0.0f));

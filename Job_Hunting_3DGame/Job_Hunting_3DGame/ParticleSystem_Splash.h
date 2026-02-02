@@ -11,6 +11,7 @@
 #include "DescriptorHeap.h"
 #include "TextureManager.h"
 #include <d3dx12.h>
+#include <random>
 
 struct InstanceData
 {
@@ -23,6 +24,9 @@ class ParticleSystem_Splash : public ParticleSystem
 {
 private:
 	Camera* m_Camera;					// カメラ
+
+	std::random_device m_Rd;	// 乱数生成器のシード
+	std::mt19937 m_Mt;			// メルセンヌツイスター乱数生成器
 
 	std::vector<InstanceData> m_InstanceData;	// インスタンスデータ
 	ComPtr<ID3D12Resource> m_InstanceBuffer;	// インスタンスバッファ
@@ -62,4 +66,10 @@ public:
 	void Update(float _deltaTime) override;
 	void Draw() override;
 	void UnInit() override;
+
+	/// @brief float型の乱数を生成する関数
+	/// @param _min 最低値
+	/// @param _max 最大値
+	/// @return float型の乱数
+	float Rand_f(float _min, float _max);
 };

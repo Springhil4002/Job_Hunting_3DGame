@@ -50,11 +50,16 @@ void ParticleSystem_Splash::Update(float _deltaTime)
 		float time = p.elapsedTime / p.lifeTime;
 		p.color = p.LerpColor(p.startColor, p.endColor, time);
 
+		float currentScale = Rand_f(0.03f, 0.1f);
+
 		// GPUへ送るデータ作成
 		InstanceData& instData = m_InstanceData[activeCount];
 		XMStoreFloat3(&instData.worldPos, p.position);
-		instData.scale = 0.05f;		// パーティクルの大きさ
-		instData.color = p.color;	// パーティクルの色
+		instData.scale = currentScale;	// パーティクルの大きさ
+		instData.color = p.color;		// パーティクルの色
+		instData.color.x *= 1.5f;
+		instData.color.y *= 1.5f;
+		instData.color.z *= 1.5f;
 
 		++activeCount;
 	}
@@ -179,6 +184,12 @@ bool ParticleSystem_Splash::CreateInstanceBuffer()
 	m_InstanceBufferView.StrideInBytes = sizeof(InstanceData);
 
 	return true;
+}
+
+float ParticleSystem_Splash::Rand_f(float _min, float _max)
+{
+	std::uniform_real_distribution<float> dist(_min, _max);
+	return dist(m_Mt);
 }
 
 bool ParticleSystem_Splash::Init_Prop(Camera* _camera)

@@ -31,12 +31,12 @@ protected:
 public:
 	DirectX::XMVECTOR m_Position = DirectX::XMVectorZero();		// 位置
 	DirectX::XMVECTOR m_Velocity = DirectX::XMVectorZero();		// 速度
-	DirectX::XMFLOAT4 m_StartColor;		// 開始色
-	DirectX::XMFLOAT4 m_EndColor;		// 終了色
+	DirectX::XMFLOAT4 m_StartColor = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);	// 開始色
+	DirectX::XMFLOAT4 m_EndColor = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);	// 終了色
 	float m_ColorChangeRate = 0.0f;	// 色変化率
-	float m_Gravity=0.0f;		// 重力	
-	float m_Min_LifeTime=0.0f;	// 最小寿命
-	float m_Max_LifeTime=0.0f;	// 最大寿命
+	float m_Gravity = 0.0f;			// 重力	
+	float m_Min_LifeTime = 0.0f;	// 最小寿命
+	float m_Max_LifeTime = 0.0f;	// 最大寿命
 	ParticleState m_State = ParticleState::Stop;
 	Camera* m_Camera = nullptr;		// カメラ
 

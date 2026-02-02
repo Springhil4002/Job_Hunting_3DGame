@@ -54,10 +54,10 @@ bool ParticleEmitter_Splash::Init_Prop()
 void ParticleEmitter_Splash::Init_Param()
 {
 	SetCreateParticleNum(2000, 2000);
-	SetCreateParticleRate(0.01f);
+	SetCreateParticleRate(0.005f);
 	SetMaxParticles(m_pParticleSystem->GetMaxParticles());
-	m_StartColor = XMFLOAT4(0.3f, 0.8f, 1.0f, 1.0f);
-	m_EndColor = XMFLOAT4(0.3f, 0.8f, 1.0f, 0.0f);
+	m_StartColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	m_EndColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 0.0f);
 	m_ColorChangeRate = 0.8f;
 	m_Time = 0.0f;
 	m_Min_LifeTime = 1.0f;
