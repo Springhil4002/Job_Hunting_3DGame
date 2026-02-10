@@ -13,6 +13,7 @@
 #include "UI_Speed.h"
 #include "UI_Score.h"
 #include "UI_Shop.h"
+#include "UI_ActiveLine.h"
 
 class PrototypeManager
 {

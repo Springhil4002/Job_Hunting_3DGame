@@ -212,6 +212,7 @@
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="UI.cpp" />
+    <ClCompile Include="UI_ActiveLine.cpp" />
     <ClCompile Include="UI_Fade.cpp" />
     <ClCompile Include="UI_Flash.cpp" />
     <ClCompile Include="UI_Score.cpp" />
@@ -301,6 +302,7 @@
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="UI.h" />
+    <ClInclude Include="UI_ActiveLine.h" />
     <ClInclude Include="UI_Fade.h" />
     <ClInclude Include="UI_FADE_STATE.h" />
     <ClInclude Include="UI_Flash.h" />

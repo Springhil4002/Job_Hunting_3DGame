@@ -12,6 +12,8 @@ private:
 	Camera2D* uiCamera;
 	std::unique_ptr<Game> game;
 	std::unique_ptr<PlayerController> playerCtrl;
+	UI_ActiveLine* m_ActiveLine = nullptr;
+	UI_Fade* m_Fade = nullptr;
 public:
 	/// @brief コンストラクタ
 	GameScene() = default;

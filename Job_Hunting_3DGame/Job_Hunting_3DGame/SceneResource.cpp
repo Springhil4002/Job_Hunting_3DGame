@@ -33,6 +33,7 @@ SceneResourceList GetSceneResourceList(SCENE_ID _ID)
 			{ L"Assets/Texture/UI_Km.png",				TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,単位(Km)
 			{ L"Assets/Texture/UI_Score.png",			TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,単位(Score)
 			{ L"Assets/Texture/UI_Game_controller.png", TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,操作方法
+			{ L"Assets/Texture/UI_ActiveLine.png",		TEX_TYPE::TEX_TYPE_TEXTURE2D },	// UI,集中線
 		};
 		list.modelPaths = {
 			{ L"Assets/Goal/GoalGate.fbx" },	// モデル(鳥居)

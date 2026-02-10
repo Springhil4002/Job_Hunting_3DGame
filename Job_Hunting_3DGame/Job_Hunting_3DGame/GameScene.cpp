@@ -41,12 +41,13 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	prototypeManager->AddPrototype("Sky",		std::make_unique<SkyBox>());
 	prototypeManager->AddPrototype("Player",	std::make_unique<Player>());
 	prototypeManager->AddPrototype("Goal",		std::make_unique<Goal>());
+	prototypeManager->AddPrototype("SeaMesh",	std::make_unique<SeaMesh>());
 	prototypeManager->AddPrototype("UI",		std::make_unique<UI>());
 	prototypeManager->AddPrototype("UI_Fade",	std::make_unique<UI_Fade>());
 	prototypeManager->AddPrototype("UI_Timer",	std::make_unique<UI_Timer>());
 	prototypeManager->AddPrototype("UI_Speed",	std::make_unique<UI_Speed>());
 	prototypeManager->AddPrototype("UI_Score",	std::make_unique<UI_Score>());
-	prototypeManager->AddPrototype("SeaMesh",	std::make_unique<SeaMesh>());
+	prototypeManager->AddPrototype("UI_ActiveLine", std::make_unique<UI_ActiveLine>());
 
 	// ライト設定
 	DirectionalLight::Instance().SetLightDir({ 0.35f,-1.0f,0.15f });
@@ -177,20 +178,27 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	score->Init(uiCamera, 50.0f, 100.0f, L"Assets/Texture/UI_Number.png",L"Assets/Texture/UI_Score.png");
 	score->m_tags.AddTag("UI_Score");
 
+	m_ActiveLine = dynamic_cast<UI_ActiveLine*>(CreateObj("UI_ActiveLine"));
+	m_ActiveLine->Init(uiCamera, 1920.0f, 1080.0f, L"Assets/Texture/UI_ActiveLine.png",0.0f);
+	m_ActiveLine->SetPos(XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f));
+	m_ActiveLine->m_tags.AddTag("UI_ActiveLine");
+
 	// フェード
-	UI_Fade* ui_fade = dynamic_cast<UI_Fade*>(CreateObj("UI_Fade"));
-	ui_fade->Init(uiCamera, 1920.0f, 1080.0f);
-	ui_fade->SetTransform(
+	m_Fade = dynamic_cast<UI_Fade*>(CreateObj("UI_Fade"));
+	m_Fade->Init(uiCamera, 1920.0f, 1080.0f);
+	m_Fade->SetTransform(
 		XMVectorZero(),
 		XMVectorZero(),
 		XMVectorSet(1.0f, 1.0, 1.0f, 0.0f), 1.0f);
-	ui_fade->SetFadeOut();
-	ui_fade->m_tags.AddTag("UI_Fade");
+	m_Fade->SetFadeOut();
+	m_Fade->m_tags.AddTag("UI_Fade");
 }
 
 void GameScene::Update(float _deltaTime)
 {
 	//Update_Input();
+	DirectionalLight::Instance().UpdateLightFollowCamera(camera);
+
 	game->Update(_deltaTime);
 	// カウントダウン中はプレイヤー操作不可
 	if (game->GetState() == RACE_STATE::RACE_STATE_COUNTDOWN)
@@ -200,7 +208,15 @@ void GameScene::Update(float _deltaTime)
 
 	playerCtrl->Update(_deltaTime);
 
-	DirectionalLight::Instance().UpdateLightFollowCamera(camera);
+	if (m_ActiveLine)
+	{
+		float currentSpeed = XMVectorGetX(XMVector3Length(playerCtrl->GetVelocity()));
+		float maxSpeed = playerCtrl->GetMaxSpeed();
+		float speedRatio = currentSpeed / maxSpeed;
+
+		m_ActiveLine->SetSpeedRatio(speedRatio);
+		m_ActiveLine->Update(_deltaTime);
+	}
 	
 	// 全オブジェクト更新
 	for (auto& obj : objectInstance)
@@ -209,19 +225,19 @@ void GameScene::Update(float _deltaTime)
 	}
 
 	// シーン遷移開始で画面を暗く
-	auto ui_fade = FindByTag<UI_Fade>("UI_Fade");
-	if (ui_fade && ui_fade->GetState() == FADE_STATE::FADE_STATE_NONE)
+	
+	if (m_Fade && m_Fade->GetState() == FADE_STATE::FADE_STATE_NONE)
 	{
 		if (input.GetKeyTrigger(VK_SPACE) || 
 			game->GetTimeUpFlag())
 		{
-			ui_fade->SetFadeIn();
+			m_Fade->SetFadeIn();
 			playerCtrl->SetPlayed(false);
 		}
 	}
 
 	// 画面暗くなったの確認後、遷移
-	if (ui_fade && ui_fade->IsFadeFinished() && ui_fade->GetAlpha() >= 1.0f)
+	if (m_Fade && m_Fade->IsFadeFinished() && m_Fade->GetAlpha() >= 1.0f)
 	{
 		SceneManager::ChangeScene(SCENE_ID_RESULT, camera, uiCamera, hwnd);
 	}
@@ -312,10 +328,11 @@ void GameScene::Update_MouseRotate(float _sensi)
 void GameScene::Draw_ImGui()
 {
 #if _DEBUG
-	ImGui_Prop();
+	
 	playerCtrl->Draw_ImGui();
 	game->Draw_ImGui();
 #endif
+	ImGui_Prop();
 }
 
 void GameScene::ImGui_Prop()
