@@ -3,7 +3,7 @@
 #include <d3dx12.h>
 #include <string>
 
-class PipelineState_DebugSphere
+class PipelineState_DebugMesh
 {
 private:
 	// 生成に成否のフラグ
@@ -18,7 +18,7 @@ private:
 	ComPtr<ID3DBlob> m_pPSBlob;
 public:
 	/// @brief コンストラクタである程度の設定をする
-	PipelineState_DebugSphere();
+	PipelineState_DebugMesh();
 	/// @brief 生成の成否を返す処理
 	/// @return　生成の成否を返します 
 	bool IsValid() const;

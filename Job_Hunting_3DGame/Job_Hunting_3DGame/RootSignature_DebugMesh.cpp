@@ -1,10 +1,10 @@
-#include "RootSignature_DebugSphere.h"
+#include "RootSignature_DebugMesh.h"
 #include "DrawBase.h"
 #include <d3dx12.h>
 #include "Debug_New.h"
 #include "Debug_Msg.h"
 
-RootSignature_DebugSphere::RootSignature_DebugSphere()
+RootSignature_DebugMesh::RootSignature_DebugMesh()
 {
 	// アプリケーションの入力アセンブラを使用する
 	auto flag = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
@@ -48,7 +48,7 @@ RootSignature_DebugSphere::RootSignature_DebugSphere()
 		pErrorBlob.GetAddressOf());
 	if (FAILED(hr))
 	{
-		DEBUG_LOG_ERROR(L"Sphere:ルートシグネチャシリアライズに失敗");
+		DEBUG_LOG_ERROR(L"Mesh:ルートシグネチャシリアライズに失敗");
 		return;
 	}
 
@@ -60,19 +60,19 @@ RootSignature_DebugSphere::RootSignature_DebugSphere()
 		IID_PPV_ARGS(m_pRootSignature.GetAddressOf())); // ルートシグニチャ格納先のポインタ
 	if (FAILED(hr))
 	{
-		DEBUG_LOG_ERROR(L"Sphere:ルートシグネチャの生成に失敗");
+		DEBUG_LOG_ERROR(L"Mesh:ルートシグネチャの生成に失敗");
 		return;
 	}
 
 	m_IsValid = true;
 }
 
-bool RootSignature_DebugSphere::IsValid() const
+bool RootSignature_DebugMesh::IsValid() const
 {
 	return m_IsValid;
 }
 
-ID3D12RootSignature* RootSignature_DebugSphere::Get()
+ID3D12RootSignature* RootSignature_DebugMesh::Get()
 {
 	return m_pRootSignature.Get();
 }

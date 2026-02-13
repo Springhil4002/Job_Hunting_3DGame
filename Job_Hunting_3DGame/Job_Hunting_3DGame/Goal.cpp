@@ -9,6 +9,8 @@ std::unique_ptr<Object> Goal::clone() const
 {
 	auto newObj = std::make_unique<Goal>();
 	newObj->m_Sphere = m_Sphere;
+	newObj->m_Poal_L = m_Poal_L;
+	newObj->m_Poal_R = m_Poal_R;
 	return newObj;
 }
 
@@ -16,6 +18,7 @@ bool Goal::Init(Camera* _camera)
 {
 	Init_PropGoal(_camera);
 	Init_PropSphere(_camera);
+	Init_PropPoals(_camera);
 	return true;
 }
 
@@ -23,14 +26,8 @@ void Goal::Update()
 {
 	Update_Transform();
 	Update_CameraMatrix();
-	if (m_Sphere)
-	{
-		XMVECTOR posGoal = GetPos();
-
-		XMVECTOR offset=XMVectorSet(0.0f,5.0f,0.0f,0.0f);
-		m_Sphere->SetPos(posGoal + offset);
-		m_Sphere->Update();
-	}
+	Update_Sphere();
+	Update_Poles();
 }
 
 void Goal::Draw()
@@ -73,12 +70,11 @@ void Goal::Draw()
 			1, 0, 0, 0);
 	}
 
-	if(m_Sphere)
-	{
-		m_Sphere->Draw();
-	}
+	if(m_Sphere) m_Sphere->Draw();
+	if(m_Poal_L) m_Poal_L->Draw();
+	if(m_Poal_R) m_Poal_R->Draw();
 
-	//Draw_ImGui();
+	Draw_ImGui();
 }
 
 void Goal::UnInit()
@@ -182,21 +178,47 @@ bool Goal::Init_PropGoal(Camera* _camera)
 		return false;
 	}
 
-	DEBUG_LOG_ERROR(L"Goal:初期化処理に成功");
+	DEBUG_LOG(L"Goal:初期化処理に成功");
 	return true;
 }
 
 bool Goal::Init_PropSphere(Camera* _camera)
 {
+	m_SpherePos		= { 0.0f,5.0f,0.0f };
+	m_SphereRota	= { 0.0f,0.0f,0.0f };
+	m_SphereScale	= { 1.0f,1.0f,1.0f };
+
 	m_Sphere = std::make_shared<Debug_Sphere>();
 	if(!m_Sphere->Init(_camera))
 	{
+		DEBUG_LOG_ERROR(L"Goal:Sphere初期化処理に失敗");
 		return false;
 	}
-	m_Sphere->SetPos(XMVectorSet(0.0f, 25.0f, 50.0f, 0.0f));
-	m_Sphere->SetRota(XMVectorZero());
-	m_Sphere->SetScale(XMVectorSet(1.0f, 1.0f, 1.0f, 0.0f));
-	m_tags.AddTag("Debug_Sphere");
+	m_Sphere->SetAlpha(0.0f);
+
+	DEBUG_LOG(L"Goal:Sphere初期化処理に成功");
+	return true;
+}
+
+bool Goal::Init_PropPoals(Camera* _camera)
+{
+	m_PoleOffset = { 5.5f,6.5f,0.0f };
+	m_PoleRota	 = { 0.0f,0.0f,0.0f };
+	m_PoleScale	 = { 1.0f,13.5f,1.0f };
+
+	m_Poal_L = std::make_shared<Debug_Box>();
+	m_Poal_R = std::make_shared<Debug_Box>();
+
+	if (!m_Poal_L->Init(_camera) ||
+		!m_Poal_R->Init(_camera))
+	{
+		DEBUG_LOG_ERROR(L"Goal:Poals初期化処理に失敗");		
+		return false;
+	}
+	m_Poal_L->SetAlpha(0.0f);
+	m_Poal_R->SetAlpha(0.0f);
+
+	DEBUG_LOG(L"Goal:Poals初期化処理に成功");
 	return true;
 }
 
@@ -233,24 +255,103 @@ void Goal::Update_CameraMatrix()
 	*ptrLight = lightData;
 }
 
-void Goal::Draw_ImGui()
-{
-	ImGui_Sphere();
-}
-
-void Goal::ImGui_Sphere()
+void Goal::Update_Sphere()
 {
 	if (m_Sphere)
 	{
-		ImGui::Begin("Goal_Sphere");
-		if (ImGui::CollapsingHeader("Goal_Sphere", ImGuiTreeNodeFlags_DefaultOpen))
+		XMMATRIX goalMat = m_worldMatrix;
+
+		// 通過判定用メッシュのローカル座標オフセット
+		XMVECTOR SpherePos = XMVectorSet(m_SpherePos.x, m_SpherePos.y, m_SpherePos.z, 0.0f);
+
+		// Goalの行列をかけて座表変換
+		m_Sphere->SetPos(XMVector3Transform(SpherePos, goalMat));
+
+		// 回転とスケールの設定
+		XMVECTOR sphereScale = XMLoadFloat3(&m_SphereScale);
+		m_Sphere->SetScale(sphereScale);
+		XMVECTOR sphereRota = XMLoadFloat3(&m_SphereRota);
+		m_Sphere->SetRota(sphereRota);
+
+		m_Sphere->Update();
+	}
+}
+
+void Goal::Update_Poles()
+{
+	if (m_Poal_L && m_Poal_R)
+	{
+		XMMATRIX goalMat = m_worldMatrix;
+
+		// 各柱のローカル座標オフセット
+		XMVECTOR posL = XMVectorSet(-m_PoleOffset.x, m_PoleOffset.y, m_PoleOffset.z, 0.0f);
+		XMVECTOR posR = XMVectorSet( m_PoleOffset.x, m_PoleOffset.y, m_PoleOffset.z, 0.0f);
+
+		// Goalの行列をかけて座表変換
+		m_Poal_L->SetPos(XMVector3Transform(posL, goalMat));
+		m_Poal_R->SetPos(XMVector3Transform(posR, goalMat));
+
+		// 回転とスケールの設定
+		XMVECTOR poleScale = XMLoadFloat3(&m_PoleScale);
+		m_Poal_L->SetScale(poleScale);
+		m_Poal_R->SetScale(poleScale);
+
+		XMVECTOR poleRota = XMLoadFloat3(&m_PoleRota);
+		m_Poal_L->SetRota(poleRota);
+		m_Poal_R->SetRota(poleRota);
+
+		m_Poal_L->Update();
+		m_Poal_R->Update();
+	}
+}
+
+void Goal::Draw_ImGui()
+{
+	ImGui_Goal();
+}
+
+void Goal::ImGui_Goal()
+{
+	ImGui::Begin("Goal Manager");
+
+	char nodeName[64];
+	sprintf_s(nodeName, "Goal Object [%p]", this);
+
+	if (ImGui::TreeNode(nodeName))
+	{
+		ImGui::PushID(this);
+		if (m_Sphere)
 		{
-			float alpha = m_Sphere->GetAlpha();
-			if (ImGui::SliderFloat("Alpha", &alpha, 0.0f, 1.0f))
+			if (ImGui::CollapsingHeader("Goal_Sphere", ImGuiTreeNodeFlags_DefaultOpen))
 			{
-				m_Sphere->SetAlpha(alpha);	
+				ImGui::DragFloat3("Sphere Pos", &m_SpherePos.x, 0.1f);
+				ImGui::DragFloat3("Sphere Scale", &m_SphereScale.x, 0.1f);
+
+				float alpha = m_Sphere->GetAlpha();
+				if (ImGui::SliderFloat("Alpha", &alpha, 0.0f, 1.0f))
+				{
+					m_Sphere->SetAlpha(alpha);
+				}
 			}
 		}
-		ImGui::End();
+
+		if (m_Poal_L && m_Poal_R)
+		{
+			if (ImGui::CollapsingHeader("Goal_Poals", ImGuiTreeNodeFlags_DefaultOpen))
+			{
+				ImGui::DragFloat3("Poles Offset", &m_PoleOffset.x, 0.1f);
+				ImGui::DragFloat3("Poles Scale", &m_PoleScale.x, 0.1f);
+
+				float alpha = m_Poal_L->GetAlpha();
+				if (ImGui::SliderFloat("Poals Alpha", &alpha, 0.0f, 1.0f))
+				{
+					m_Poal_L->SetAlpha(alpha);
+					m_Poal_R->SetAlpha(alpha);
+				}
+			}
+		}
+		ImGui::PopID();
+		ImGui::TreePop();
 	}
+	ImGui::End();
 }

@@ -14,6 +14,8 @@
 #include "UI_Score.h"
 #include "UI_Shop.h"
 #include "UI_ActiveLine.h"
+#include "Debug_Box.h"
+#include "Debug_Sphere.h"
 
 class PrototypeManager
 {

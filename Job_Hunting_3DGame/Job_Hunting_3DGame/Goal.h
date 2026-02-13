@@ -12,6 +12,7 @@
 #include "RootSignature_Manager.h"
 #include "PipelineState_Manager.h"
 #include "Debug_Sphere.h"
+#include "Debug_Box.h"
 #include "DirectionalLight.h"
 
 class Goal : public Object
@@ -35,12 +36,26 @@ private:
 	std::shared_ptr<DescriptorHandle> m_pTexHandle;
 	// カメラ
 	Camera* m_camera = nullptr;
+	
 	// モデルデータ配列
 	std::vector<Mesh> m_meshes;
 	std::vector<std::shared_ptr<VertexBuffer>> m_pVertexBuffers;
 	std::vector<std::shared_ptr<IndexBuffer>> m_pIndexBuffers;
-	// 当たり判定用デバッグ球体
+	
+	// 通過判定用メッシュ
 	std::shared_ptr<Debug_Sphere> m_Sphere;
+	// 柱当たり判定用メッシュ
+	std::shared_ptr<Debug_Box> m_Poal_L;	// 左柱
+	std::shared_ptr<Debug_Box> m_Poal_R;	// 右柱
+	
+	// 通過判定用メッシュSRT
+	DirectX::XMFLOAT3 m_SpherePos	= { 0.0f,0.0f,0.0f };	// 座表
+	DirectX::XMFLOAT3 m_SphereRota	= { 0.0f,0.0f,0.0f };	// 回転
+	DirectX::XMFLOAT3 m_SphereScale = { 0.0f,0.0f,0.0f };	// スケール
+	// 当たり判定用メッシュSRT 
+	DirectX::XMFLOAT3 m_PoleOffset	= { 0.0f,0.0f,0.0f };	// 座標オフセット
+	DirectX::XMFLOAT3 m_PoleRota	= { 0.0f,0.0f,0.0f };	// 回転
+	DirectX::XMFLOAT3 m_PoleScale	= { 1.0f,1.0f,1.0f };	// スケール
 public:
 	// ワールド行列更新操作用
 	DirectX::XMMATRIX m_worldMatrix = DirectX::XMMatrixIdentity();
@@ -63,22 +78,30 @@ public:
 	void Draw() override;
 	/// @brief 終了処理
 	void UnInit() override;
-	/// @brief ゴールオブジェクトの初期化処理
+	/// @brief 鳥居オブジェクトの初期化処理
 	/// @param _camera カメラ
 	/// @return 初期化成功の成否
 	bool Init_PropGoal(Camera* _camera);
-	/// @brief 球体オブジェクトの初期化処理
+	/// @brief 通過判定用メッシュの初期化処理
 	/// @param _camera カメラ
 	/// @return 初期化成功の成否
 	bool Init_PropSphere(Camera* _camera);
+	/// @brief 柱当たり判定用メッシュの初期化処理
+	/// @param _camera カメラ
+	/// @return 初期化処理の成否
+	bool Init_PropPoals(Camera* _camera);
 	/// @brief ワールド行列の更新
 	void Update_Transform();
 	/// @brief ビュー・プロジェクションの更新
 	void Update_CameraMatrix();
+	/// @brief 通過判定用メッシュ更新関数
+	void Update_Sphere();
+	/// @brief 柱当たり判定用メッシュ更新関数
+	void Update_Poles();
 
 	// デバッグ用:ImGui描画関数
 	void Draw_ImGui();
-	void ImGui_Sphere();
+	void ImGui_Goal();
 
 	/// @brief 当たり判定用の球体の取得
 	/// @return 当たり判定用の球体のポインタ

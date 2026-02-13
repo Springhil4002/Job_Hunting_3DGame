@@ -1,22 +1,21 @@
-#include "Debug_Sphere.h"
+#include "Debug_Box.h"
 #include "Debug_New.h"
 #include "Debug_Msg.h"
 
 using namespace DirectX;
 
-std::unique_ptr<Object> Debug_Sphere::clone() const
+std::unique_ptr<Object> Debug_Box::clone() const
 {
-    auto newObj = std::make_unique<Debug_Sphere>();
+	auto newObj = std::make_unique<Debug_Box>();
 	newObj->m_alpha = m_alpha;
-    newObj->m_radius = m_radius;
-    return newObj;
+	return newObj;
 }
 
-bool Debug_Sphere::Init(Camera* _camera)
+bool Debug_Box::Init(Camera* _camera)
 {
 	m_camera = _camera;
 
-    Create_Sphere(32, 64, m_radius);
+	Create_Cube();
 
     // 頂点バッファ生成
     auto vbSize = sizeof(Vertex) * vertices.size();
@@ -24,26 +23,26 @@ bool Debug_Sphere::Init(Camera* _camera)
     m_pVertexBuffer = std::make_unique<VertexBuffer>(vbSize, vbStride, vertices.data());
     if (!m_pVertexBuffer->IsValid())
     {
-        DEBUG_LOG_ERROR("Sphere:頂点バッファ生成失敗");
+        DEBUG_LOG_ERROR("Box:頂点バッファ生成失敗");
         return false;
     }
 
-	// インデックスバッファ生成
+    // インデックスバッファ生成
     auto ibSize = sizeof(uint32_t) * indices.size();
     m_pIndexBuffer = std::make_unique<IndexBuffer>(ibSize, indices.data());
     if (!m_pIndexBuffer->IsValid())
     {
-        DEBUG_LOG_ERROR("Sphere:インデックスバッファ生成失敗");
+        DEBUG_LOG_ERROR("Box:インデックスバッファ生成失敗");
         return false;
     }
 
-	// コンスタントバッファ生成
+    // コンスタントバッファ生成
     for (size_t i = 0; i < DrawBase::FRAME_BUFFER_COUNT; ++i)
     {
         m_pConstantBuffer[i] = std::make_unique<ConstantBuffer>(sizeof(Matrix));
         if (!m_pConstantBuffer[i]->IsValid())
         {
-            DEBUG_LOG_ERROR("Sphere:コンスタントバッファ生成失敗");
+            DEBUG_LOG_ERROR("Box:コンスタントバッファ生成失敗");
             return false;
         }
 
@@ -62,7 +61,7 @@ bool Debug_Sphere::Init(Camera* _camera)
     m_pRootSignature = rootManager.GetRoot(Root_Type::ROOT_TYPE_DEBUGMESH);
     if (!m_pRootSignature->IsValid())
     {
-        DEBUG_LOG_ERROR("Sphere:ルートシグネチャ生成失敗");
+        DEBUG_LOG_ERROR("Box:ルートシグネチャ生成失敗");
         return false;
     }
 
@@ -88,21 +87,21 @@ bool Debug_Sphere::Init(Camera* _camera)
 
     if (!m_pPipelineState->IsValid())
     {
-        DEBUG_LOG_ERROR("Sphere:パイプラインステート生成失敗");
+        DEBUG_LOG_ERROR("Box:パイプラインステート生成失敗");
         return false;
     }
 
-    DEBUG_LOG("Sphere:初期化処理に成功");
+    DEBUG_LOG("Box:初期化処理に成功");
     return true;
 }
 
-void Debug_Sphere::Update()
+void Debug_Box::Update()
 {
     Update_Transform();
-	Update_CameraMatrix();
+    Update_CameraMatrix();
 }
 
-void Debug_Sphere::Draw()
+void Debug_Box::Draw()
 {
     // 現在のフレーム番号取得
     auto currentIndex = g_DrawBase->CurrentBackBufferIndex();
@@ -131,7 +130,7 @@ void Debug_Sphere::Draw()
     cmdList->DrawIndexedInstanced(static_cast<UINT>(indices.size()), 1, 0, 0, 0);
 }
 
-void Debug_Sphere::UnInit()
+void Debug_Box::UnInit()
 {
     m_camera = nullptr;
     m_pVertexBuffer.reset();
@@ -141,66 +140,62 @@ void Debug_Sphere::UnInit()
     m_pDescriptorHeap.reset();
 }
 
-void Debug_Sphere::Create_Sphere(int _stacks, int _slices, float _radius)
+void Debug_Box::Create_Cube()
 {
     vertices.clear();
     indices.clear();
 
-    for (int i = 0; i <= _stacks; i++) {
-        float phi = XM_PI * (static_cast<float>(i) / _stacks);
-        float y = cosf(phi);
-        float r = sinf(phi);
+    struct CubeVertex
+    {
+        XMFLOAT3 pos;
+        XMFLOAT3 normal;
+    };
 
-        for (int j = 0; j <= _slices; j++) {
-            float theta = XM_2PI * (static_cast<float>(j) / _slices);
-            float x = r * cosf(theta);
-            float z = r * sinf(theta);
+    CubeVertex cubeVertices[] = 
+    {
+        // 前面 (Z+)
+        { {-0.5f, -0.5f,  0.5f}, {0, 0, 1} }, { {-0.5f,  0.5f,  0.5f}, {0, 0, 1} },
+        { { 0.5f,  0.5f,  0.5f}, {0, 0, 1} }, { { 0.5f, -0.5f,  0.5f}, {0, 0, 1} },
+        // 背面 (Z-)
+        { { 0.5f, -0.5f, -0.5f}, {0, 0, -1} }, { { 0.5f,  0.5f, -0.5f}, {0, 0, -1} },
+        { {-0.5f,  0.5f, -0.5f}, {0, 0, -1} }, { {-0.5f, -0.5f, -0.5f}, {0, 0, -1} },
+        // 上面 (Y+)
+        { {-0.5f,  0.5f,  0.5f}, {0, 1, 0} }, { {-0.5f,  0.5f, -0.5f}, {0, 1, 0} },
+        { { 0.5f,  0.5f, -0.5f}, {0, 1, 0} }, { { 0.5f,  0.5f,  0.5f}, {0, 1, 0} },
+        // 下面 (Y-)
+        { {-0.5f, -0.5f, -0.5f}, {0, -1, 0} }, { { 0.5f, -0.5f, -0.5f}, {0, -1, 0} },
+        { { 0.5f, -0.5f,  0.5f}, {0, -1, 0} }, { {-0.5f, -0.5f,  0.5f}, {0, -1, 0} },
+        // 右面 (X+)
+        { { 0.5f, -0.5f,  0.5f}, {1, 0, 0} }, { { 0.5f,  0.5f,  0.5f}, {1, 0, 0} },
+        { { 0.5f,  0.5f, -0.5f}, {1, 0, 0} }, { { 0.5f, -0.5f, -0.5f}, {1, 0, 0} },
+        // 左面 (X-)
+        { {-0.5f, -0.5f, -0.5f}, {-1, 0, 0} }, { {-0.5f,  0.5f, -0.5f}, {-1, 0, 0} },
+        { {-0.5f,  0.5f,  0.5f}, {-1, 0, 0} }, { {-0.5f, -0.5f,  0.5f}, {-1, 0, 0} },
+    };
 
-            XMFLOAT3 pos = { x * _radius, y * _radius, z * _radius };
-            XMFLOAT3 normal = { x, y, z };
-            XMVECTOR n = XMVector3Normalize(XMLoadFloat3(&normal));
-            XMStoreFloat3(&normal, n);
-
-            XMFLOAT3 tangent;
-            {
-                XMVECTOR t = XMVector3Normalize(XMVectorSet(-sinf(theta), 0.0f, cosf(theta), 0.0f));
-                XMStoreFloat3(&tangent, t);
-            }
-
-            float u = static_cast<float>(j) / _slices;
-            float v = static_cast<float>(i) / _stacks;
-
-            XMFLOAT4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
-
-            Vertex vertex = {};
-			vertex.position = pos;
-			vertex.normal = normal;
-			vertex.uv = XMFLOAT2(u, v);
-			vertex.tangent = tangent;
-			vertex.color = color;
-
-            vertices.push_back(vertex);
-        }
+    for (int i = 0; i < 24; ++i) 
+    {
+        Vertex v = {};
+        v.position = cubeVertices[i].pos;
+        v.normal = cubeVertices[i].normal;
+        v.uv = { 0.0f, 0.0f }; 
+        v.color = { 1.0f, 1.0f, 1.0f, 1.0f };
+        vertices.push_back(v);
     }
 
-    // インデックス生成
-    for (int i = 0; i < _stacks; i++) {
-        for (int j = 0; j < _slices; j++) {
-            int first = i * (_slices + 1) + j;
-            int second = first + _slices + 1;
-
-            indices.push_back(first);
-            indices.push_back(second);
-            indices.push_back(first + 1);
-
-            indices.push_back(second);
-            indices.push_back(second + 1);
-            indices.push_back(first + 1);
-        }
+    // インデックスデータ
+    for (int i = 0; i < 6; ++i) {
+        uint32_t offset = i * 4;
+        indices.push_back(offset + 0);
+        indices.push_back(offset + 1);
+        indices.push_back(offset + 2);
+        indices.push_back(offset + 0);
+        indices.push_back(offset + 3);
+        indices.push_back(offset + 2);
     }
 }
 
-void Debug_Sphere::Update_Transform()
+void Debug_Box::Update_Transform()
 {
     // カメラの更新処理
     auto pos = GetPos();
@@ -213,7 +208,7 @@ void Debug_Sphere::Update_Transform()
         DirectX::XMMatrixTranslationFromVector(pos);
 }
 
-void Debug_Sphere::Update_CameraMatrix()
+void Debug_Box::Update_CameraMatrix()
 {
     auto currentIndex = g_DrawBase->CurrentBackBufferIndex();
     auto ptr = m_pConstantBuffer[currentIndex]->GetPtr<Matrix>();
@@ -228,5 +223,5 @@ void Debug_Sphere::Update_CameraMatrix()
     ptr->cameraPos = camPos;
 
     // 透明度設定
-	ptr->alpha = m_alpha;
+    ptr->alpha = m_alpha;
 }

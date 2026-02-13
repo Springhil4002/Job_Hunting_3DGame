@@ -12,14 +12,14 @@
 #include "DescriptorHeap.h"
 #include "Camera.h"
 
-class Debug_Sphere : public Object
+class Debug_Box : public Object
 {
 private:
 	// 頂点バッファ
 	std::unique_ptr<VertexBuffer> m_pVertexBuffer;
 	// インデックスバッファ
 	std::unique_ptr<IndexBuffer> m_pIndexBuffer;
-	// コンスタントバッファ
+	// 定数バッファ
 	std::unique_ptr<ConstantBuffer> m_pConstantBuffer[DrawBase::FRAME_BUFFER_COUNT];
 	// ディスクリプタヒープ
 	std::unique_ptr<DescriptorHeap> m_pDescriptorHeap;
@@ -31,46 +31,44 @@ private:
 	Camera* m_camera = nullptr;
 	// 透明度
 	float m_alpha = 0.0f;
-	// 球体の半径
-	float m_radius = 5.0f;
+
 	/// @brief ワールド行列の更新
 	void Update_Transform();
 	/// @brief ビュー・プロジェクションの更新
 	void Update_CameraMatrix();
-	/// @brief 球体メッシュ作成関数
-	/// @param _stacks スタック数
-	/// @param _slices 分割数
-	/// @param _radius 半径
-	void Create_Sphere(int _stacks, int _slices, float _radius);
+	/// @brief キューブ作成関数
+	void Create_Cube();
 public:
-	// ワールド行列更新操作用
-	DirectX::XMMATRIX m_worldMatrix = DirectX::XMMatrixIdentity();
+	/// @brief 頂点データ配列
 	std::vector<Vertex> vertices;
+	/// @brief インデックス配列
 	std::vector<uint32_t> indices;
 
-	// コンストラクタ
-	Debug_Sphere() = default;
-	// デストラクタ
-	~Debug_Sphere() = default;
+	// ワールド行列更新操作用
+	DirectX::XMMATRIX m_worldMatrix = DirectX::XMMatrixIdentity();
 
-	// クローンメソッド
+	/// @brief コンストラクタ
+	Debug_Box() = default;
+	/// @brief デストラクタ
+	~Debug_Box() = default;
+
+	/// @brief クローン関数
 	std::unique_ptr<Object> clone() const override;
-
-	/// @brief 初期化処理
+	/// @brief 初期化関数
+	/// @param _camera カメラ 
 	/// @return 初期化の成否
 	bool Init(Camera* _camera);
-	/// @brief 更新処理
+	/// @brief 更新関数
 	void Update() override;
-	/// @brief 描画処理
+	/// @brief 描画関数
 	void Draw() override;
-	/// @brief 終了処理
+	/// @brief 終了関数
 	void UnInit() override;
-	
-	/// @brief 各種ゲッター・セッター
-	float GetAlpha() const { return m_alpha; }
-	float GetRadius() const { return m_radius; }
 
+	/// @brief 透明度を設定する関数
+	/// @param _alpha 透明度の値
 	void SetAlpha(float _alpha) { m_alpha = _alpha; }
-	void SetRadius(float _radius) { m_radius = _radius; }
+	/// @brief 透明度を取得する関数
+	/// @return 透明度
+	float GetAlpha() const { return m_alpha; }
 };
-

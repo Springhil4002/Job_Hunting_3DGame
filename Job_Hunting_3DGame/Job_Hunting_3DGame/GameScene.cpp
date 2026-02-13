@@ -38,17 +38,17 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	uiCamera->Init(screenWidth, screenHeight);
 
 	// プロトタイプ登録
-	prototypeManager->AddPrototype("Sky",		std::make_unique<SkyBox>());
-	prototypeManager->AddPrototype("Player",	std::make_unique<Player>());
-	prototypeManager->AddPrototype("Goal",		std::make_unique<Goal>());
-	prototypeManager->AddPrototype("SeaMesh",	std::make_unique<SeaMesh>());
-	prototypeManager->AddPrototype("UI",		std::make_unique<UI>());
-	prototypeManager->AddPrototype("UI_Fade",	std::make_unique<UI_Fade>());
-	prototypeManager->AddPrototype("UI_Timer",	std::make_unique<UI_Timer>());
-	prototypeManager->AddPrototype("UI_Speed",	std::make_unique<UI_Speed>());
-	prototypeManager->AddPrototype("UI_Score",	std::make_unique<UI_Score>());
+	prototypeManager->AddPrototype("Sky",			std::make_unique<SkyBox>());
+	prototypeManager->AddPrototype("Player",		std::make_unique<Player>());
+	prototypeManager->AddPrototype("Goal",			std::make_unique<Goal>());
+	prototypeManager->AddPrototype("SeaMesh",		std::make_unique<SeaMesh>());
+	prototypeManager->AddPrototype("UI",			std::make_unique<UI>());
+	prototypeManager->AddPrototype("UI_Fade",		std::make_unique<UI_Fade>());
+	prototypeManager->AddPrototype("UI_Timer",		std::make_unique<UI_Timer>());
+	prototypeManager->AddPrototype("UI_Speed",		std::make_unique<UI_Speed>());
+	prototypeManager->AddPrototype("UI_Score",		std::make_unique<UI_Score>());
 	prototypeManager->AddPrototype("UI_ActiveLine", std::make_unique<UI_ActiveLine>());
-
+	
 	// ライト設定
 	DirectionalLight::Instance().SetLightDir({ 0.35f,-1.0f,0.15f });
 	DirectionalLight::Instance().SetEnvStrength(0.65f);

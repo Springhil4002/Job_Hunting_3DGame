@@ -1,4 +1,4 @@
-#include "PipelineState_DebugSphere.h"
+#include "PipelineState_DebugMesh.h"
 #include "DrawBase.h"
 #include <d3dx12.h>
 #include <d3dcompiler.h>
@@ -8,7 +8,7 @@
 #pragma comment(lib,"d3dcompiler.lib")
 
 // パイプラインステートの設定
-PipelineState_DebugSphere::PipelineState_DebugSphere()
+PipelineState_DebugMesh::PipelineState_DebugMesh()
 {
 	// zeroMemoryで初期化
 	ZeroMemory(&desc, sizeof(desc));
@@ -41,66 +41,66 @@ PipelineState_DebugSphere::PipelineState_DebugSphere()
 	desc.SampleDesc.Quality = 0;
 }
 
-bool PipelineState_DebugSphere::IsValid() const
+bool PipelineState_DebugMesh::IsValid() const
 {
 	return m_IsValid;
 }
 
-void PipelineState_DebugSphere::SetInputLayout(D3D12_INPUT_LAYOUT_DESC layout)
+void PipelineState_DebugMesh::SetInputLayout(D3D12_INPUT_LAYOUT_DESC layout)
 {
 	desc.InputLayout = layout;
 }
 
-void PipelineState_DebugSphere::SetRootSignature(ID3D12RootSignature* rootSignature)
+void PipelineState_DebugMesh::SetRootSignature(ID3D12RootSignature* rootSignature)
 {
 	desc.pRootSignature = rootSignature;
 }
 
-void PipelineState_DebugSphere::SetVS(std::wstring filePath)
+void PipelineState_DebugMesh::SetVS(std::wstring filePath)
 {
 	// 頂点シェーダー読み込み
 	auto hr = D3DReadFileToBlob(filePath.c_str(), m_pVsBlob.GetAddressOf());
 	if (FAILED(hr))
 	{
-		DEBUG_LOG_ERROR(L"PSO_Sphere:頂点シェーダーの読み込みに失敗");
+		DEBUG_LOG_ERROR(L"PSO_Mesh:頂点シェーダーの読み込みに失敗");
 		return;
 	}
 
 	desc.VS = CD3DX12_SHADER_BYTECODE(m_pVsBlob.Get());
 }
 
-void PipelineState_DebugSphere::SetPS(std::wstring filePath)
+void PipelineState_DebugMesh::SetPS(std::wstring filePath)
 {
 	// ピクセルシェーダー読み込み
 	auto hr = D3DReadFileToBlob(filePath.c_str(), m_pPSBlob.GetAddressOf());
 	if (FAILED(hr))
 	{
-		DEBUG_LOG_ERROR(L"PSO_Sphere:ピクセルシェーダーの読み込みに失敗");
+		DEBUG_LOG_ERROR(L"PSO_Mesh:ピクセルシェーダーの読み込みに失敗");
 		return;
 	}
 
 	desc.PS = CD3DX12_SHADER_BYTECODE(m_pPSBlob.Get());
 }
 
-void PipelineState_DebugSphere::Create()
+void PipelineState_DebugMesh::Create()
 {
 	// パイプラインステートを生成
 	HRESULT hr = g_DrawBase->Device()->CreateGraphicsPipelineState(&desc,IID_PPV_ARGS(m_pPipelineState.ReleaseAndGetAddressOf()));
 	if (FAILED(hr))
 	{
-		DEBUG_LOG_ERROR(L"PSO_Sphere:パイプラインステートの生成に失敗");
+		DEBUG_LOG_ERROR(L"PSO_Mesh:パイプラインステートの生成に失敗");
 		m_IsValid = false;
 		return;
 	}
 	m_IsValid = true;
 }
 
-ID3D12PipelineState* PipelineState_DebugSphere::Get()
+ID3D12PipelineState* PipelineState_DebugMesh::Get()
 {
 	return m_pPipelineState.Get();
 }
 
-D3D12_BLEND_DESC PipelineState_DebugSphere::InitBlendState()
+D3D12_BLEND_DESC PipelineState_DebugMesh::InitBlendState()
 {
 	D3D12_BLEND_DESC desc = {};
 	desc.AlphaToCoverageEnable = FALSE;

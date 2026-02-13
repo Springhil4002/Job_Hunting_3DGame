@@ -10,7 +10,7 @@
 #include "RootSignature_WaterMesh.h"
 #include "RootSignature_SeaMesh.h"
 #include "RootSignature_Splash.h"
-#include "RootSignature_DebugSphere.h"
+#include "RootSignature_DebugMesh.h"
 #include "RootSignature_SkyBox.h"
 #include "RootSignature_UI.h"
 #include "Debug_Msg.h"
@@ -23,7 +23,7 @@ enum class Root_Type
     ROOT_TYPE_SEAMESH,
     ROOT_TYPE_MODEL3D,
     ROOT_TYPE_SPLASH,
-    ROOT_TYPE_SPHERE,
+    ROOT_TYPE_DEBUGMESH,
     ROOT_TYPE_SKYBOX,    
     ROOT_TYPE_UI,
 };
@@ -78,7 +78,7 @@ public:
         case Root_Type::ROOT_TYPE_SEAMESH:    return "SeaMesh";
         case Root_Type::ROOT_TYPE_MODEL3D:    return "Model3D";
         case Root_Type::ROOT_TYPE_SPLASH:     return "Splash";
-        case Root_Type::ROOT_TYPE_SPHERE:     return "Sphere";
+        case Root_Type::ROOT_TYPE_DEBUGMESH:  return "Mesh";
         case Root_Type::ROOT_TYPE_SKYBOX:     return "SkyBox";
         case Root_Type::ROOT_TYPE_UI:         return "UI";
         default: return "Unknown";
@@ -92,7 +92,7 @@ public:
 	std::shared_ptr<RootSignature_SeaMesh>     GetRoot_SeaMesh()        { return GetRootSignature<RootSignature_SeaMesh>(ToString(Root_Type::ROOT_TYPE_SEAMESH)); }
     std::shared_ptr<RootSignature_Model3D>     GetRoot_Model3D()        { return GetRootSignature<RootSignature_Model3D>(ToString(Root_Type::ROOT_TYPE_MODEL3D)); }
     std::shared_ptr<RootSignature_Splash>      GetRoot_Splash()         { return GetRootSignature<RootSignature_Splash>(ToString(Root_Type::ROOT_TYPE_SPLASH)); }
-    std::shared_ptr<RootSignature_DebugSphere> GetRoot_DebugSphere()    { return GetRootSignature<RootSignature_DebugSphere>(ToString(Root_Type::ROOT_TYPE_SPHERE)); }
+    std::shared_ptr<RootSignature_DebugMesh>   GetRoot_DebugSphere()    { return GetRootSignature<RootSignature_DebugMesh>(ToString(Root_Type::ROOT_TYPE_DEBUGMESH)); }
     std::shared_ptr<RootSignature_SkyBox>      GetRoot_SkyBox()         { return GetRootSignature<RootSignature_SkyBox>(ToString(Root_Type::ROOT_TYPE_SKYBOX)); }
     std::shared_ptr<RootSignature_UI>          GetRoot_UI()             { return GetRootSignature<RootSignature_UI>(ToString(Root_Type::ROOT_TYPE_UI)); }
 
@@ -107,7 +107,7 @@ public:
 		case Root_Type::ROOT_TYPE_SEAMESH:     return GetRoot_SeaMesh();
         case Root_Type::ROOT_TYPE_MODEL3D:     return GetRoot_Model3D();
         case Root_Type::ROOT_TYPE_SPLASH:      return GetRoot_Splash();
-        case Root_Type::ROOT_TYPE_SPHERE:      return GetRoot_DebugSphere();
+        case Root_Type::ROOT_TYPE_DEBUGMESH:   return GetRoot_DebugSphere();
         case Root_Type::ROOT_TYPE_SKYBOX:      return GetRoot_SkyBox();
         case Root_Type::ROOT_TYPE_UI:          return GetRoot_UI();
         default:

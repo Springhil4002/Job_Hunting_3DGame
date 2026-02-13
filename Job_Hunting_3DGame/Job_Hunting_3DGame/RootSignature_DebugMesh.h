@@ -4,7 +4,7 @@
 
 struct ID3D12RootSignature;
 
-class RootSignature_DebugSphere : public RootSignature
+class RootSignature_DebugMesh : public RootSignature
 {
 	// ルートシグネチャの生成に成功したかのフラグ
 	bool m_IsValid = false;
@@ -12,7 +12,7 @@ class RootSignature_DebugSphere : public RootSignature
 	ComPtr<ID3D12RootSignature> m_pRootSignature = nullptr;
 public:
 	// コンストラクタでルートシグネチャを生成
-	RootSignature_DebugSphere();
+	RootSignature_DebugMesh();
 	/// @brief	ルートシグネチャの生成に成否を取得する処理
 	/// @return ルートシグネチャの生成成否を返す
 	bool IsValid() const override;

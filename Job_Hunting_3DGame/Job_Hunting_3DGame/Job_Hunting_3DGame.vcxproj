@@ -150,6 +150,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Camera2D.cpp" />
     <ClCompile Include="ConstantBuffer.cpp" />
+    <ClCompile Include="Debug_Box.cpp" />
     <ClCompile Include="Debug_Sphere.cpp" />
     <ClCompile Include="DescriptorHeap.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
@@ -170,7 +171,7 @@
     <ClCompile Include="ParticleEmitter_Splash.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="ParticleSystem_Splash.cpp" />
-    <ClCompile Include="PipelineState_DebugSphere.cpp" />
+    <ClCompile Include="PipelineState_DebugMesh.cpp" />
     <ClCompile Include="PipelineState_General.cpp" />
     <ClCompile Include="PipelineState_SkyBox.cpp" />
     <ClCompile Include="PipelineState_Splash.cpp" />
@@ -179,7 +180,7 @@
     <ClCompile Include="PlayerController.cpp" />
     <ClCompile Include="ResultScene.cpp" />
     <ClCompile Include="RootSignature_Model3D.cpp" />
-    <ClCompile Include="RootSignature_DebugSphere.cpp" />
+    <ClCompile Include="RootSignature_DebugMesh.cpp" />
     <ClCompile Include="RootSignature_Goal.cpp" />
     <ClCompile Include="RootSignature_Player.cpp" />
     <ClCompile Include="RootSignature_SeaMesh.cpp" />
@@ -232,6 +233,7 @@
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="Debug_Msg.h" />
     <ClInclude Include="Debug_New.h" />
+    <ClInclude Include="Debug_Box.h" />
     <ClInclude Include="Debug_Sphere.h" />
     <ClInclude Include="DescriptorHeap.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
@@ -251,7 +253,7 @@
     <ClInclude Include="ParticleEmitter_Splash.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="ParticleSystem_Splash.h" />
-    <ClInclude Include="PipelineState_DebugSphere.h" />
+    <ClInclude Include="PipelineState_DebugMesh.h" />
     <ClInclude Include="PipelineState_General.h" />
     <ClInclude Include="PipelineState_Manager.h" />
     <ClInclude Include="PipelineState_SkyBox.h" />
@@ -263,7 +265,7 @@
     <ClInclude Include="ResultScene.h" />
     <ClInclude Include="RootSignature.h" />
     <ClInclude Include="RootSignature_Model3D.h" />
-    <ClInclude Include="RootSignature_DebugSphere.h" />
+    <ClInclude Include="RootSignature_DebugMesh.h" />
     <ClInclude Include="RootSignature_Goal.h" />
     <ClInclude Include="RootSignature_Manager.h" />
     <ClInclude Include="RootSignature_Player.h" />
@@ -364,7 +366,7 @@
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PS_Main</EntryPointName>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="PS_Sphere.hlsl">
+    <FxCompile Include="PS_DebugMesh.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
@@ -453,7 +455,7 @@
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">VS_Main</EntryPointName>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="VS_Sphere.hlsl">
+    <FxCompile Include="VS_DebugMesh.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
