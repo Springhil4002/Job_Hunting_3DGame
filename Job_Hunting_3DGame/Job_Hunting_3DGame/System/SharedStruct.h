@@ -114,3 +114,11 @@ struct WaterParams
 	XMFLOAT4 shallowColor;     
 	XMFLOAT4 deepColor;        
 };
+
+struct CollisionOBB
+{
+	DirectX::XMVECTOR center;		// 中心位置
+	DirectX::XMVECTOR axis[3];		// X,Y,Zそれぞれの単位ベクトル
+	DirectX::XMVECTOR radius;		// 中心から面までの距離
+};
+

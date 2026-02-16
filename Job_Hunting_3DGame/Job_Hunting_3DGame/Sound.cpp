@@ -23,6 +23,17 @@
 #define fourccDPDS 'sdpd'
 #endif
 
+const Sound::SoundParam Sound::m_SoundParams[SOUND_LABEL_MAX] =
+{
+	{"Assets/Sound/BGM/いつまでも青く.wav"		,true},
+	{"Assets/Sound/BGM/"		,true},
+	{"Assets/Sound/BGM/"		,true},
+
+	{"Assets/Sound/SE/"			,false},
+	{"Assets/Sound/SE/"			,false},
+	{"Assets/Sound/SE/"			,false},
+};
+
 //=============================================================================
 // 初期化処理
 //=============================================================================
@@ -138,6 +149,11 @@ void Sound::Play(SOUND_LABEL label)
 	IXAudio2SourceVoice*& pSV = m_pSourceVoice[(int)label];
 	if (pSV == nullptr) return;
 	
+	XAUDIO2_VOICE_STATE state;
+	pSV->GetState(&state);
+	// すでに再生中なら、二重再生しない
+	if (state.BuffersQueued > 0) return;
+
 	// サウンド停止
 	pSV->Stop(0);
 	// 登録されているバッファをクリア

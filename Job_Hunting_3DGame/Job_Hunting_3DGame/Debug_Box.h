@@ -71,4 +71,6 @@ public:
 	/// @brief “§–¾“x‚ğæ“¾‚·‚éŠÖ”
 	/// @return “§–¾“x
 	float GetAlpha() const { return m_alpha; }
+
+	DirectX::XMMATRIX GetWorldMatrix() const { return m_worldMatrix; }
 };

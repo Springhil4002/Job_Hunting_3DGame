@@ -27,7 +27,7 @@ void Goal::Update()
 	Update_Transform();
 	Update_CameraMatrix();
 	Update_Sphere();
-	Update_Poles();
+	Update_Poals();
 }
 
 void Goal::Draw()
@@ -74,7 +74,9 @@ void Goal::Draw()
 	if(m_Poal_L) m_Poal_L->Draw();
 	if(m_Poal_R) m_Poal_R->Draw();
 
+#if _DEBUG
 	Draw_ImGui();
+#endif
 }
 
 void Goal::UnInit()
@@ -88,6 +90,8 @@ void Goal::UnInit()
 	m_pRootSignature.reset();
 	m_pTexHandle.reset();
 	m_Sphere.reset();	
+	m_Poal_L.reset();
+	m_Poal_R.reset();
 }
 
 bool Goal::Init_PropGoal(Camera* _camera)
@@ -191,12 +195,12 @@ bool Goal::Init_PropSphere(Camera* _camera)
 	m_Sphere = std::make_shared<Debug_Sphere>();
 	if(!m_Sphere->Init(_camera))
 	{
-		DEBUG_LOG_ERROR(L"Goal:Sphere初期化処理に失敗");
+		DEBUG_LOG_ERROR(L"Goal:Sphereの初期化処理に失敗");
 		return false;
 	}
 	m_Sphere->SetAlpha(0.0f);
 
-	DEBUG_LOG(L"Goal:Sphere初期化処理に成功");
+	DEBUG_LOG(L"Goal:Sphereの初期化処理に成功");
 	return true;
 }
 
@@ -212,13 +216,13 @@ bool Goal::Init_PropPoals(Camera* _camera)
 	if (!m_Poal_L->Init(_camera) ||
 		!m_Poal_R->Init(_camera))
 	{
-		DEBUG_LOG_ERROR(L"Goal:Poals初期化処理に失敗");		
+		DEBUG_LOG_ERROR(L"Goal:2つのPoalの初期化処理に失敗");		
 		return false;
 	}
 	m_Poal_L->SetAlpha(0.0f);
 	m_Poal_R->SetAlpha(0.0f);
 
-	DEBUG_LOG(L"Goal:Poals初期化処理に成功");
+	DEBUG_LOG(L"Goal:2つのPoalの初期化処理に成功");
 	return true;
 }
 
@@ -277,7 +281,7 @@ void Goal::Update_Sphere()
 	}
 }
 
-void Goal::Update_Poles()
+void Goal::Update_Poals()
 {
 	if (m_Poal_L && m_Poal_R)
 	{
@@ -354,4 +358,31 @@ void Goal::ImGui_Goal()
 		ImGui::TreePop();
 	}
 	ImGui::End();
+}
+
+std::vector<CollisionOBB> Goal::GetPoalsOBB() const
+{
+	std::vector<CollisionOBB> obbs;
+
+	// 左右の柱を配列に保存
+	const Debug_Box* poals[2] = { m_Poal_L.get(),m_Poal_R.get() };
+
+	for (int i = 0; i < 2; ++i)
+	{
+		if (!poals[i]) continue;
+		CollisionOBB obb;
+
+		// 柱それぞれのワールド行列を取得
+		XMMATRIX world = poals[i]->GetWorldMatrix();
+
+		// 当たり判定用メッシュの現在位置を取得
+		obb.center = poals[i]->GetPos();
+		obb.axis[0] = DirectX::XMVector3Normalize(world.r[0]);	// 右方向(X)
+		obb.axis[1] = DirectX::XMVector3Normalize(world.r[1]);	// 上方向(Y)
+		obb.axis[2] = DirectX::XMVector3Normalize(world.r[2]);	// 前方向(Z)
+	
+		obb.radius = XMLoadFloat3(&m_PoleScale) * 0.5f;
+		obbs.push_back(obb);
+	}
+	return obbs;
 }

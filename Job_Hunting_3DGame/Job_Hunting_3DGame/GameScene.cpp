@@ -25,8 +25,6 @@ void GameScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 	DEBUG_LOG(L"ÉVÅ[Éìñº:GameScene");
 	srand(static_cast<unsigned int>(time(NULL)));
 
-	SceneManager::GetSound().Play(SOUND_LABEL_BGM_002);
-
 	hwnd = _hwnd;
 	camera = _camera;
 	uiCamera = _uiCamera;
@@ -205,6 +203,11 @@ void GameScene::Update(float _deltaTime)
 		playerCtrl->SetPlayed(false);
 	else
 		playerCtrl->SetPlayed(true);
+	// è’ìÀîªíË
+	if (game->CheckAndResetHitFlag())
+	{
+		playerCtrl->CollisionObstacle(game->GetLastHitPos());
+	}
 
 	playerCtrl->Update(_deltaTime);
 
@@ -255,9 +258,6 @@ void GameScene::Draw()
 
 void GameScene::Uninit()
 {
-	// BGMí‚é~
-	SceneManager::GetSound().Stop(SOUND_LABEL_BGM_002);
-
 	playerCtrl->UnInit();
 	playerCtrl.reset();
 	game->UnInit();
@@ -328,11 +328,10 @@ void GameScene::Update_MouseRotate(float _sensi)
 void GameScene::Draw_ImGui()
 {
 #if _DEBUG
-	
+	ImGui_Prop();
 	playerCtrl->Draw_ImGui();
 	game->Draw_ImGui();
 #endif
-	ImGui_Prop();
 }
 
 void GameScene::ImGui_Prop()

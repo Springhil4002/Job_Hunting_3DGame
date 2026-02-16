@@ -11,10 +11,10 @@ void Shop::Init()
 	m_Data.clear();
 
 	// 各ステータスの初期化(名前/消費コスト/上昇値/初期レベル/最大レベル)
-	m_Data.push_back({ "Max Speed:",		10,  5.0f,  status.level_Speed,		10 });
-	m_Data.push_back({ "Acceleration:",		10,  1.0f,  status.level_Accel,		10 });
-	m_Data.push_back({ "Score Up:",			100, 0.1f,	status.level_ScoreUp,	10 });
-	m_Data.push_back({ "Goal Create Count:",10,  5.0f,  status.level_Goal,		10 });
+	m_Data.push_back({ "Max Speed:",		50,  5.0f,  status.level_Speed,		10 });
+	m_Data.push_back({ "Acceleration:",		50,  1.0f,  status.level_Accel,		10 });
+	m_Data.push_back({ "Score Up:",			100, 0.1f,  status.level_ScoreUp,	10 });
+	m_Data.push_back({ "Goal Create Count:",100, 5.0f,  status.level_Goal,		10 });
 
 	// 現在のレベルに合わせてコストを再計算
 	for (auto& data : m_Data) 

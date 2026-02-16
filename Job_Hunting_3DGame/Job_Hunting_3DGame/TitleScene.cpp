@@ -23,8 +23,6 @@ void TitleScene::Init(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 {
 	DEBUG_LOG(L"ƒV[ƒ“–¼:TitleScene");
 
-	SceneManager::GetSound().Play(SOUND_LABEL_BGM_001);
-
 	hwnd = _hwnd;
 	camera = _camera;
 	uiCamera = _uiCamera;
@@ -149,9 +147,6 @@ void TitleScene::Draw()
 
 void TitleScene::Uninit()
 {
-	// BGM’âŽ~
-	SceneManager::GetSound().Stop(SOUND_LABEL_BGM_001);
-
 	for (auto& obj : objectInstance)
 	{
 		obj->UnInit();

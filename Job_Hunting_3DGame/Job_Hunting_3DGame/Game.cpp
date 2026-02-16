@@ -106,11 +106,31 @@ void Game::UnInit()
 
 void Game::GoalCheck()
 {
-	for (size_t i = 0; i < m_Goals.size(); i++)
+	// PlayerのOBBを取得
+	CollisionOBB playerOBB = m_Player->GetBoxOBB();
+	
+	for (size_t i = 0; i < m_Goals.size(); ++i)
 	{
 		auto* goal = m_Goals[i];
 		if (!goal) continue;
 
+		// プレイヤーと柱の衝突判定
+		std::vector<CollisionOBB> poalOBBs = goal->GetPoalsOBB();
+		for (const auto& poal : poalOBBs)
+		{
+			if (IntersectOBB(playerOBB, poal))
+			{
+				DEBUG_LOG("Playerと鳥居の柱が当たりました。");
+				// コンボリセット
+				m_ComboCount = 0;
+				m_ComboTimer = 0.0f;
+				// 衝突情報を保持
+				m_LastHitObstaclePos = poal.center;
+				m_IsHitObstacle = true;
+			}
+		}
+
+		// ゴールの通過判定
 		// プレイヤーとゴールの距離
 		XMVECTOR pos = goal->GetSphere()->GetPos();
 		XMFLOAT3 SpherePos;

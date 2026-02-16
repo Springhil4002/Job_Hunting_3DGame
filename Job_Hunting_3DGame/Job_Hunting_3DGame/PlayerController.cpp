@@ -131,6 +131,27 @@ void PlayerController::Draw_ImGui()
 	ImGui::End();
 }
 
+void PlayerController::CollisionObstacle(XMVECTOR _obstaclePos)
+{
+	// áŠQ•¨‚©‚ç‰“‚´‚©‚é•ûŒü‚ğŒvZ
+	XMVECTOR pushDir = XMVector3Normalize(m_Position - _obstaclePos);
+
+	// Œ»İ‚Ì‘¬‚³‚ğæ“¾
+	float currentSpeed = XMVectorGetX(XMVector3Length(m_Velocity));
+
+	// ”½”­—Í‚ğŒvZ
+	float bounce = std::max(5.0f, currentSpeed * 0.6f);
+
+	// ‘¬“x‚ğ”½“]
+	m_Velocity = pushDir * bounce;
+	// ã•ûŒü‚É­‚µ’µ‚Ë‚³‚¹‚é
+	m_VelocityY = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+	// ˜A‘±Õ“Ë‚ğ–h‚®
+	m_Position += pushDir * 0.8f;
+
+	DEBUG_LOG("PlayerController:áŠQ•¨‚É‚æ‚è‚Í‚¶‚©‚ê‚Ü‚µ‚½B");
+}
+
 void PlayerController::Init_Param()
 {
 	if (!m_Player || !m_Camera) return;

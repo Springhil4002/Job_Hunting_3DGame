@@ -116,6 +116,9 @@ public:
 	void UnInit();
 	// ImGui描画関数
 	void Draw_ImGui();
+	/// @brief 衝突判定処理
+	/// @param _obstaclePos 衝突した場所
+	void CollisionObstacle(DirectX::XMVECTOR _obstaclePos);
 
 	// 各種ゲッター・セッター関数 
 	DirectX::XMVECTOR GetPosition() const { return m_Position; }

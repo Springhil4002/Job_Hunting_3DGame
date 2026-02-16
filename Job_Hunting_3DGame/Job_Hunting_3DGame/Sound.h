@@ -26,16 +26,7 @@ private:
 	};
 
 	// 登録するサウンドファイルのパス
-	SoundParam m_SoundParams[SOUND_LABEL_MAX] =
-	{
-		{"Assets/Sound/BGM/"		,true},
-		{"Assets/Sound/BGM/"		,true},
-		{"Assets/Sound/BGM/"		,true},
-
-		{"Assets/Sound/SE/"			,true},
-		{"Assets/Sound/SE/"			,true},
-		{"Assets/Sound/SE/"			,true},
-	};
+	static const SoundParam m_SoundParams[SOUND_LABEL_MAX];
 
 	// XAudioインターフェースへのポインタ
 	IXAudio2* m_pXAudio2 = NULL;

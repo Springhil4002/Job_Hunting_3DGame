@@ -29,6 +29,7 @@ SceneManager::SceneManager(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
 {
 	// 初期シーンのリソースをロード
 	ChangeScene(SCENE_ID_TITLE, _camera, _uiCamera, _hwnd);
+	soundManager.Play(SOUND_LABEL_BGM_001);
 }
 
 void SceneManager::ChangeScene(
@@ -133,6 +134,7 @@ void SceneManager::Draw()
 
 void SceneManager::Uninit()
 {
+	soundManager.Stop(SOUND_LABEL_BGM_001);
 	// 現在のシーンの自動解放
 	currentScene.reset();
 }

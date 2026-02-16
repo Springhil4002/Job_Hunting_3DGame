@@ -78,6 +78,7 @@ public:
 	void Draw() override;
 	/// @brief 終了処理
 	void UnInit() override;
+
 	/// @brief 鳥居オブジェクトの初期化処理
 	/// @param _camera カメラ
 	/// @return 初期化成功の成否
@@ -90,6 +91,7 @@ public:
 	/// @param _camera カメラ
 	/// @return 初期化処理の成否
 	bool Init_PropPoals(Camera* _camera);
+
 	/// @brief ワールド行列の更新
 	void Update_Transform();
 	/// @brief ビュー・プロジェクションの更新
@@ -97,13 +99,15 @@ public:
 	/// @brief 通過判定用メッシュ更新関数
 	void Update_Sphere();
 	/// @brief 柱当たり判定用メッシュ更新関数
-	void Update_Poles();
+	void Update_Poals();
 
 	// デバッグ用:ImGui描画関数
 	void Draw_ImGui();
 	void ImGui_Goal();
 
-	/// @brief 当たり判定用の球体の取得
-	/// @return 当たり判定用の球体のポインタ
+	/// @brief 通過判定用の球体の取得
+	/// @return 通過判定用の球体のポインタ
 	Debug_Sphere* GetSphere() const { return m_Sphere.get(); }
+
+	std::vector<CollisionOBB> GetPoalsOBB() const;
 };
