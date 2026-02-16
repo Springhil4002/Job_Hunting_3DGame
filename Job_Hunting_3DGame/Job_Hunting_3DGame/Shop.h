@@ -48,7 +48,7 @@ public:
 
 	/// @brief ‰Šú‰»ŠÖ”
 	void Init();
-	
+
 	// ‘€ì—pŠÖ”
 	void Input_Up();
 	void Input_Down();

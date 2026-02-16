@@ -128,6 +128,13 @@ void ResultScene::Update(float _deltaTime)
 				}
 			}
 		}
+
+		// ステータスリセット
+		if (input.GetKeyTrigger(VK_O))
+		{
+			SceneManager::GetGameStatus().Reset();
+			m_Shop->Init();
+		}
 	}
 	
 	for (auto& obj : objectInstance)
@@ -223,36 +230,17 @@ void ResultScene::Update_MouseRotate(float _sensi)
 
 void ResultScene::Draw_ImGui()
 {
-#if _DEBUG
 	ImGui_Prop();
-	ImGui_Shop();
-#endif
+
+	for (auto& obj : objectInstance)
+	{
+		obj->Draw_ImGui();
+	}
 }
 
 void ResultScene::ImGui_Prop()
 {
 	ImGui::Begin("SceneName:ResultScene");
 	ImGui::Text("FPS: %.2f", ImGui::GetIO().Framerate);
-	ImGui::End();
-}
-
-void ResultScene::ImGui_Shop()
-{
-	ImGui::Begin("Shop");
-	ImGui::Text("Current Score: %d", SceneManager::GetGameStatus().score);
-
-	auto& data = m_Shop->GetAllData();
-	int select = m_Shop->GetUpgradeIndex();
-
-	for (int i = 0; i < data.size(); ++i)
-	{
-		bool isSelected = (i == select);
-		if (isSelected) {
-			ImGui::Text(">> ");
-			ImGui::SameLine();
-		}
-		ImGui::Text("%s Lv:%d Cost:%d", data[i].name.c_str(), 
-			data[i].currentLevel, data[i].cost);
-	}
 	ImGui::End();
 }

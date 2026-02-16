@@ -67,11 +67,6 @@ void Player::Draw()
 			1, 0, 0, 0);
 	}
 	if (m_BoxCollision) m_BoxCollision->Draw();
-
-#if _DEBUG
-	
-#endif
-	Draw_ImGui();
 }
 
 void Player::UnInit()
@@ -270,9 +265,7 @@ void Player::Update_BoxCollision()
 
 void Player::Draw_ImGui()
 {
-#if _DEBUG
 	ImGui_BoxCollision();
-#endif
 }
 
 void Player::ImGui_BoxCollision()

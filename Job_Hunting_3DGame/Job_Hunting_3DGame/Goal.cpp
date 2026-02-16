@@ -73,10 +73,6 @@ void Goal::Draw()
 	if(m_Sphere) m_Sphere->Draw();
 	if(m_Poal_L) m_Poal_L->Draw();
 	if(m_Poal_R) m_Poal_R->Draw();
-
-#if _DEBUG
-	Draw_ImGui();
-#endif
 }
 
 void Goal::UnInit()

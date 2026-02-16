@@ -31,6 +31,8 @@ public:
 	virtual void Draw()   {};
 	/// @brief I—¹ˆ—
 	virtual void UnInit() {};
+	/// @brief ImGui•`‰æˆ—
+	virtual void Draw_ImGui() {};
 
 	/// @brief À•Wæ“¾ŠÖ”
 	/// @return À•W‚ğ•Ô‚µ‚Ü‚·

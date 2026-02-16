@@ -16,4 +16,5 @@ struct GameStatus
 
 	/// @brief コンストラクタ
 	GameStatus();
+	void Reset();
 };

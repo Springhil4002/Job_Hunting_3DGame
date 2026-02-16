@@ -38,6 +38,6 @@ public:
 	void Update_MouseRotate(float _sensi);
 	/// @brief ImGui‚Ì•`‰æˆ—
 	void Draw_ImGui() override;
-
+	/// @brief ImGui:FPS•`‰æ
 	void ImGui_Prop();
 };

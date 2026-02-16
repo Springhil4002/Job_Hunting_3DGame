@@ -327,11 +327,15 @@ void GameScene::Update_MouseRotate(float _sensi)
 
 void GameScene::Draw_ImGui()
 {
-#if _DEBUG
 	ImGui_Prop();
+
+	for (auto& obj : objectInstance)
+	{
+		obj->Draw_ImGui();
+	}
+
 	playerCtrl->Draw_ImGui();
 	game->Draw_ImGui();
-#endif
 }
 
 void GameScene::ImGui_Prop()

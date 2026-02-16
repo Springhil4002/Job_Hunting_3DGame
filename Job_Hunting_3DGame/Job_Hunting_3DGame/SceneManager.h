@@ -1,4 +1,5 @@
 #pragma once
+#include "System/Input.h"
 #include "SceneFactory.h"
 #include "SceneResource.h"
 #include "SoundManager.h"
@@ -15,6 +16,10 @@ private:
 	static SoundManager soundManager;
 	// ゲームステータスのインスタンス
 	static GameStatus gameStatus;
+	// 入力インスタンス
+	static Input m_Input;
+	// ImGuiの表示切り替えフラグ
+	static bool m_ShowImGui;
 public:
 	SceneManager() = default;
 	/// @brief コンストラクタ
@@ -35,6 +40,11 @@ public:
 	/// @brief ゲームステータスを取得する関数
 	/// @return ゲームステータス
 	static GameStatus& GetGameStatus() { return gameStatus; }
+	/// @brief ImGui表示切り替えフラグの変更関数
+	static void ChangeImGui() { m_ShowImGui = !m_ShowImGui; }
+	/// @brief ImGui表示切り替えフラグを取得する関数
+	/// @return ImGui表示切り替えフラグ
+	static bool GetShowImGui() { return m_ShowImGui; }
 
 	/// @brief 初期化処理
 	void Init();

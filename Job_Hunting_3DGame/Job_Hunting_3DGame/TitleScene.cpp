@@ -211,9 +211,12 @@ void TitleScene::Update_MouseRotate(float _sensi)
 
 void TitleScene::Draw_ImGui()
 {
-#if _DEBUG
 	ImGui_Prop();
-#endif
+
+	for (auto& obj : objectInstance)
+	{
+		obj->Draw_ImGui();
+	}
 }
 
 void TitleScene::ImGui_Prop()

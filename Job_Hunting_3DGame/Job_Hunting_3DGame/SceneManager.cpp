@@ -8,21 +8,27 @@ std::unique_ptr<BaseScene> SceneManager::currentScene = nullptr;
 SceneFactory SceneManager::sceneFactory;
 SoundManager SceneManager::soundManager;
 GameStatus SceneManager::gameStatus;
+Input SceneManager::m_Input;
+bool SceneManager::m_ShowImGui = false;
 
 GameStatus::GameStatus()
-	: score(0)				// スコア
-	, limitTime(30)			// 制限時間(秒数)
-	, maxSpeed(40.0f)		// 上限速度
-	, accelSpeed(5.0f)		// 加速度
-	, scoreUp(1.0f)			// スコア増加
-	, createGoalCount(20)	// ゴール生成数
-
-	, level_Speed(1)		// ステータスレベル(上限速度)
-	, level_Accel(1)		// ステータスレベル(加速度)			
-	, level_ScoreUp(1)		// ステータスレベル(スコア増加)
-	, level_Goal(1)			// ステータスレベル(ゴール生成数)
-
 {
+	Reset();
+}
+
+void GameStatus::Reset()
+{
+	score = 0;				// スコア
+	limitTime = 30;			// 制限時間(秒数)
+	maxSpeed = 40.0f;		// 上限速度
+	accelSpeed = 5.0f;		// 加速度
+	scoreUp = 1.0f;			// スコア増加
+	createGoalCount = 20;	// ゴール生成数
+
+	level_Speed = 1;		// ステータスレベル(上限速度)
+	level_Accel = 1;		// ステータスレベル(加速度)			
+	level_ScoreUp = 1;		// ステータスレベル(スコア増加)
+	level_Goal = 1;			// ステータスレベル(ゴール生成数)
 }
 
 SceneManager::SceneManager(Camera* _camera, Camera2D* _uiCamera, HWND _hwnd)
@@ -116,6 +122,18 @@ void SceneManager::Init()
 
 void SceneManager::Update(float _deltaTime)
 {
+	m_Input.Update();
+
+	if (m_Input.GetKeyTrigger(VK_P))
+	{
+		ChangeImGui();
+	}
+
+	if (m_Input.GetKeyTrigger(VK_O))
+	{
+		gameStatus.Reset();
+	}
+
 	if (currentScene)
 	{
 		// 現在のシーンの入力処理
@@ -141,7 +159,10 @@ void SceneManager::Uninit()
 
 void SceneManager::Draw_ImGui()
 {
+	if (!m_ShowImGui) return;
 	if (currentScene)
-	// 現在のシーンのGUI描画
+	{
+		// 現在のシーンのGUI描画
 		currentScene->Draw_ImGui();
+	}
 }
